@@ -21,9 +21,11 @@ set(PARSER_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/grammar)
 file(MAKE_DIRECTORY ${PARSER_BUILD_DIR})
 
 FLEX_TARGET(LEXER ${LEX_FILE} ${PARSER_BUILD_DIR}/lexer.cpp COMPILE_FLAGS "--verbose")
-BISON_TARGET(PARSER ${YACC_FILE} ${PARSER_BUILD_DIR}/parser.cpp COMPILE_FLAGS "--verbose")
 
-ADD_FLEX_BISON_DEPENDENCY(LEXER PARSER)
+#TODO: Uncomment this when adding parser.y
+#BISON_TARGET(PARSER ${YACC_FILE} ${PARSER_BUILD_DIR}/parser.cpp COMPILE_FLAGS "--verbose")
+#
+#ADD_FLEX_BISON_DEPENDENCY(LEXER PARSER)
 
 #########################################################################################################
 
