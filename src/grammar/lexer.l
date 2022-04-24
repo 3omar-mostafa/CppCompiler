@@ -29,65 +29,18 @@
 %option nodefault
 
     /*
-    %option yyclass="foo"
-    It informs flex that you have derived `foo' as a subclass of yyFlexLexer so flex will place your actions in the member function `foo::yylex()' instead of `yyFlexLexer::yylex()'.
-    It also generates a `yyFlexLexer::yylex()' member function that emits a run-time error (by invoking `yyFlexLexer::LexerError()') if called.
-
-    %option yyclass="Lexer"
-    */
-
-    /*
     Makes the scanner not call `yywrap()' upon an end-of-file,
     but simply assume that there are no more files to scan
     (until the user points yyin at a new file and calls `yylex()' again)
     */
 %option noyywrap
 
-    /*
-    Generate a C++ scanner class
-    */
-%option c++
 
 %option warn
 
-    /*
-    Creates class FlexLexer, which provides an abstract base class defining the general scanner class interface.
-
-    It provides the following member functions:
-    `const char* YYText()'
-        returns the text of the most recently matched token, the equivalent of yytext.
-    `int YYLeng()'
-        returns the length of the most recently matched token, the equivalent of yyleng.
-    `int lineno() const'
-        returns the current input line number (see `%option yylineno'), or 1 if `%option yylineno' was not used.
-    `void set_debug( int flag )'
-        sets the debugging flag for the scanner, equivalent to assigning to yy_flex_debug (see the Options section above).
-        Note that you must build the scanner using `%option debug' to include debugging information in it.
-    `int debug() const'
-        returns the current setting of the debugging flag.
-    */
-
-
-    /*
-    Creates another class yyFlexLexer, which is derived from FlexLexer.
-
-    It defines the following additional member functions:
-    `yyFlexLexer( istream* arg_yyin = 0, ostream* arg_yyout = 0 )'
-        constructs a yyFlexLexer object using the given streams for input and output.
-        If not specified, the streams default to cin and cout, respectively.
-    `virtual int yylex()'
-        performs the same role is `yylex()' does for ordinary flex scanners: it scans the input stream, consuming tokens, until a rule's action returns a value.
-        If you derive a subclass S from yyFlexLexer and want to access the member functions and variables of S inside `yylex()', then you need to use `%option yyclass="S"' to inform flex that you will be using that subclass instead of yyFlexLexer. In this case, rather than generating `yyFlexLexer::yylex()', flex generates `S::yylex()' (and also generates a dummy `yyFlexLexer::yylex()' that calls `yyFlexLexer::LexerError()' if called).
-    `virtual void switch_streams(istream* new_in = 0, ostream* new_out = 0)'
-        reassigns yyin to new_in (if non-nil) and yyout to new_out (ditto), deleting the previous input buffer if yyin is reassigned.
-    `int yylex( istream* new_in = 0, ostream* new_out = 0 )'
-        first switches the input streams via `switch_streams( new_in, new_out )' and then returns the value of `yylex()'.
-
-    */
-
 
 %{
-#include<iostream>
+#include <iostream>
 #include <string>
 %}
 
