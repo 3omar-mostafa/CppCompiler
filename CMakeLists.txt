@@ -17,13 +17,13 @@ find_package(FLEX REQUIRED)
 file(REAL_PATH src/grammar/parser.y YACC_FILE)
 file(REAL_PATH src/grammar/lexer.l LEX_FILE)
 
-set(PARSER_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/grammar)
-file(MAKE_DIRECTORY ${PARSER_BUILD_DIR})
+set(GRAMMAR_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/grammar)
+file(MAKE_DIRECTORY ${GRAMMAR_BUILD_DIR})
 
-FLEX_TARGET(LEXER ${LEX_FILE} ${PARSER_BUILD_DIR}/lexer.cpp COMPILE_FLAGS "--verbose")
+FLEX_TARGET(LEXER ${LEX_FILE} ${GRAMMAR_BUILD_DIR}/lexer.cpp COMPILE_FLAGS "--verbose")
 
 #TODO: Uncomment this when adding parser.y
-#BISON_TARGET(PARSER ${YACC_FILE} ${PARSER_BUILD_DIR}/parser.cpp COMPILE_FLAGS "--verbose")
+#BISON_TARGET(PARSER ${YACC_FILE} ${GRAMMAR_BUILD_DIR}/parser.cpp COMPILE_FLAGS "--verbose")
 #
 #ADD_FLEX_BISON_DEPENDENCY(LEXER PARSER)
 
@@ -59,6 +59,7 @@ target_link_libraries(${PROJECT_NAME} ${FLEX_LIBRARIES})
 target_include_directories(${PROJECT_NAME}
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${GRAMMAR_BUILD_DIR}
         ${FLEX_LEXER_OUTPUT_HEADER}
         ${FLEX_INCLUDE_DIRS})
 
