@@ -32,7 +32,25 @@ FLEX_TARGET(LEXER ${LEX_FILE} ${PARSER_BUILD_DIR}/lexer.cpp COMPILE_FLAGS "--ver
 file(GLOB_RECURSE CPP_FILES src/*.cpp)
 set(SOURCE_FILES_LIST ${CPP_FILES})
 
-message(STATUS "C++ Source files: ${SOURCE_FILES_LIST}")
+# CMake List is semicolon separated string, for printing it is better to convert it to new line separated
+function(PRINT_NEW_LINE_LIST list)
+    message(STATUS "${list}")
+    if (ARGN)
+        PRINT_NEW_LINE_LIST(${ARGN})
+    else()
+        message(STATUS "")
+    endif()
+endfunction()       
+
+message(STATUS "C++ Source files:")
+PRINT_NEW_LINE_LIST(${SOURCE_FILES_LIST})
+
+message(STATUS "FLEX OUTPUT files:")
+PRINT_NEW_LINE_LIST(${FLEX_LEXER_OUTPUTS})
+
+message(STATUS "BISON OUTPUT files:")
+PRINT_NEW_LINE_LIST(${BISON_PARSER_OUTPUTS})
+
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES_LIST} ${FLEX_LEXER_OUTPUTS} ${BISON_PARSER_OUTPUTS})
 
