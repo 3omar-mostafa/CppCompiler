@@ -19,7 +19,6 @@
     The line number refers to the location of the rule in the file defining the scanner (i.e., the file that was fed to flex).
     Messages are also generated when the scanner backs up, accepts the default rule, reaches the end of its input buffer (or encounters a NUL; at this point, the two look the same as far as the scanner's concerned), or reaches an end-of-file.
     */
-%option debug
 
     /*
     Causes the default rule (that unmatched scanner input is echoed to stdout) to be suppressed.
@@ -48,10 +47,17 @@
 #include <string>
 
 #include "parser.hpp"
+#include "location.hpp"
 
 #undef YY_DECL
 // Give Flex the prototype of yylex we want which is compatible with Bison C++ variants
 #define YY_DECL yy::parser::symbol_type yylex()
+
+yy::location loc; // Global location object, used to store the location cuurent token
+
+// Code run each time a pattern is matched.
+// Move the location forward by the length of the  matched token
+#define YY_USER_ACTION loc.columns(yyleng);
 
 %}
 
@@ -70,6 +76,16 @@ MULTILINE_COMMENT   [/][*]+([^*/][^*]*[*]+)+[/]
 
 
 %%
+
+%{
+// Code run each time yylex is called.
+// This section MUST be inside %% not before it to include it inside yylex function
+
+// Move the location one step forward
+// Note that the step is not 1, it is the length of the last matched token
+loc.step();
+%}
+
 
 "int"                   {printf("[LEXER] Data Type keyword: int\n");}
 "float"                 {printf("[LEXER] Data Type keyword: float\n");}
@@ -105,26 +121,27 @@ MULTILINE_COMMENT   [/][*]+([^*/][^*]*[*]+)+[/]
 "!"|"not"               {printf("[LEXER] operator NOT: %s\n", yytext);}
 "**"                    {printf("[LEXER] operator POWER: **\n");}
 
-"+"                     {printf("[LEXER] operator PLUS: +\n"); return yy::parser::make_PLUS();}
-"-"                     {printf("[LEXER] operator MINUS: -\n"); return yy::parser::make_MINUS();}
-"*"                     {printf("[LEXER] operator MULTIPLY: *\n"); return yy::parser::make_MULTIPLY();}
-"/"                     {printf("[LEXER] operator DIVISON: /\n"); return yy::parser::make_DIVISION();}
-"="                     {printf("[LEXER] operator ASSIGN: =\n"); return yy::parser::make_ASSIGN();}
-";"                     {printf("[LEXER] operator SEMICOLON: ;\n"); return yy::parser::make_SEMICOLON();}
+"+"                     {printf("[LEXER] operator PLUS: +\n"); return yy::parser::make_PLUS(loc);}
+"-"                     {printf("[LEXER] operator MINUS: -\n"); return yy::parser::make_MINUS(loc);}
+"*"                     {printf("[LEXER] operator MULTIPLY: *\n"); return yy::parser::make_MULTIPLY(loc);}
+"/"                     {printf("[LEXER] operator DIVISON: /\n"); return yy::parser::make_DIVISION(loc);}
+"="                     {printf("[LEXER] operator ASSIGN: =\n"); return yy::parser::make_ASSIGN(loc);}
+";"                     {printf("[LEXER] operator SEMICOLON: ;\n"); return yy::parser::make_SEMICOLON(loc);}
 
 [<>(){}[\],:]           {printf("[LEXER] ANOTHER operator: %s\n", yytext);}
 
 
-{INTEGER}               {printf("[LEXER] INTEGER: %s\n", yytext); return yy::parser::make_INTEGER(atoi(yytext));}
+{INTEGER}               {printf("[LEXER] INTEGER: %s\n", yytext); return yy::parser::make_INTEGER(atoi(yytext), loc);}
 {REAL}                  {printf("[LEXER] REAL: %s\n", yytext);}
 {CHAR}                  {printf("[LEXER] CHAR: %s\n", yytext);}
 {STRING}                {printf("[LEXER] STRING: %s\n", yytext);}
 "true"                  {printf("[LEXER] BOOLEAN TRUE: %s\n", yytext);}
 "false"                 {printf("[LEXER] BOOLEAN FALSE: %s\n", yytext);}
-{IDENTIFIER}            {printf("[LEXER] IDENTIFIER: %s\n", yytext);return yy::parser::make_IDENTIFIER(yytext);}
+{IDENTIFIER}            {printf("[LEXER] IDENTIFIER: %s\n", yytext);return yy::parser::make_IDENTIFIER(yytext, loc);}
 {LINE_COMMENT}          {printf("[LEXER] SINGLE LINE COMMENT: %s\n", yytext);}
 {MULTILINE_COMMENT}     {printf("[LEXER] MULTI_LINE COMMENT: %s\n", yytext);}
 [ |\n|\t]+              {} /* skip blanks */
+<<EOF>>                 {printf("[LEXER] END OF FILE\n"); return yy::parser::make_EOF(loc);}
 .                       {printf("[LEXER] ANOTHER UNKNOWN CHARACTER: %s\n", yytext);}
 
 %%

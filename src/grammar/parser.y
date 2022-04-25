@@ -2,11 +2,15 @@
 %language "c++"
 %define api.value.type variant
 %define api.token.constructor
-// %locations
+
+%locations
+%define api.location.file "location.hpp"
+
 %define parse.trace
 %define parse.error verbose
 %define parse.lac full
 %define parse.assert
+%define api.token.prefix {TOKEN_}
 
 %code requires {
 #include <iostream>
@@ -29,6 +33,8 @@ yy::parser::symbol_type yylex();
 %token DIVISION "/"
 %token ASSIGN "="
 %token SEMICOLON ";"
+/* End of File */ 
+%token EOF 0;
 
 %right "="
 %left "+" "-";
@@ -54,11 +60,7 @@ expr[result]:
 %%
 
 
-void yy::parser::error(const std::string &err_message) {
-   std::cerr << "Error: " << err_message << "\n";
+void yy::parser::error(const location_type &l, const std::string &err_message)
+{
+   std::cerr << "Error: " << err_message << " at " << l << "\n";
 }
-
-// void yy::parser::error(const location_type &l, const std::string &err_message)
-// {
-//    std::cerr << "Error: " << err_message << " at " << l << "\n";
-// }
