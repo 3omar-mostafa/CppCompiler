@@ -38,6 +38,10 @@
 
 %option warn
 
+    /*
+    Creates global variable `yylineno` which contains the current line read from input
+    */
+%option yylineno
 
 %{
 #include <iostream>
@@ -60,58 +64,58 @@ MULTILINE_COMMENT   [/][*]+([^*/][^*]*[*]+)+[/]
 
 %%
 
-"int"                   {printf("Found Data Type keyword: int\n");}
-"float"                 {printf("Found Data Type keyword: float\n");}
-"char"                  {printf("Found Data Type keyword: char\n");}
-"bool"                  {printf("Found Data Type keyword: bool\n");}
-"void"                  {printf("Found Data Type keyword: void\n");}
-"string"                {printf("Found Data Type keyword: string\n");}
+"int"                   {printf("[LEXER] Data Type keyword: int\n");}
+"float"                 {printf("[LEXER] Data Type keyword: float\n");}
+"char"                  {printf("[LEXER] Data Type keyword: char\n");}
+"bool"                  {printf("[LEXER] Data Type keyword: bool\n");}
+"void"                  {printf("[LEXER] Data Type keyword: void\n");}
+"string"                {printf("[LEXER] Data Type keyword: string\n");}
 
-"const"                 {printf("Found reserved keyword: const\n");}
-"if"                    {printf("Found reserved keyword: if\n");}
-"else"                  {printf("Found reserved keyword: else\n");}
-"switch"                {printf("Found reserved keyword: switch\n");}
-"case"                  {printf("Found reserved keyword: case\n");}
-"default"               {printf("Found reserved keyword: default\n");}
-"for"                   {printf("Found reserved keyword: for\n");}
-"do"                    {printf("Found reserved keyword: do\n");}
-"while"                 {printf("Found reserved keyword: while\n");}
-"break"                 {printf("Found reserved keyword: break\n");}
-"continue"              {printf("Found reserved keyword: continue\n");}
-"return"                {printf("Found reserved keyword: return\n");}
-
-
-"++"                    {printf("Found operator INC: ++\n");}
-"--"                    {printf("Found operator DEC: --\n");}
-"=="                    {printf("Found operator EQUAL: ==\n");}
-"!="                    {printf("Found operator NOT_EQUAL: !=\n");}
-">="                    {printf("Found operator GREATER_EQUAL: >=\n");}
-"<="                    {printf("Found operator LESS_EQUAL: <=\n");}
-"<<"                    {printf("Found operator SHIFT_LEFT: <<\n");}
-">>"                    {printf("Found operator SHIFT_RIGHT: >>\n");}
-"&&"|"and"              {printf("Found operator AND:: %s\n", yytext);}
-"||"|"or"               {printf("Found operator OR:: %s\n", yytext);}
-"!"|"not"               {printf("Found operator NOT: %s\n", yytext);}
-"**"                    {printf("Found operator POWER: **\n");}
-"+"                     {printf("Found operator PLUS: +\n");}
-"-"                     {printf("Found operator MINUS: -\n");}
-"*"                     {printf("Found operator MULTIPLY: *\n");}
-"/"                     {printf("Found operator DIVISON: /\n");}
-
-[=<>(){}[\],:;]         {printf("Found ANOTHER operator: %s\n", yytext);}
+"const"                 {printf("[LEXER] reserved keyword: const\n");}
+"if"                    {printf("[LEXER] reserved keyword: if\n");}
+"else"                  {printf("[LEXER] reserved keyword: else\n");}
+"switch"                {printf("[LEXER] reserved keyword: switch\n");}
+"case"                  {printf("[LEXER] reserved keyword: case\n");}
+"default"               {printf("[LEXER] reserved keyword: default\n");}
+"for"                   {printf("[LEXER] reserved keyword: for\n");}
+"do"                    {printf("[LEXER] reserved keyword: do\n");}
+"while"                 {printf("[LEXER] reserved keyword: while\n");}
+"break"                 {printf("[LEXER] reserved keyword: break\n");}
+"continue"              {printf("[LEXER] reserved keyword: continue\n");}
+"return"                {printf("[LEXER] reserved keyword: return\n");}
 
 
-{INTEGER}               {printf("Found INTEGER: %s\n", yytext);}
-{REAL}                  {printf("Found REAL: %s\n", yytext);}
-{CHAR}                  {printf("Found CHAR: %s\n", yytext);}
-{STRING}                {printf("Found STRING: %s\n", yytext);}
-"true"                  {printf("Found BOOLEAN TRUE: %s\n", yytext);}
-"false"                 {printf("Found BOOLEAN FALSE: %s\n", yytext);}
-{IDENTIFIER}            {printf("Found IDENTIFIER: %s\n", yytext);}
-{LINE_COMMENT}          {printf("Found SINGLE LINE COMMENT: %s\n", yytext);}
-{MULTILINE_COMMENT}     {printf("Found MULTI_LINE COMMENT: %s\n", yytext);}
+"++"                    {printf("[LEXER] operator INC: ++\n");}
+"--"                    {printf("[LEXER] operator DEC: --\n");}
+"=="                    {printf("[LEXER] operator EQUAL: ==\n");}
+"!="                    {printf("[LEXER] operator NOT_EQUAL: !=\n");}
+">="                    {printf("[LEXER] operator GREATER_EQUAL: >=\n");}
+"<="                    {printf("[LEXER] operator LESS_EQUAL: <=\n");}
+"<<"                    {printf("[LEXER] operator SHIFT_LEFT: <<\n");}
+">>"                    {printf("[LEXER] operator SHIFT_RIGHT: >>\n");}
+"&&"|"and"              {printf("[LEXER] operator AND:: %s\n", yytext);}
+"||"|"or"               {printf("[LEXER] operator OR:: %s\n", yytext);}
+"!"|"not"               {printf("[LEXER] operator NOT: %s\n", yytext);}
+"**"                    {printf("[LEXER] operator POWER: **\n");}
+"+"                     {printf("[LEXER] operator PLUS: +\n");}
+"-"                     {printf("[LEXER] operator MINUS: -\n");}
+"*"                     {printf("[LEXER] operator MULTIPLY: *\n");}
+"/"                     {printf("[LEXER] operator DIVISON: /\n");}
+
+[=<>(){}[\],:;]         {printf("[LEXER] ANOTHER operator: %s\n", yytext);}
+
+
+{INTEGER}               {printf("[LEXER] INTEGER: %s\n", yytext);}
+{REAL}                  {printf("[LEXER] REAL: %s\n", yytext);}
+{CHAR}                  {printf("[LEXER] CHAR: %s\n", yytext);}
+{STRING}                {printf("[LEXER] STRING: %s\n", yytext);}
+"true"                  {printf("[LEXER] BOOLEAN TRUE: %s\n", yytext);}
+"false"                 {printf("[LEXER] BOOLEAN FALSE: %s\n", yytext);}
+{IDENTIFIER}            {printf("[LEXER] IDENTIFIER: %s\n", yytext);}
+{LINE_COMMENT}          {printf("[LEXER] SINGLE LINE COMMENT: %s\n", yytext);}
+{MULTILINE_COMMENT}     {printf("[LEXER] MULTI_LINE COMMENT: %s\n", yytext);}
 [ |\n|\t]+              {} /* skip blanks */
-.                       {printf("Found ANOTHER UNKNOWN CHARACTER: %s\n", yytext);}
+.                       {printf("[LEXER] ANOTHER UNKNOWN CHARACTER: %s\n", yytext);}
 
 %%
 
