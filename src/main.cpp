@@ -1,8 +1,9 @@
 #include <iostream>
-#include <FlexLexer.h>
+#include <parser.hpp>
 
 int main() {
-    yylex();
+    yy::parser parser;
+    parser.parse();
     return 0;
 }
 

@@ -22,10 +22,9 @@ file(MAKE_DIRECTORY ${GRAMMAR_BUILD_DIR})
 
 FLEX_TARGET(LEXER ${LEX_FILE} ${GRAMMAR_BUILD_DIR}/lexer.cpp COMPILE_FLAGS "--verbose")
 
-#TODO: Uncomment this when adding parser.y
-#BISON_TARGET(PARSER ${YACC_FILE} ${GRAMMAR_BUILD_DIR}/parser.cpp COMPILE_FLAGS "--verbose")
-#
-#ADD_FLEX_BISON_DEPENDENCY(LEXER PARSER)
+BISON_TARGET(PARSER ${YACC_FILE} ${GRAMMAR_BUILD_DIR}/parser.cpp COMPILE_FLAGS "--verbose")
+
+ADD_FLEX_BISON_DEPENDENCY(LEXER PARSER)
 
 #########################################################################################################
 

@@ -46,6 +46,13 @@
 %{
 #include <iostream>
 #include <string>
+
+#include "parser.hpp"
+
+#undef YY_DECL
+// Give Flex the prototype of yylex we want which is compatible with Bison C++ variants
+#define YY_DECL yy::parser::symbol_type yylex()
+
 %}
 
 
@@ -97,21 +104,24 @@ MULTILINE_COMMENT   [/][*]+([^*/][^*]*[*]+)+[/]
 "||"|"or"               {printf("[LEXER] operator OR:: %s\n", yytext);}
 "!"|"not"               {printf("[LEXER] operator NOT: %s\n", yytext);}
 "**"                    {printf("[LEXER] operator POWER: **\n");}
-"+"                     {printf("[LEXER] operator PLUS: +\n");}
-"-"                     {printf("[LEXER] operator MINUS: -\n");}
-"*"                     {printf("[LEXER] operator MULTIPLY: *\n");}
-"/"                     {printf("[LEXER] operator DIVISON: /\n");}
 
-[=<>(){}[\],:;]         {printf("[LEXER] ANOTHER operator: %s\n", yytext);}
+"+"                     {printf("[LEXER] operator PLUS: +\n"); return yy::parser::make_PLUS();}
+"-"                     {printf("[LEXER] operator MINUS: -\n"); return yy::parser::make_MINUS();}
+"*"                     {printf("[LEXER] operator MULTIPLY: *\n"); return yy::parser::make_MULTIPLY();}
+"/"                     {printf("[LEXER] operator DIVISON: /\n"); return yy::parser::make_DIVISION();}
+"="                     {printf("[LEXER] operator ASSIGN: =\n"); return yy::parser::make_ASSIGN();}
+";"                     {printf("[LEXER] operator SEMICOLON: ;\n"); return yy::parser::make_SEMICOLON();}
+
+[<>(){}[\],:]           {printf("[LEXER] ANOTHER operator: %s\n", yytext);}
 
 
-{INTEGER}               {printf("[LEXER] INTEGER: %s\n", yytext);}
+{INTEGER}               {printf("[LEXER] INTEGER: %s\n", yytext); return yy::parser::make_INTEGER(atoi(yytext));}
 {REAL}                  {printf("[LEXER] REAL: %s\n", yytext);}
 {CHAR}                  {printf("[LEXER] CHAR: %s\n", yytext);}
 {STRING}                {printf("[LEXER] STRING: %s\n", yytext);}
 "true"                  {printf("[LEXER] BOOLEAN TRUE: %s\n", yytext);}
 "false"                 {printf("[LEXER] BOOLEAN FALSE: %s\n", yytext);}
-{IDENTIFIER}            {printf("[LEXER] IDENTIFIER: %s\n", yytext);}
+{IDENTIFIER}            {printf("[LEXER] IDENTIFIER: %s\n", yytext);return yy::parser::make_IDENTIFIER(yytext);}
 {LINE_COMMENT}          {printf("[LEXER] SINGLE LINE COMMENT: %s\n", yytext);}
 {MULTILINE_COMMENT}     {printf("[LEXER] MULTI_LINE COMMENT: %s\n", yytext);}
 [ |\n|\t]+              {} /* skip blanks */
