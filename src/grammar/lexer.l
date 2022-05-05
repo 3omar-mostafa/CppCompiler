@@ -145,9 +145,11 @@ loc.step();
 [ ]+                    {loc.step();} /* skip empty spaces */
 [\t]+                   {   /*  
                                 Skip tabs (assume tab = 4 spaces)
-                                Note: we use 4-1 instead of 4 because eveery time yylex is called, it will increment the location
+                                Note: tab is treated as one character, but we want to treat it as 4
+                                So we increment the location by 3 times number of tab characters,
+                                not by 4 times because every time yylex is called, it will increment the location
                             */
-                            loc.columns(4-1); loc.step();
+                            loc.columns(3 * yyleng); loc.step();
                         }
 [\n]+                   {loc.step();} /* skip new lines */
 [\r]                    {} /* ignore new lines of CRLF Line Endings to convert it to LF only */
