@@ -53,11 +53,21 @@
 // Give Flex the prototype of yylex we want which is compatible with Bison C++ variants
 #define YY_DECL yy::parser::symbol_type yylex()
 
+
+int countLines(std::string text) {
+    int lines = 0;
+    for(char c: text) {
+        lines += c == '\n';
+    }
+    return lines;
+}
+
 yy::location loc; // Global location object, used to store the location cuurent token
 
 // Code run each time a pattern is matched.
-// Move the location forward by the length of the  matched token
-#define YY_USER_ACTION loc.columns(yyleng);
+// Move the location forward by the length of the matched token
+// and move the current line number forward by the number of newlines
+#define YY_USER_ACTION loc.columns(yyleng); loc.lines(countLines(yytext));
 
 %}
 
@@ -132,7 +142,15 @@ loc.step();
 {IDENTIFIER}            {printf("[LEXER] IDENTIFIER: %s\n", yytext);return yy::parser::make_IDENTIFIER(yytext, loc);}
 {LINE_COMMENT}          {printf("[LEXER] SINGLE LINE COMMENT: %s\n", yytext);}
 {MULTILINE_COMMENT}     {printf("[LEXER] MULTI_LINE COMMENT: %s\n", yytext);}
-[ |\n|\t|\r]+           {} /* skip blanks */
+[ ]+                    {loc.step();} /* skip empty spaces */
+[\t]+                   {   /*  
+                                Skip tabs (assume tab = 4 spaces)
+                                Note: we use 4-1 instead of 4 because eveery time yylex is called, it will increment the location
+                            */
+                            loc.columns(4-1); loc.step();
+                        }
+[\n]+                   {loc.step();} /* skip new lines */
+[\r]                    {} /* ignore new lines of CRLF Line Endings to convert it to LF only */
 <<EOF>>                 {printf("[LEXER] END OF FILE\n"); return yy::parser::make_EOF(loc);}
 .                       {throw yy::parser::syntax_error(loc, "[LEXER] invalid character: " + std::string(yytext));}
 
