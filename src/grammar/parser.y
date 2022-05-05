@@ -23,6 +23,13 @@
 yy::parser::symbol_type yylex();
 }
 
+// `provides` makes this section available to the lexer (code it put in the header file)
+%code provides {
+namespace yy{
+    void printLocation(const yy::parser::location_type& location);
+}
+}
+
 %code {
 namespace yy{
     void printLocation(const yy::parser::location_type& location) {
