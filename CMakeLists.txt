@@ -22,7 +22,7 @@ file(MAKE_DIRECTORY ${GRAMMAR_BUILD_DIR})
 
 FLEX_TARGET(LEXER ${LEX_FILE} ${GRAMMAR_BUILD_DIR}/lexer.cpp COMPILE_FLAGS "--verbose")
 
-BISON_TARGET(PARSER ${YACC_FILE} ${GRAMMAR_BUILD_DIR}/parser.cpp COMPILE_FLAGS "--verbose -Wcounterexamples")
+BISON_TARGET(PARSER ${YACC_FILE} ${GRAMMAR_BUILD_DIR}/parser.cpp COMPILE_FLAGS "--verbose")
 
 ADD_FLEX_BISON_DEPENDENCY(LEXER PARSER)
 
@@ -52,14 +52,10 @@ PRINT_NEW_LINE_LIST(${BISON_PARSER_OUTPUTS})
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES_LIST} ${FLEX_LEXER_OUTPUTS} ${BISON_PARSER_OUTPUTS})
 
-target_link_libraries(${PROJECT_NAME} ${FLEX_LIBRARIES})
-
 target_include_directories(${PROJECT_NAME}
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
-        ${GRAMMAR_BUILD_DIR}
-        ${FLEX_LEXER_OUTPUT_HEADER}
-        ${FLEX_INCLUDE_DIRS})
+        ${GRAMMAR_BUILD_DIR})
 
 ########################################### For Visual Studio ###########################################
 
