@@ -35,8 +35,12 @@ yy::parser::symbol_type yylex();
 
 %token IF ELSE SWITCH CASE DEFAULT FOR DO WHILE CONTINUE BREAK RETURN
 
-%nterm <int> statement declaration_statement assignment_statement
+%nterm <int> statement statement_list variable_declaration_statement variable_declaration 
+%nterm <int> if_statement switch_statement case_statemnts loop_statement
 %nterm <int> expr literal
+%nterm <int> function_declaration_statemnt return_statement
+%nterm <int> arguments func_args
+%nterm <int> parameters func_params
 
 %right '='
 %left AND OR NOT
@@ -48,6 +52,9 @@ yy::parser::symbol_type yylex();
 %right POWER
 
 %token EOF 0;
+
+%nonassoc IFUNMATCHED 
+%nonassoc ELSE 
 %%
 
 %start program;
@@ -58,19 +65,81 @@ program:
 ;
 
 statement:
-    declaration_statement           {}
-|   CONST declaration_statement     {}
-|   assignment_statement            {}
+    variable_declaration_statement  {}
+|   if_statement                    {}
+|   switch_statement                {}
+|   loop_statement                  {}
+|   function_declaration_statemnt   {}
+|   return_statement                {}
+|   '{''}'                          {}
+|   '{'statement_list'}'            {}
+|   expr ';'                        {}
 ;
 
-declaration_statement:
-    data_type IDENTIFIER ';' {$$=0; printf ("[PARSER] Defined an Identifier \n");}
-|   data_type IDENTIFIER '=' expr ';' { $$ = $expr; printf ("[PARSER] Final Output: %d\n", $expr);}
+statement_list:
+    statement                       {}
+|   statement_list statement        {}
 ;
 
-assignment_statement:
-    IDENTIFIER '=' expr ';' { $$ = $expr; printf ("[PARSER] Final Output: %d\n", $expr);}
+variable_declaration_statement:
+    variable_declaration ';'        {}
 ;
+
+variable_declaration:
+    data_type IDENTIFIER                { $$=0; printf ("[PARSER] Defined an Identifier \n");}
+|   data_type IDENTIFIER '=' expr       { $$ = $expr; printf ("[PARSER] Declartion Final Output: %d\n", $expr);}
+|   CONST data_type IDENTIFIER '=' expr { $$ = $expr; printf ("[PARSER] Const Declartion Final Output: %d\n", $expr);}
+;
+
+if_statement:
+    IF '(' expr ')' statement %prec IFUNMATCHED    {printf("[PARSER] if statement\n");}
+|   IF '(' expr ')' statement ELSE statement       {printf("[PARSER] if-else\n");}
+;
+
+switch_statement:
+    SWITCH '(' expr ')' '{' case_statemnts '}'      {printf("[PARSER] switch-case\n");}
+;
+
+case_statemnts:
+    case_statemnts CASE expr ':' statement  {}
+|   CASE expr ':' statement                 {}
+;
+
+loop_statement:
+    FOR '(' variable_declaration_statement expr ';' expr ')' statement  {printf("[PARSER] for-loop\n");}
+|   WHILE '(' expr ')' statement                                        {printf("[PARSER] while-loop\n");}
+|   DO statement WHILE '(' expr ')' ';'                                 {printf("[PARSER] do-while\n");}
+|   CONTINUE ';'                                                        {printf("[PARSER] continue\n");}
+|   BREAK ';'                                                           {printf("[PARSER] break\n");}
+;
+
+function_declaration_statemnt:
+    data_type IDENTIFIER '(' func_params ')' statement          {printf("[PARSER] Function declaration\n");}
+;
+
+parameters:
+    parameters ',' variable_declaration      {}
+|   variable_declaration                     {}
+;
+
+func_params:
+    parameters               {}
+|   /* */                    {}
+;
+
+arguments:
+    arguments ',' expr      {}
+|   expr                    {}
+;
+
+func_args:
+    arguments               {}
+|   /* */                   {}
+;
+
+return_statement:
+    RETURN ';'              {}
+|   RETURN expr ';'         {}
 
 data_type:
     TYPE_INT    {}
@@ -99,7 +168,10 @@ expr[result]:
 |   expr[left] NE expr[right]       { $result = $left != $right; printf("[PARSER] != result: %d\n", $result); }
 |   expr[left] SHL expr[right]      { $result = $left << $right; printf("[PARSER] << result: %d\n", $result); }
 |   expr[left] SHR expr[right]      { $result = $left >> $right; printf("[PARSER] >> result: %d\n", $result); }
-|   '(' expr[left] ')'              { $result = $left;           printf("[PARSER] >> result: %d\n", $result); }
+|   '(' expr[left] ')'              { $result = $left;           printf("[PARSER] result: %d\n", $result); }
+|   IDENTIFIER                      { $result = 0;               printf("[PARSER] Identifier\n"); }
+|   IDENTIFIER '=' expr[left]       { $result = 0;               printf("[PARSER] Identifier=expr\n"); }
+|   IDENTIFIER '(' func_args ')'    { $result = 0;               printf("[PARSER] Function call\n"); }
 ;
 
 literal:
