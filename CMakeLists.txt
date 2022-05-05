@@ -14,8 +14,8 @@ set(VERBOSE ON)
 find_package(BISON REQUIRED)
 find_package(FLEX REQUIRED)
 
-file(REAL_PATH src/grammar/parser.y YACC_FILE)
-file(REAL_PATH src/grammar/lexer.l LEX_FILE)
+file(GLOB YACC_FILE src/grammar/parser.y)
+file(GLOB LEX_FILE src/grammar/lexer.l)
 
 set(GRAMMAR_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/grammar)
 file(MAKE_DIRECTORY ${GRAMMAR_BUILD_DIR})
