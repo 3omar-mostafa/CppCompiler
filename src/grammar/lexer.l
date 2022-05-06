@@ -1,8 +1,3 @@
-    
-    /*
-    TODO: 
-    - Check this case: 123aaa is matched as 123:INTEGER aaa:IDENTIFIER
-    */
 
     /*
     Comments can start with // or /*
@@ -10,7 +5,7 @@
     */
 
     /*
-    Options Doumentation: https://ftp.gnu.org/old-gnu/Manuals/flex-2.5.4/html_node/flex_17.html
+    Options Documentation: https://ftp.gnu.org/old-gnu/Manuals/flex-2.5.4/html_node/flex_17.html
     */
 
     /*
@@ -41,6 +36,18 @@
     Creates global variable `yylineno` which contains the current line read from input
     */
 %option yylineno
+    /*
+    Disable interactive mode (read line by line from standard input)
+    This removes calls `isatty()` function, which makes it compatible with Microsoft Visual Studio
+    */
+%option never-interactive
+
+    /*
+    Disable including <unistd.h> header file, which is only available at linux
+    Which makes it compatible with Microsoft Visual Studio
+    Note: This is equivalent to #define YY_NO_UNISTD_H
+    */
+%option nounistd
 
 %{
 #include <iostream>
@@ -62,7 +69,7 @@ int countLines(std::string text) {
     return lines;
 }
 
-yy::location loc; // Global location object, used to store the location cuurent token
+yy::location loc; // Global location object, used to store the location current token
 
 // Code run each time a pattern is matched.
 // Move the location forward by the length of the matched token
