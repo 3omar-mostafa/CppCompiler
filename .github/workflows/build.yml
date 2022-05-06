@@ -42,10 +42,18 @@ jobs:
         name: C++ Compiler Ubuntu - GCC v${{ matrix.gcc_version }}
         path: ./cmake-build/CppCompiler
 
+    - name: Upload Generated C++ Grammar Files
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: C++ Compiler Ubuntu - GCC v${{ matrix.gcc_version }} - Generated Grammar
+        path: ./cmake-build/src/grammar/*
+
     - name: Rename Files
       run: mv ./cmake-build/CppCompiler CppCompiler_linux_gcc_${{ matrix.gcc_version }}
 
     - name: List Files
+      if: always()
       run: ls -lRh
 
     - name: Release Files
@@ -106,6 +114,13 @@ jobs:
           # Path varies from Visual Studio to MinGW
           ./cmake-build/CppCompiler.exe
           ./cmake-build/*/CppCompiler.exe
+
+    - name: Upload Generated C++ Grammar Files
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: C++ Compiler Windows x64 - ${{ matrix.name }} - Generated Grammar
+        path: ./cmake-build/src/grammar/*
 
     - name: Rename Files
       shell: bash
