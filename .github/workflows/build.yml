@@ -39,14 +39,14 @@ jobs:
     - name: Upload Binary
       uses: actions/upload-artifact@v3
       with:
-        name: CppCompiler_Ubuntu_GCC_${{ matrix.gcc_version }}
+        name: C++ Compiler Ubuntu - GCC v${{ matrix.gcc_version }}
         path: ./cmake-build/CppCompiler
 
     - name: Rename Files
       run: mv ./cmake-build/CppCompiler CppCompiler_linux_gcc_${{ matrix.gcc_version }}
 
     - name: List Files
-      run: ls -lah
+      run: ls -lRh
 
     - name: Release Files
       if: startsWith(github.ref, 'refs/tags/')
@@ -101,7 +101,7 @@ jobs:
     - name: Upload Binary
       uses: actions/upload-artifact@v3
       with:
-        name: Compressor_Windows ${{ matrix.name }}
+        name: C++ Compiler Windows x64 - ${{ matrix.name }}
         path: |
           # Path varies from Visual Studio to MinGW
           ./cmake-build/CppCompiler.exe
@@ -110,12 +110,12 @@ jobs:
     - name: Rename Files
       shell: bash
       run: |
-        mv ./cmake-build/CppCompiler.exe CppCompiler_win64_${{ matrix.output_name }}.exe
-        mv ./cmake-build/*/CppCompiler.exe CppCompiler_win64_${{ matrix.output_name }}.exe
+        mv ./cmake-build/CppCompiler.exe ./CppCompiler.exe || mv ./cmake-build/*/CppCompiler.exe ./CppCompiler.exe
+        mv CppCompiler.exe CppCompiler_win64_${{ matrix.output_name }}.exe
 
     - name: List Files
       shell: bash
-      run: ls -lah
+      run: ls -lRh
 
     - name: Release Files
       if: startsWith(github.ref, 'refs/tags/')
