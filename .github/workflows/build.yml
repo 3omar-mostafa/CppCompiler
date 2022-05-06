@@ -47,7 +47,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         name: "C++ Compiler v${{ github.event.release.tag_name }}"
-        files: CppCompiler
+        files: ./CppCompiler*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -113,8 +113,6 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         name: "C++ Compiler v${{ github.event.release.tag_name }}"
-        files: |
-            ./cmake-build/CppCompiler.exe
-            ./cmake-build/*/CppCompiler.exe
+        files: ./CppCompiler*.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
