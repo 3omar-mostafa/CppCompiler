@@ -10,18 +10,24 @@ on:
 jobs:
   Ubuntu:
     name: Build - Ubuntu - GCC ${{ matrix.gcc_version }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     env:
       CC : gcc-${{ matrix.gcc_version }}
       CXX: g++-${{ matrix.gcc_version }}
+
     strategy:
       fail-fast: false
       matrix:
-        gcc_version: [9, 10]
+        gcc_version: [9, 10, 11]
 
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+
+    - name: Install Bison/Flex
+      run: |
+        sudo apt update
+        sudo apt install bison flex -y
 
     - name: Build
       run: |
@@ -81,6 +87,9 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+
+    - name: Install Bison/Flex
+      run: choco install winflexbison3
 
     - name: Build
       run: |
