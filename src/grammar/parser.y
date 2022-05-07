@@ -1,15 +1,35 @@
+// Bison minimum version
 %require "3.2"
+
+// Generate C++ files instead of C
 %language "c++"
+
+// Enable C++ Variants (Allow using C++ data types in token data types)
+// i.e. use `%token <std::string> IDENTIFIER` instead of union
+// Documentation: https://www.gnu.org/software/bison/manual/html_node/C_002b_002b-Variants.html
 %define api.value.type variant
+
+// Request that symbols be handled as a whole (type, value, location) in the lexer
+// i.e. use `return yy::parser::make_IDENTIFIER(yytext, loc)` in lexer
 %define api.token.constructor
 
+// Enable Location Tracking
+// Documentation: https://www.gnu.org/software/bison/manual/html_node/Tracking-Locations.html
+// Documentation: https://www.gnu.org/software/bison/manual/html_node/C_002b_002b-Location-Values.html
 %locations
+
+// The name of location file to generate
 %define api.location.file "location.hpp"
 
+// Enable parser tracing and detailed error messages
 %define parse.trace
 %define parse.error verbose
 %define parse.lac full
+
+// This option checks that symbols must be constructed and destroyed properly.
 %define parse.assert
+
+// Add a prefix to the token names to avoid conflicts.
 %define api.token.prefix {TOKEN_}
 
 %code requires {
@@ -76,7 +96,7 @@ namespace yy{
 
 program:
     program statement   {}
-|   /* */
+|   /* empty */
 ;
 
 statement:
@@ -139,7 +159,7 @@ parameters:
 
 func_params:
     parameters               {}
-|   /* */                    {}
+|   /* empty */                    {}
 ;
 
 arguments:
@@ -149,7 +169,7 @@ arguments:
 
 func_args:
     arguments               {}
-|   /* */                   {}
+|   /* empty */                   {}
 ;
 
 return_statement:
