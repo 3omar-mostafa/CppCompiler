@@ -73,3 +73,19 @@ We use C++ 17, Bison >= 3.0 because we use it to generate C++ files and use C++ 
       You will find executable called `CppCompiler.exe` inside `build` directory
 
       Generated C++ grammar files inside `build/src/grammar/` directory
+
+# Usage
+  The program takes one argument of the file to compile
+
+  If no arguments are given, the program reads from standard input
+
+  Example:
+  * Ubuntu
+    ```bash
+      CppCompiler test.txt
+    ```
+  * Windows
+    ```cmd
+      CppCompiler.exe test.txt
+    ```
+
