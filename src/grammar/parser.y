@@ -1,5 +1,5 @@
 // Bison minimum version
-%require "3.2"
+%require "3.0"
 
 // Generate C++ files instead of C
 %language "c++"
