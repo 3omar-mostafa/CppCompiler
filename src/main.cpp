@@ -1,5 +1,6 @@
 #include <iostream>
 #include <parser.hpp>
+
 extern FILE *yyin;
 
 int main(int argc, char *argv[])
@@ -14,11 +15,11 @@ int main(int argc, char *argv[])
         }
         std::cout << "Compiling " << argv[1] << std::endl;
     }
-    else 
+    else
     {
         std::cout << "No files were given, reading input from stdin" << std::endl;
     }
-    
+
     yy::parser parser;
     parser.parse();
     return 0;
