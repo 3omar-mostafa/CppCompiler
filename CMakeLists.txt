@@ -29,7 +29,8 @@ ADD_FLEX_BISON_DEPENDENCY(LEXER PARSER)
 #########################################################################################################
 
 file(GLOB_RECURSE CPP_FILES src/*.cpp)
-set(SOURCE_FILES_LIST ${CPP_FILES})
+file(GLOB_RECURSE HEADER_FILES src/*.h)
+set(SOURCE_FILES_LIST ${CPP_FILES} ${HEADER_FILES})
 
 # CMake List is semicolon separated string, for printing it is better to convert it to new line separated
 function(PRINT_NEW_LINE_LIST list)
