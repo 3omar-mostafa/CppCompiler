@@ -7,15 +7,16 @@
 #include <iostream>
 #include "../utils/enums.h"
 
-using namespace std;
 
 struct EntryInfo
 {
     DataType type;
     EntryType entryType;
-    vector<DataType> paramsTypes;
-    EntryInfo() {}
-    EntryInfo(DataType type, EntryType entryType = TYPE_VAR, const vector<DataType> &paramsTypes = {})
+    std::vector<DataType> paramsTypes;
+
+    EntryInfo() = default;
+
+    explicit EntryInfo(DataType type, EntryType entryType = TYPE_VAR, const std::vector<DataType>& paramsTypes = {})
     {
         this->type = type;
         this->entryType = entryType;
@@ -26,16 +27,22 @@ struct EntryInfo
 class SymbolTable
 {
 private:
-    unordered_map<string, EntryInfo> table;
-    static SymbolTable *symbolTable;
+    std::unordered_map<std::string, EntryInfo> table;
+    static SymbolTable* symbolTable;
 
-    SymbolTable() {}
+    SymbolTable() = default;
 
 public:
-    bool insert(const string &name, DataType type, EntryType entryType = TYPE_VAR, const vector<DataType> &paramsTypes = {});
+    static SymbolTable* getInstance();
+
+    bool insert(const std::string& name, DataType type, EntryType entryType = TYPE_VAR,
+                const std::vector<DataType>& paramsTypes = {});
+
     bool update();
-    bool lookup(const string &name, EntryInfo &info);
-    static SymbolTable *getTable();
+
+    bool lookup(const std::string& name, EntryInfo& info);
 };
+
+SymbolTable* SymbolTable::symbolTable = nullptr;
 
 #endif

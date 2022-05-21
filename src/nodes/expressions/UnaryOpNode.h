@@ -1,20 +1,21 @@
 #ifndef UNARY_OP_NODE
 #define UNARY_OP_NODE
+
 #include "../Node.h"
 
 class UnaryOpNode : public ExpressionNode
 {
     Operator op;
-    ExpressionNode *operand;
+    ExpressionNode* operand;
 
 public:
-    UnaryOpNode(yy::location loc, Operator op, ExpressionNode *operand) : ExpressionNode(loc)
+    UnaryOpNode(yy::location loc, Operator op, ExpressionNode* operand) : ExpressionNode(loc)
     {
         this->op = op;
         this->operand = operand;
     }
 
-    virtual bool analyzeSemantic()
+    bool analyzeSemantic() override
     {
         if (!(operand->analyzeSemantic()))
             return false;
@@ -32,8 +33,9 @@ public:
     }
 
     // TODO:Implement
-    virtual string generateCode()
+    string generateCode() override
     {
     }
 };
+
 #endif

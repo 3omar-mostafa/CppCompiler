@@ -1,22 +1,23 @@
 #ifndef BINARY_OP_NODE
 #define BINARY_OP_NODE
+
 #include "../Node.h"
 
-class BianryOpNode : public ExpressionNode
+class BinaryOpNode : public ExpressionNode
 {
     Operator op;
-    ExpressionNode *lhs;
-    ExpressionNode *rhs;
+    ExpressionNode* lhs;
+    ExpressionNode* rhs;
 
 public:
-    BianryOpNode(yy::location loc, ExpressionNode *lhs, Operator op, ExpressionNode *rhs) : ExpressionNode(loc)
+    BinaryOpNode(yy::location loc, ExpressionNode* lhs, Operator op, ExpressionNode* rhs) : ExpressionNode(loc)
     {
         this->lhs = lhs;
         this->op = op;
         this->rhs = rhs;
     }
 
-    virtual bool analyzeSemantic()
+    bool analyzeSemantic() override
     {
         if (!(lhs->analyzeSemantic() && rhs->analyzeSemantic()))
             return false;
@@ -29,13 +30,15 @@ public:
         else
             type = std::max(lhs->type, rhs->type);
 
-        entryType = lhs->entryType && rhs->entryType; // check if both are constant
+        entryType = (lhs->entryType == EntryType::TYPE_CONST) && (rhs->entryType == EntryType::TYPE_CONST)
+                    ? EntryType::TYPE_CONST : EntryType::TYPE_VAR;
         return true;
     }
 
     // TODO:Implement
-    virtual string generateCode()
+    string generateCode() override
     {
     }
 };
+
 #endif

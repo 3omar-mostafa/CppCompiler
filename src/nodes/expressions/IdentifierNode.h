@@ -12,9 +12,9 @@ public:
         this->name = name;
     }
 
-    virtual bool analyzeSemantic()
+    bool analyzeSemantic() override
     {
-        SymbolTable *table = SymbolTable::getTable();
+        SymbolTable *table = SymbolTable::getInstance();
         EntryInfo info;
         if (!table->lookup(name, info))
             return false;
@@ -24,7 +24,7 @@ public:
     }
 
     // TODO:Implement
-    virtual string generateCode()
+    string generateCode() override
     {
     }
 };

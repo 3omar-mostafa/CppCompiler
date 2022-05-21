@@ -16,26 +16,25 @@ private:
     yy::location loc;
 
 public:
-    Node(yy::location loc)
+    explicit Node(yy::location loc)
     {
         this->loc = loc;
     }
     virtual bool analyzeSemantic() { return true; }
-    virtual string generateCode();
+    virtual string generateCode() = 0;
 };
 
 class ExpressionNode : public Node
 {
-private:
+public:
     DataType type;       // int, float, ...
     EntryType entryType; // variable, const, function
 
-public:
-    ExpressionNode(yy::location loc) : Node(loc)
+    explicit ExpressionNode(yy::location loc) : Node(loc)
     {
     }
-    virtual bool analyzeSemantic() { return true; }
-    virtual string generateCode();
+    bool analyzeSemantic() override { return true; }
+    string generateCode() override = 0;
 };
 
 #endif

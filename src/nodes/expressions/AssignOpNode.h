@@ -14,7 +14,7 @@ public:
         this->rhs = rhs;
     }
 
-    virtual bool analyzeSemantic()
+    bool analyzeSemantic() override
     {
         // TODO::CHECK (bitwise AND instead of logical AND)
         if (!(rhs->analyzeSemantic() && lhs->analyzeSemantic()))
@@ -32,7 +32,7 @@ public:
     }
 
     // TODO:Implement
-    virtual string generateCode()
+    string generateCode() override
     {
     }
 };
