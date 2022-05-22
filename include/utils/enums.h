@@ -1,5 +1,5 @@
-#ifndef ENUMS
-#define ENUMS
+#ifndef __ENUMS__H
+#define __ENUMS__H
 
 enum DataType
 {
@@ -24,6 +24,7 @@ enum Operator
     OPR_SUB,           // a - b
     OPR_MUL,           // a * b
     OPR_DIV,           // a / b
+    OPR_POW,           // a ** b
     OPR_SHL,           // a << 1
     OPR_SHR,           // a >> 1
     OPR_AND,           // a && b
@@ -37,4 +38,4 @@ enum Operator
     OPR_NOT_EQUAL,     // a != b
 };
 
-#endif
+#endif // __ENUMS__H

@@ -1,11 +1,11 @@
-#ifndef SYMBOLTABLE
-#define SYMBOLTABLE
+#ifndef __SYMBOL_TABLE__
+#define __SYMBOL_TABLE__
 
 #include <unordered_map>
 #include <vector>
 #include <string>
 #include <iostream>
-#include "../utils/enums.h"
+#include "utils/enums.h"
 
 
 struct EntryInfo
@@ -43,6 +43,4 @@ public:
     bool lookup(const std::string& name, EntryInfo& info);
 };
 
-SymbolTable* SymbolTable::symbolTable = nullptr;
-
-#endif
+#endif //__SYMBOL_TABLE__

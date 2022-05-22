@@ -36,6 +36,16 @@
 #include <iostream>
 #include <string>
 #include <cmath>
+
+#include "nodes/Node.h"
+#include "nodes/expressions/AssignOpNode.h"
+#include "nodes/expressions/BinaryOpNode.h"
+#include "nodes/expressions/IdentifierNode.h"
+#include "nodes/expressions/LiteralNode.h"
+#include "nodes/expressions/UnaryOpNode.h"
+
+#include "utils/enums.h"
+
 }
 
 %code {
@@ -70,9 +80,10 @@ namespace yy{
 
 %token IF ELSE SWITCH CASE DEFAULT FOR DO WHILE CONTINUE BREAK RETURN
 
-%nterm <int> statement statement_list variable_declaration_statement variable_declaration 
+%nterm <Node*> statement statement_list variable_declaration_statement variable_declaration
 %nterm <int> if_statement switch_statement case_statemnts loop_statement
-%nterm <int> expr literal
+%nterm <ExpressionNode*> expr
+%nterm <std::string> literal
 %nterm <int> function_declaration_statemnt return_statement
 %nterm <int> arguments func_args
 %nterm <int> parameters func_params
@@ -121,18 +132,18 @@ variable_declaration_statement:
 ;
 
 variable_declaration:
-    data_type IDENTIFIER                { $$=0; printf ("[PARSER] Defined an Identifier"); printLocation(@$);}
-|   data_type IDENTIFIER '=' expr       { $$ = $expr; printf ("[PARSER] Declartion Final Output: %d", $expr); printLocation(@$);}
-|   CONST data_type IDENTIFIER '=' expr { $$ = $expr; printf ("[PARSER] Const Declartion Final Output: %d", $expr); printLocation(@$);}
+    data_type IDENTIFIER                {}
+|   data_type IDENTIFIER '=' expr       { $$ = $expr;}
+|   CONST data_type IDENTIFIER '=' expr { $$ = $expr;}
 ;
 
 if_statement:
-    IF '(' expr ')' statement %prec IFUNMATCHED    {printf("[PARSER] if statement"); printLocation(@$);}
-|   IF '(' expr ')' statement ELSE statement       {printf("[PARSER] if-else"); printLocation(@$);}
+    IF '(' expr ')' statement %prec IFUNMATCHED    {}
+|   IF '(' expr ')' statement ELSE statement       {}
 ;
 
 switch_statement:
-    SWITCH '(' expr ')' '{' case_statemnts '}'      {printf("[PARSER] switch-case"); printLocation(@$);}
+    SWITCH '(' expr ')' '{' case_statemnts '}'      {}
 ;
 
 case_statemnts:
@@ -141,15 +152,15 @@ case_statemnts:
 ;
 
 loop_statement:
-    FOR '(' variable_declaration_statement expr ';' expr ')' statement  {printf("[PARSER] for-loop"); printLocation(@$);}
-|   WHILE '(' expr ')' statement                                        {printf("[PARSER] while-loop"); printLocation(@$);}
-|   DO statement WHILE '(' expr ')' ';'                                 {printf("[PARSER] do-while"); printLocation(@$);}
-|   CONTINUE ';'                                                        {printf("[PARSER] continue"); printLocation(@$);}
-|   BREAK ';'                                                           {printf("[PARSER] break"); printLocation(@$);}
+    FOR '(' variable_declaration_statement expr ';' expr ')' statement  {}
+|   WHILE '(' expr ')' statement                                        {}
+|   DO statement WHILE '(' expr ')' ';'                                 {}
+|   CONTINUE ';'                                                        {}
+|   BREAK ';'                                                           {}
 ;
 
 function_declaration_statemnt:
-    data_type IDENTIFIER '(' func_params ')' statement          {printf("[PARSER] Function declaration"); printLocation(@$);}
+    data_type IDENTIFIER '(' func_params ')' statement          {}
 ;
 
 parameters:
@@ -186,34 +197,34 @@ data_type:
 ;
 
 expr[result]:
-    literal                         { $result = $literal;}
-|   expr[left] '+' expr[right]      { $result = $left + $right;         printf("[PARSER] Add result: %d", $result); printLocation(@$);}
-|   expr[left] '-' expr[right]      { $result = $left - $right;         printf("[PARSER] Sub result: %d", $result); printLocation(@$);}
-|   expr[left] '*' expr[right]      { $result = $left * $right;         printf("[PARSER] Mul result: %d", $result); printLocation(@$);}
-|   expr[left] '/' expr[right]      { $result = $left / $right;         printf("[PARSER] Div result: %d", $result); printLocation(@$);}
-|   expr[left] POWER expr[right]    { $result = pow($left,  $right);    printf("[PARSER] power result: %d", $result); printLocation(@$);}
-|   expr[left] AND expr[right]      { $result = $left && $right;        printf("[PARSER] AND result: %d", $result); printLocation(@$);}
-|   expr[left] OR expr[right]       { $result = $left || $right;        printf("[PARSER] OR result: %d", $result); printLocation(@$);}
-|   NOT expr[right]                 { $result = !$right;                printf("[PARSER] NOT result: %d", $result); printLocation(@$);}
-|   expr[left] '>' expr[right]      { $result = $left > $right;         printf("[PARSER] > result: %d", $result); printLocation(@$);}
-|   expr[left] GE expr[right]       { $result = $left >= $right;        printf("[PARSER] >= result: %d", $result); printLocation(@$);}
-|   expr[left] '<' expr[right]      { $result = $left < $right;         printf("[PARSER] < result: %d", $result); printLocation(@$);}
-|   expr[left] LE expr[right]       { $result = $left <= $right;        printf("[PARSER] <= result: %d", $result); printLocation(@$);}
-|   expr[left] EQ expr[right]       { $result = $left == $right;        printf("[PARSER] == result: %d", $result); printLocation(@$);}
-|   expr[left] NE expr[right]       { $result = $left != $right;        printf("[PARSER] != result: %d", $result); printLocation(@$);}
-|   expr[left] SHL expr[right]      { $result = $left << $right;        printf("[PARSER] << result: %d", $result); printLocation(@$);}
-|   expr[left] SHR expr[right]      { $result = $left >> $right;        printf("[PARSER] >> result: %d", $result); printLocation(@$);}
-|   '(' expr[left] ')'              { $result = $left;                  printf("[PARSER] result: %d", $result); printLocation(@$);}
-|   IDENTIFIER                      { $result = 0;                      printf("[PARSER] Identifier"); printLocation(@$);}
-|   IDENTIFIER '=' expr[left]       { $result = 0;                      printf("[PARSER] Identifier=expr"); printLocation(@$);}
-|   IDENTIFIER '(' func_args ')'    { $result = 0;                      printf("[PARSER] Function call"); printLocation(@$);}
+    literal                         { $result = new LiteralNode(@$, $literal);}
+|   expr[left] '+' expr[right]      { $result = new BinaryOpNode(@$, $left, OPR_ADD, $right);}
+|   expr[left] '-' expr[right]      { $result = new BinaryOpNode(@$, $left, OPR_SUB, $right);}
+|   expr[left] '*' expr[right]      { $result = new BinaryOpNode(@$, $left, OPR_MUL, $right);}
+|   expr[left] '/' expr[right]      { $result = new BinaryOpNode(@$, $left, OPR_DIV, $right);}
+|   expr[left] POWER expr[right]    { $result = new BinaryOpNode(@$, $left, OPR_POW, $right);}
+|   expr[left] AND expr[right]      { $result = new BinaryOpNode(@$, $left, OPR_AND, $right);}
+|   expr[left] OR expr[right]       { $result = new BinaryOpNode(@$, $left, OPR_OR, $right);}
+|   NOT expr[right]                 { $result = new UnaryOpNode(@$, OPR_NOT, $right);}
+|   expr[left] '>' expr[right]      { $result = new BinaryOpNode(@$, $left, OPR_GREATER, $right);}
+|   expr[left] GE expr[right]       { $result = new BinaryOpNode(@$, $left, OPR_GREATER_EQUAL, $right);}
+|   expr[left] '<' expr[right]      { $result = new BinaryOpNode(@$, $left, OPR_LESS, $right);}
+|   expr[left] LE expr[right]       { $result = new BinaryOpNode(@$, $left, OPR_LESS_EQUAL, $right);}
+|   expr[left] EQ expr[right]       { $result = new BinaryOpNode(@$, $left, OPR_EQUAL, $right);}
+|   expr[left] NE expr[right]       { $result = new BinaryOpNode(@$, $left, OPR_NOT_EQUAL, $right);}
+|   expr[left] SHL expr[right]      { $result = new BinaryOpNode(@$, $left, OPR_SHL, $right);}
+|   expr[left] SHR expr[right]      { $result = new BinaryOpNode(@$, $left, OPR_SHR, $right);}
+|   '(' expr[left] ')'              { $result = $left;              }
+|   IDENTIFIER                      { $result = 0;                  }
+|   IDENTIFIER '=' expr[left]       { $result = 0;                  }
+|   IDENTIFIER '(' func_args ')'    { $result = 0;                  }
 ;
 
 literal:
-    INTEGER                         { $literal = $INTEGER; printf("[PARSER] int result: %d", $literal); printLocation(@$);}
-|   BOOL                            { $literal = $BOOL; printf("[PARSER] bool result: %d", $literal); printLocation(@$);}
-|   REAL                            { $literal = $REAL; printf("[PARSER] real result: %d", $literal); printLocation(@$);}
-|   CHAR                            { $literal = $CHAR; printf("[PARSER] char result: %c", $literal); printLocation(@$);}
+    INTEGER                         { $literal = std::to_string($INTEGER);}
+|   BOOL                            { $literal = std::to_string($BOOL);}
+|   REAL                            { $literal = std::to_string($REAL);}
+|   CHAR                            { $literal = std::to_string($CHAR);}
 %%
 
 
