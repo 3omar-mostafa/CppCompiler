@@ -1,7 +1,7 @@
 #ifndef LITERAL_NODE
 #define LITERAL_NODE
 
-#include "../Node.h"
+#include "nodes/Node.h"
 
 class LiteralNode : public ExpressionNode
 {

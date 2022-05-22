@@ -1,7 +1,7 @@
 #ifndef BINARY_OP_NODE
 #define BINARY_OP_NODE
 
-#include "../Node.h"
+#include "nodes/Node.h"
 
 class BinaryOpNode : public ExpressionNode
 {

@@ -1,4 +1,4 @@
-#include "SymbolTable.h"
+#include "symbolTable/SymbolTable.h"
 
 bool SymbolTable::insert(const std::string& name, DataType type, EntryType entryType, const std::vector <DataType>& paramsTypes)
 {

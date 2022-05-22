@@ -1,7 +1,7 @@
 #ifndef UNARY_OP_NODE
 #define UNARY_OP_NODE
 
-#include "../Node.h"
+#include "nodes/Node.h"
 
 class UnaryOpNode : public ExpressionNode
 {
