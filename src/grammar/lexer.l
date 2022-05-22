@@ -146,7 +146,7 @@ loc.step();
 {REAL}                  {printf("[LEXER] REAL: %s", yytext); printLocation(loc);return yy::parser::make_REAL(atof(yytext), loc);}
 {CHAR}                  {printf("[LEXER] CHAR: %s", yytext); printLocation(loc); return yy::parser::make_CHAR(yytext[1], loc);}
 {STRING}                {printf("[LEXER] STRING: %s", yytext); printLocation(loc); return yy::parser::make_STRING(yytext, loc);}
-{IDENTIFIER}            {printf("[LEXER] IDENTIFIER: %s", yytext); printLocation(loc);return yy::parser::make_IDENTIFIER(yytext, loc);}
+{IDENTIFIER}            {printf("[LEXER] IDENTIFIER: %s", yytext); printLocation(loc);return yy::parser::make_IDENTIFIER(new IdentifierNode(loc, yytext), loc);}
 {LINE_COMMENT}          {printf("[LEXER] SINGLE LINE COMMENT: %s\n", yytext); printLocation(loc);}
 {MULTILINE_COMMENT}     {printf("[LEXER] MULTI_LINE COMMENT: %s", yytext); printLocation(loc);}
 [ ]+                    {loc.step();} /* skip empty spaces */

@@ -44,6 +44,8 @@
 #include "nodes/expressions/LiteralNode.h"
 #include "nodes/expressions/UnaryOpNode.h"
 
+#include "nodes/statements/VariableDeclarationNode.h"
+
 #include "utils/enums.h"
 
 }
@@ -73,20 +75,22 @@ namespace yy{
 %token <char> CHAR
 %token <bool> BOOL
 %token <std::string> STRING
-%token <std::string> IDENTIFIER
+%token <IdentifierNode*> IDENTIFIER
 
 %token TYPE_INT TYPE_FLOAT TYPE_CHAR TYPE_BOOL TYPE_VOID TYPE_STRING
 %token CONST
 
 %token IF ELSE SWITCH CASE DEFAULT FOR DO WHILE CONTINUE BREAK RETURN
 
-%nterm <Node*> statement statement_list variable_declaration_statement variable_declaration
+%nterm <Node*> statement statement_list
+%nterm <VariableDeclarationNode*> variable_declaration_statement variable_declaration
 %nterm <int> if_statement switch_statement case_statemnts loop_statement
 %nterm <ExpressionNode*> expr
 %nterm <std::string> literal
 %nterm <int> function_declaration_statemnt return_statement
 %nterm <int> arguments func_args
 %nterm <int> parameters func_params
+%nterm <DataType> data_type
 
 %right '='
 %left AND OR NOT
@@ -132,9 +136,9 @@ variable_declaration_statement:
 ;
 
 variable_declaration:
-    data_type IDENTIFIER                {}
-|   data_type IDENTIFIER '=' expr       { $$ = $expr;}
-|   CONST data_type IDENTIFIER '=' expr { $$ = $expr;}
+    data_type IDENTIFIER                { $$ = new VariableDeclarationNode(@$, $data_type, $IDENTIFIER); }
+|   data_type IDENTIFIER '=' expr       { $$ = new VariableDeclarationNode(@$, $data_type, $IDENTIFIER, $expr); }
+|   CONST data_type IDENTIFIER '=' expr { $$ = new VariableDeclarationNode(@$, $data_type, $IDENTIFIER, $expr, true); }
 ;
 
 if_statement:
@@ -188,12 +192,11 @@ return_statement:
 |   RETURN expr ';'         {}
 
 data_type:
-    TYPE_INT    {}
-|   TYPE_FLOAT  {}
-|   TYPE_CHAR   {}
-|   TYPE_BOOL   {}
-|   TYPE_VOID   {}
-|   TYPE_STRING {}
+    TYPE_INT    { $data_type = DTYPE_INT;}
+|   TYPE_FLOAT  { $data_type = DTYPE_FLOAT;}
+|   TYPE_CHAR   { $data_type = DTYPE_CHAR;}
+|   TYPE_BOOL   { $data_type = DTYPE_BOOL;}
+|   TYPE_VOID   { $data_type = DTYPE_VOID; }
 ;
 
 expr[result]:

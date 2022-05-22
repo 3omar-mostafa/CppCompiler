@@ -4,9 +4,9 @@
 
 class IdentifierNode : public ExpressionNode
 {
-    string name;
-
 public:
+
+    string name;
     IdentifierNode(yy::location loc, const string &name) : ExpressionNode(loc)
     {
         this->name = name;
