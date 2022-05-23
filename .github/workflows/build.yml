@@ -7,6 +7,9 @@ on:
       - '*'
 
 
+env:
+    FORCE_COLOR : 'true' # Force colors in console output
+
 jobs:
   Ubuntu:
     name: Build - Ubuntu - GCC ${{ matrix.gcc_version }}
@@ -33,7 +36,7 @@ jobs:
       run: |
         mkdir cmake-build
         cd ./cmake-build
-        cmake .. -DCMAKE_BUILD_TYPE=Release
+        cmake .. -DCMAKE_BUILD_TYPE=Release -DVERBOSE=OFF
         cmake --build . --config Release --clean-first
 
     - name: Upload Binary
@@ -103,7 +106,7 @@ jobs:
       run: |
         mkdir cmake-build
         cd ./cmake-build
-        cmake .. -DCMAKE_BUILD_TYPE=Release  -G "${{ matrix.cmake_generator }}" ${{ matrix.cmake_platform_args }}
+        cmake .. -DCMAKE_BUILD_TYPE=Release -DVERBOSE=OFF -G "${{ matrix.cmake_generator }}" ${{ matrix.cmake_platform_args }}
         cmake --build . --config Release --clean-first
 
     - name: Upload Binary

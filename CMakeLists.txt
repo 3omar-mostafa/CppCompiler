@@ -1,15 +1,33 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.10)
 set(PROJECT_NAME CppCompiler)
 
 project(${PROJECT_NAME})
 set(CMAKE_CXX_STANDARD 17)
 
+######################################### Colored Output Config #########################################
+
+set(CMAKE_COLOR_MAKEFILE ON)
+
+if(NOT WIN32)
+    set(ENV{CLICOLOR_FORCE} "true")
+endif()
+
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    add_compile_options (-fdiagnostics-color=always)
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    add_compile_options (-fcolor-diagnostics)
+endif ()
+
 ########################################### Flex/Bison Config ###########################################
 
-set(CMAKE_FIND_DEBUG_MODE ON)
-set(BISON_DEBUG ON)
-set(FLEX_DEBUG ON)
-set(VERBOSE ON)
+
+option(VERBOSE "Add more message on searchig for flex/bison and others" ON)
+
+set(CMAKE_FIND_DEBUG_MODE ${VERBOSE})
+set(BISON_DEBUG ${VERBOSE})
+set(FLEX_DEBUG ${VERBOSE})
+
+message(STATUS "VERBOSE_MODE:" ${VERBOSE})
 
 find_package(BISON REQUIRED)
 find_package(FLEX REQUIRED)
@@ -29,7 +47,7 @@ ADD_FLEX_BISON_DEPENDENCY(LEXER PARSER)
 #########################################################################################################
 
 file(GLOB_RECURSE CPP_FILES src/*.cpp)
-file(GLOB_RECURSE HEADER_FILES src/*.h)
+file(GLOB_RECURSE HEADER_FILES src/*.h include/*.h)
 set(SOURCE_FILES_LIST ${CPP_FILES} ${HEADER_FILES})
 
 # CMake List is semicolon separated string, for printing it is better to convert it to new line separated
@@ -43,7 +61,10 @@ function(PRINT_NEW_LINE_LIST list)
 endfunction()       
 
 message(STATUS "C++ Source files:")
-PRINT_NEW_LINE_LIST(${SOURCE_FILES_LIST})
+PRINT_NEW_LINE_LIST(${CPP_FILES})
+
+message(STATUS "C++ Header files:")
+PRINT_NEW_LINE_LIST(${HEADER_FILES})
 
 message(STATUS "FLEX OUTPUT files:")
 PRINT_NEW_LINE_LIST(${FLEX_LEXER_OUTPUTS})
