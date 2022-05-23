@@ -14,9 +14,9 @@ public:
         this->entryType = EntryType::TYPE_CONST;
     }
 
-    // TODO:Implement
     string generateCode() override
     {
+        throw "Not Implemented yet";
     }
 };
 

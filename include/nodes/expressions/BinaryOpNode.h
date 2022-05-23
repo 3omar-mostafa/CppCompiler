@@ -35,9 +35,9 @@ public:
         return true;
     }
 
-    // TODO:Implement
     string generateCode() override
     {
+        throw "Not Implemented yet";
     }
 };
 

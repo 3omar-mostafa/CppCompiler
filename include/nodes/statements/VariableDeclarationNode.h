@@ -27,9 +27,9 @@ public:
         return table->insert(identifier->name, type, entryType);
     }
 
-    // TODO:Implement
     string generateCode() override
     {
+        throw "Not Implemented yet";
     }
 };
 
