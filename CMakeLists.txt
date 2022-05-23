@@ -60,6 +60,13 @@ target_include_directories(${PROJECT_NAME}
 
 ########################################### For Visual Studio ###########################################
 
+# On Visual Studio the value of of __cplusplus is very old and does not reflect the true version of the compiler
+# This switch ensures __cplusplus value is updated
+# See: https://devblogs.microsoft.com/cppblog/msvc-now-correctly-reports-__cplusplus/
+if(MSVC)
+    target_compile_options(${PROJECT_NAME} PUBLIC "/Zc:__cplusplus")
+endif()
+
 # Generate Folder Hierarchy instead of adding all files in the same folder
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES_LIST} ${LEX_FILE} ${YACC_FILE})
 
