@@ -1,14 +1,15 @@
 #ifndef ASSIGN_OP_NODE
 #define ASSIGN_OP_NODE
 #include "nodes/Node.h"
+#include "IdentifierNode.h"
 
 class AssignOpNode : public ExpressionNode
 {
-    ExpressionNode *lhs;
+    IdentifierNode *lhs;
     ExpressionNode *rhs;
 
 public:
-    AssignOpNode(yy::location loc, ExpressionNode *lhs, ExpressionNode *rhs) : ExpressionNode(loc)
+    AssignOpNode(yy::location loc, IdentifierNode *lhs, ExpressionNode *rhs) : ExpressionNode(loc)
     {
         this->lhs = lhs;
         this->rhs = rhs;
@@ -20,9 +21,9 @@ public:
         if (!(rhs->analyzeSemantic() && lhs->analyzeSemantic()))
             return false;
 
-        if (lhs->type == DTYPE_VOID || lhs->type == DTYPE_VOID)
+        if (lhs->type == DTYPE_VOID || rhs->type == DTYPE_VOID)
             return false;
-
+        // TODO::Check that lhs not literal (not rvalue)
         if (lhs->entryType == TYPE_CONST)
             return false;
 
@@ -33,7 +34,7 @@ public:
 
     string generateCode() override
     {
-        throw "Not Implemented yet";
+        return Utils::opToQuad(OPR_POP, type) + " " + lhs->name + "\n";
     }
 };
 #endif

@@ -6,10 +6,10 @@
 class UnaryOpNode : public ExpressionNode
 {
     Operator op;
-    ExpressionNode* operand;
+    ExpressionNode *operand;
 
 public:
-    UnaryOpNode(yy::location loc, Operator op, ExpressionNode* operand) : ExpressionNode(loc)
+    UnaryOpNode(yy::location loc, Operator op, ExpressionNode *operand) : ExpressionNode(loc)
     {
         this->op = op;
         this->operand = operand;
@@ -34,7 +34,13 @@ public:
 
     string generateCode() override
     {
-        throw "Not Implemented yet";
+        string quad;
+
+        quad = operand->generateCode();
+        quad += Utils::convTypeToQuad(operand->type, type);
+
+        quad += Utils::opToQuad(op, type) + "\n";
+        return quad;
     }
 };
 

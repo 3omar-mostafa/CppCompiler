@@ -36,6 +36,13 @@ enum Operator
     OPR_LESS_EQUAL,    // a <= b
     OPR_EQUAL,         // a == b
     OPR_NOT_EQUAL,     // a != b
+
+    OPR_PUSH,
+    OPR_POP,
+    OPR_RET,
+    OPR_JMP,
+    OPR_JMPEQ,
+    OPR_JMPNEQ,
 };
 
 #endif // __ENUMS__H
