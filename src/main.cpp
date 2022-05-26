@@ -1,7 +1,9 @@
 #include <iostream>
 #include <parser.hpp>
+#include "nodes/Node.h"
 
 extern FILE *yyin;
+extern Node *programRoot;
 
 int main(int argc, char *argv[])
 {
@@ -22,5 +24,17 @@ int main(int argc, char *argv[])
 
     yy::parser parser;
     parser.parse();
+
+    std::cout << "Start Analyzing \n";
+    bool analyze = programRoot->analyzeSemantic();
+    std::cout << "Finished Analyzing with result = " << analyze << std::endl;
+    if (!analyze)
+    {
+        std::cout << "Semantic Error Can not generate quadraples\n";
+        return -1;
+    }
+    std::string quad = programRoot->generateCode();
+    std::cout << "Finished code generation with result = \n"
+              << quad << std::endl;
     return 0;
 }

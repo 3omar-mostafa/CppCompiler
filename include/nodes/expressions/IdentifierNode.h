@@ -5,7 +5,6 @@
 class IdentifierNode : public ExpressionNode
 {
 public:
-
     string name;
     IdentifierNode(yy::location loc, const string &name) : ExpressionNode(loc)
     {
@@ -25,7 +24,7 @@ public:
 
     string generateCode() override
     {
-        throw "Not Implemented yet";
+        return Utils::opToQuad(OPR_PUSH, type) + " " + name + "\n";
     }
 };
 #endif

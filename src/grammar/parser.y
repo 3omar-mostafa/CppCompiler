@@ -53,6 +53,7 @@
 %code {
 // Forward declaration for yylex created by the lexer (flex)
 yy::parser::symbol_type yylex();
+Node* programRoot = NULL;
 }
 
 // `provides` makes this section available to the lexer (code it put in the header file)
@@ -70,8 +71,8 @@ namespace yy{
 }
 }
 
-%token <int> INTEGER
-%token <double> REAL
+%token <std::string> INTEGER
+%token <std::string> REAL
 %token <char> CHAR
 %token <bool> BOOL
 %token <std::string> STRING
@@ -86,11 +87,12 @@ namespace yy{
 %nterm <VariableDeclarationNode*> variable_declaration_statement variable_declaration
 %nterm <int> if_statement switch_statement case_statemnts loop_statement
 %nterm <ExpressionNode*> expr
-%nterm <std::string> literal
+%nterm <LiteralNode*> literal
 %nterm <int> function_declaration_statemnt return_statement
 %nterm <int> arguments func_args
 %nterm <int> parameters func_params
 %nterm <DataType> data_type
+%nterm <Node*> program
 
 %right '='
 %left AND OR NOT
@@ -110,29 +112,29 @@ namespace yy{
 %start program;
 
 program:
-    program statement   {}
+    statement_list   { $program = $statement_list; programRoot = $statement_list;}
 |   /* empty */
 ;
 
 statement:
-    variable_declaration_statement  {}
+    variable_declaration_statement  {$statement = $variable_declaration_statement;}
 |   if_statement                    {}
 |   switch_statement                {}
 |   loop_statement                  {}
 |   function_declaration_statemnt   {}
 |   return_statement                {}
 |   '{''}'                          {}
-|   '{'statement_list'}'            {}
-|   expr ';'                        {}
+|   '{'statement_list'}'            {$statement = $statement_list;}
+|   expr ';'                        {$statement = $expr;}
 ;
 
 statement_list:
-    statement                       {}
+    statement                       {$statement_list = $statement;}
 |   statement_list statement        {}
 ;
 
 variable_declaration_statement:
-    variable_declaration ';'        {}
+    variable_declaration ';'        { $$ = $variable_declaration;}
 ;
 
 variable_declaration:
@@ -200,7 +202,7 @@ data_type:
 ;
 
 expr[result]:
-    literal                         { $result = new LiteralNode(@$, $literal);}
+    literal                         { $result = $literal;}
 |   expr[left] '+' expr[right]      { $result = new BinaryOpNode(@$, $left, OPR_ADD, $right);}
 |   expr[left] '-' expr[right]      { $result = new BinaryOpNode(@$, $left, OPR_SUB, $right);}
 |   expr[left] '*' expr[right]      { $result = new BinaryOpNode(@$, $left, OPR_MUL, $right);}
@@ -217,17 +219,17 @@ expr[result]:
 |   expr[left] NE expr[right]       { $result = new BinaryOpNode(@$, $left, OPR_NOT_EQUAL, $right);}
 |   expr[left] SHL expr[right]      { $result = new BinaryOpNode(@$, $left, OPR_SHL, $right);}
 |   expr[left] SHR expr[right]      { $result = new BinaryOpNode(@$, $left, OPR_SHR, $right);}
-|   '(' expr[left] ')'              { $result = $left;              }
-|   IDENTIFIER                      { $result = 0;                  }
-|   IDENTIFIER '=' expr[left]       { $result = 0;                  }
+|   '(' expr[left] ')'              { $result = $left;}
+|   IDENTIFIER                      { $result = $IDENTIFIER;}
+|   IDENTIFIER '=' expr[right]       { $result = new AssignOpNode(@$, $IDENTIFIER, $right);}
 |   IDENTIFIER '(' func_args ')'    { $result = 0;                  }
 ;
 
 literal:
-    INTEGER                         { $literal = std::to_string($INTEGER);}
-|   BOOL                            { $literal = std::to_string($BOOL);}
-|   REAL                            { $literal = std::to_string($REAL);}
-|   CHAR                            { $literal = std::to_string($CHAR);}
+    INTEGER                         { $literal = new LiteralNode(@$, $INTEGER, DTYPE_INT);}
+|   BOOL                            { $literal = new LiteralNode(@$, std::to_string($BOOL), DTYPE_BOOL);}
+|   REAL                            { $literal = new LiteralNode(@$, $REAL, DTYPE_FLOAT);}
+|   CHAR                            { $literal = new LiteralNode(@$, std::to_string($CHAR), DTYPE_CHAR);}
 %%
 
 

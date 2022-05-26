@@ -142,8 +142,8 @@ loc.step();
 "true"                  {printf("[LEXER] BOOLEAN TRUE: %s", yytext); printLocation(loc); return yy::parser::make_BOOL(true, loc);}
 "false"                 {printf("[LEXER] BOOLEAN FALSE: %s", yytext); printLocation(loc); return yy::parser::make_BOOL(false, loc);}
 
-{INTEGER}               {printf("[LEXER] INTEGER: %s", yytext); printLocation(loc); return yy::parser::make_INTEGER(atoi(yytext), loc);}
-{REAL}                  {printf("[LEXER] REAL: %s", yytext); printLocation(loc);return yy::parser::make_REAL(atof(yytext), loc);}
+{INTEGER}               {printf("[LEXER] INTEGER: %s", yytext); printLocation(loc); return yy::parser::make_INTEGER(yytext, loc);}
+{REAL}                  {printf("[LEXER] REAL: %s", yytext); printLocation(loc);return yy::parser::make_REAL(yytext, loc);}
 {CHAR}                  {printf("[LEXER] CHAR: %s", yytext); printLocation(loc); return yy::parser::make_CHAR(yytext[1], loc);}
 {STRING}                {printf("[LEXER] STRING: %s", yytext); printLocation(loc); return yy::parser::make_STRING(yytext, loc);}
 {IDENTIFIER}            {printf("[LEXER] IDENTIFIER: %s", yytext); printLocation(loc);return yy::parser::make_IDENTIFIER(new IdentifierNode(loc, yytext), loc);}
