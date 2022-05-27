@@ -146,7 +146,7 @@ case_statemnts:
 ;
 
 loop_statement:
-    FOR '(' variable_declaration_statement expr ';' expr ')' statement  {}
+    FOR '(' variable_declaration_statement[varDec] expr[cond] ';' expr[step] ')' statement  {$$ = new ForLoopNode(@$, $varDec, $cond, $step, $statement);}
 |   WHILE '(' expr ')' statement                                        {$$ = new WhileLoopNode(@$, $expr, $statement);}
 |   DO statement WHILE '(' expr ')' ';'                                 {$$ = new DoWhileLoopNode(@$, $expr, $statement);}
 |   CONTINUE ';'                                                        {}

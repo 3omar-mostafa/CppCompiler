@@ -13,5 +13,6 @@
 #include "../src/nodes/conditions/IfElseCondNode.h"
 #include "../src/nodes/loops/WhileLoopNode.h"
 #include "../src/nodes/loops/DoWhileLoopNode.h"
+#include "../src/nodes/loops/ForLoopNode.h"
 
 #include "../src/utils/enums.h"
