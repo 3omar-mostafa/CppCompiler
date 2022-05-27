@@ -10,5 +10,6 @@
 #include "../src/nodes/expressions/UnaryOpNode.h"
 
 #include "../src/nodes/statements/VariableDeclarationNode.h"
+#include "../src/nodes/conditions/IfElseCondNode.h"
 
 #include "../src/utils/enums.h"

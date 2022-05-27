@@ -72,7 +72,8 @@ namespace yy{
 
 %nterm <Node*> statement statement_list
 %nterm <VariableDeclarationNode*> variable_declaration_statement variable_declaration
-%nterm <int> if_statement switch_statement case_statemnts loop_statement
+%nterm <int> switch_statement case_statemnts loop_statement
+%nterm <IfElseCondNode*> if_statement
 %nterm <ExpressionNode*> expr
 %nterm <LiteralNode*> literal
 %nterm <int> function_declaration_statemnt return_statement
@@ -99,13 +100,13 @@ namespace yy{
 %start program;
 
 program:
-    statement_list   { $program = $statement_list; programRoot = $statement_list;}
-|   /* empty */
+    statement_list      { $program = $statement_list; programRoot = $statement_list;}
+|   /* empty */         {}
 ;
 
 statement:
     variable_declaration_statement  {$statement = $variable_declaration_statement;}
-|   if_statement                    {}
+|   if_statement                    {$statement = $if_statement;}
 |   switch_statement                {}
 |   loop_statement                  {}
 |   function_declaration_statemnt   {}
@@ -131,8 +132,8 @@ variable_declaration:
 ;
 
 if_statement:
-    IF '(' expr ')' statement %prec IFUNMATCHED    {}
-|   IF '(' expr ')' statement ELSE statement       {}
+    IF '(' expr ')' statement %prec IFUNMATCHED                     {$$ = new IfElseCondNode(@$,$expr , $statement);}
+|   IF '(' expr ')' statement[if_body] ELSE statement[else_body]    {$$ = new IfElseCondNode(@$,$expr , $if_body, $else_body);}
 ;
 
 switch_statement:
