@@ -14,5 +14,7 @@
 #include "../src/nodes/loops/WhileLoopNode.h"
 #include "../src/nodes/loops/DoWhileLoopNode.h"
 #include "../src/nodes/loops/ForLoopNode.h"
+#include "../src/nodes/loops/BreakNode.h"
+#include "../src/nodes/loops/ContinueNode.h"
 
 #include "../src/utils/enums.h"

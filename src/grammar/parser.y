@@ -149,8 +149,8 @@ loop_statement:
     FOR '(' variable_declaration_statement[varDec] expr[cond] ';' expr[step] ')' statement  {$$ = new ForLoopNode(@$, $varDec, $cond, $step, $statement);}
 |   WHILE '(' expr ')' statement                                        {$$ = new WhileLoopNode(@$, $expr, $statement);}
 |   DO statement WHILE '(' expr ')' ';'                                 {$$ = new DoWhileLoopNode(@$, $expr, $statement);}
-|   CONTINUE ';'                                                        {}
-|   BREAK ';'                                                           {}
+|   CONTINUE ';'                                                        {$$ = new ContinueNode(@$);}
+|   BREAK ';'                                                           {$$ = new BreakNode(@$);}
 ;
 
 function_declaration_statemnt:
