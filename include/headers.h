@@ -11,5 +11,6 @@
 
 #include "../src/nodes/statements/VariableDeclarationNode.h"
 #include "../src/nodes/conditions/IfElseCondNode.h"
+#include "../src/nodes/loops/WhileLoopNode.h"
 
 #include "../src/utils/enums.h"

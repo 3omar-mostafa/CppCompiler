@@ -72,7 +72,7 @@ namespace yy{
 
 %nterm <Node*> statement statement_list
 %nterm <VariableDeclarationNode*> variable_declaration_statement variable_declaration
-%nterm <int> switch_statement case_statemnts loop_statement
+%nterm <Node*> switch_statement case_statemnts loop_statement
 %nterm <IfElseCondNode*> if_statement
 %nterm <ExpressionNode*> expr
 %nterm <LiteralNode*> literal
@@ -108,7 +108,7 @@ statement:
     variable_declaration_statement  {$statement = $variable_declaration_statement;}
 |   if_statement                    {$statement = $if_statement;}
 |   switch_statement                {}
-|   loop_statement                  {}
+|   loop_statement                  {$statement = $loop_statement;}
 |   function_declaration_statemnt   {}
 |   return_statement                {}
 |   '{''}'                          {}
@@ -147,7 +147,7 @@ case_statemnts:
 
 loop_statement:
     FOR '(' variable_declaration_statement expr ';' expr ')' statement  {}
-|   WHILE '(' expr ')' statement                                        {}
+|   WHILE '(' expr ')' statement                                        {$$ = new WhileLoopNode(@$, $expr, $statement);}
 |   DO statement WHILE '(' expr ')' ';'                                 {}
 |   CONTINUE ';'                                                        {}
 |   BREAK ';'                                                           {}
