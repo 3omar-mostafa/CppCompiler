@@ -1,6 +1,6 @@
 #ifndef IDENTIFIER_NODE
 #define IDENTIFIER_NODE
-#include "nodes/Node.h"
+#include "../Node.h"
 
 class IdentifierNode : public ExpressionNode
 {

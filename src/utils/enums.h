@@ -41,8 +41,8 @@ enum Operator
     OPR_POP,
     OPR_RET,
     OPR_JMP,
-    OPR_JMPEQ,
-    OPR_JMPNEQ,
+    OPR_JMPZ,
+    OPR_JMPNZ,
 };
 
 #endif // __ENUMS__H

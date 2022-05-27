@@ -1,6 +1,6 @@
 #ifndef ASSIGN_OP_NODE
 #define ASSIGN_OP_NODE
-#include "nodes/Node.h"
+#include "../Node.h"
 #include "IdentifierNode.h"
 
 class AssignOpNode : public ExpressionNode

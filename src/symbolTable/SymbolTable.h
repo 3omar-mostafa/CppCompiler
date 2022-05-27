@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include "utils/enums.h"
+#include "../utils/enums.h"
 
 struct EntryInfo
 {

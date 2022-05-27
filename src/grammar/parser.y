@@ -33,20 +33,7 @@
 %define api.token.prefix {TOKEN_}
 
 %code requires {
-#include <iostream>
-#include <string>
-#include <cmath>
-
-#include "nodes/Node.h"
-#include "nodes/expressions/AssignOpNode.h"
-#include "nodes/expressions/BinaryOpNode.h"
-#include "nodes/expressions/IdentifierNode.h"
-#include "nodes/expressions/LiteralNode.h"
-#include "nodes/expressions/UnaryOpNode.h"
-
-#include "nodes/statements/VariableDeclarationNode.h"
-
-#include "utils/enums.h"
+#include "headers.h"
 
 }
 

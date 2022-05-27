@@ -75,10 +75,10 @@ namespace Utils
             return "RET";
         case OPR_JMP:
             return "JMP";
-        case OPR_JMPEQ:
-            return "JMPEQ";
-        case OPR_JMPNEQ:
-            return "JMPNEQ";
+        case OPR_JMPZ:
+            return "JMPZ";
+        case OPR_JMPNZ:
+            return "JMPNZ";
         default:
             return "";
         }

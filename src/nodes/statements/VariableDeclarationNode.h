@@ -1,8 +1,8 @@
 #ifndef VARIABLE_DECLARATION_NODE
 #define VARIABLE_DECLARATION_NODE
 
-#include "utils/enums.h"
-#include "nodes/expressions/IdentifierNode.h"
+#include "../../utils/enums.h"
+#include "../expressions/IdentifierNode.h"
 #include <iostream>
 
 class VariableDeclarationNode : public Node

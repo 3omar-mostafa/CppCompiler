@@ -3,9 +3,9 @@
 
 #include "location.hpp"
 #include <string>
-#include "utils/enums.h"
-#include "utils/utils.h"
-#include "symbolTable/SymbolTable.h"
+#include "../utils/enums.h"
+#include "../utils/utils.h"
+#include "../symbolTable/SymbolTable.h"
 #include <algorithm>
 
 using std::string;
