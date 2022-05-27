@@ -34,7 +34,10 @@ public:
 
     string generateCode() override
     {
-        return Utils::opToQuad(OPR_POP, type) + " " + lhs->name + "\n";
+        string quad;
+        quad = rhs->generateCode();
+        quad += Utils::opToQuad(OPR_POP, type) + " " + lhs->name + "\n";
+        return quad;
     }
 };
 #endif
