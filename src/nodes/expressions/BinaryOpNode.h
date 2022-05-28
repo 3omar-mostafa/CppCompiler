@@ -36,7 +36,7 @@ public:
         return true;
     }
 
-    string generateCode() override
+    string generateCode(CodeGenerationHelper *genHelper) override
     {
         /*
         PUSH DATATYPE LHS
@@ -46,10 +46,10 @@ public:
         string quad;
         DataType op_type = std::max(lhs->type, rhs->type);
 
-        quad = lhs->generateCode();
+        quad = lhs->generateCode(genHelper);
         quad += Utils::convTypeToQuad(lhs->type, op_type);
 
-        quad += rhs->generateCode();
+        quad += rhs->generateCode(genHelper);
         quad += Utils::convTypeToQuad(rhs->type, op_type);
 
         quad += Utils::opToQuad(op, type) + "\n";

@@ -15,7 +15,7 @@ public:
         this->entryType = EntryType::TYPE_CONST;
     }
 
-    string generateCode() override
+    string generateCode(CodeGenerationHelper *genHelper) override
     {
         return Utils::opToQuad(OPR_PUSH, type) + " " + value + "\n";
     }

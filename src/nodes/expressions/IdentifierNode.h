@@ -22,7 +22,7 @@ public:
         return true;
     }
 
-    string generateCode() override
+    string generateCode(CodeGenerationHelper *genHelper) override
     {
         return Utils::opToQuad(OPR_PUSH, type) + " " + name + "\n";
     }

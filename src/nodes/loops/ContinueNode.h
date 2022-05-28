@@ -14,11 +14,11 @@ public:
         return true;
     }
 
-    string generateCode() override
+    string generateCode(CodeGenerationHelper *genHelper) override
     {
         // TODO:: SET LABEL TO THE NEAREST LOOP LABEL
         string quad;
-        string l1 = "1";
+        string l1 = genHelper->getContinueLabel();
         quad += Utils::opToQuad(OPR_JMP, DTYPE_INT) + " L" + l1 + "\n";
 
         return quad;

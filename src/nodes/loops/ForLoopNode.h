@@ -32,19 +32,46 @@ public:
         return true;
     }
 
-    string generateCode() override
+    string generateCode(CodeGenerationHelper *genHelper) override
     {
+        /*
+        --------INIT-------
+        L1:
+        --------COND-------
+        JMPZ L3
+        --------BODY-------
+
+        L2: (FOR CONTINUE)
+        --------STEP-------
+        JMP L1
+
+        L3: (FOR BREAK)
+        --------EXIT-------
+
+        */
+
         string quad;
-        string l1 = "1";
-        string l2 = "2";
-        quad = varDec->generateCode();
+        string l1 = genHelper->getNewLabel();
+        string l2 = genHelper->getNewLabel();
+        string l3 = genHelper->getNewLabel();
+
+        quad = varDec->generateCode(genHelper);
         quad += "L" + l1 + ":\n";
-        quad += cond->generateCode();
-        quad += Utils::opToQuad(OPR_JMPZ, cond->type) + " L" + l2 + "\n";
-        quad += body->generateCode();
-        quad += step->generateCode();
-        quad += Utils::opToQuad(OPR_JMP, cond->type) + " L" + l1 + "\n";
+        quad += cond->generateCode(genHelper);
+        quad += Utils::opToQuad(OPR_JMPZ, cond->type) + " L" + l3 + "\n";
+
+        genHelper->addContinueLabel(l2);
+        genHelper->addBreakLabel(l3);
+
+        quad += body->generateCode(genHelper);
+
+        genHelper->removeContinueLabel();
+        genHelper->removeBreakLabel();
+
         quad += "L" + l2 + ":\n";
+        quad += step->generateCode(genHelper);
+        quad += Utils::opToQuad(OPR_JMP, cond->type) + " L" + l1 + "\n";
+        quad += "L" + l3 + ":\n";
 
         return quad;
     }

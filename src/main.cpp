@@ -33,7 +33,10 @@ int main(int argc, char *argv[])
         std::cout << "Semantic Error Can not generate quadraples\n";
         return -1;
     }
-    std::string quad = programRoot->generateCode();
+
+    CodeGenerationHelper *genHelper = new CodeGenerationHelper();
+
+    std::string quad = programRoot->generateCode(genHelper);
     std::cout << "Finished code generation with result = \n"
               << quad << std::endl;
     return 0;

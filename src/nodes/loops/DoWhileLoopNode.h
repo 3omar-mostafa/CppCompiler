@@ -27,15 +27,40 @@ public:
         return true;
     }
 
-    string generateCode() override
+    string generateCode(CodeGenerationHelper *genHelper) override
     {
+        /*
+        L1:
+        ----------DO-BODY-------
+
+        L2: (FOR CONTINUE)
+        --------WHILE-COND------
+        JMPNZ L2
+
+        L3: (FOR BREAK)
+        ----------EXIT----------
+
+        */
+
         string quad;
-        string l1 = "1";
+        string l1 = genHelper->getNewLabel();
+        string l2 = genHelper->getNewLabel();
+        string l3 = genHelper->getNewLabel();
 
         quad = "L" + l1 + ":\n";
-        quad += body->generateCode();
-        quad += cond->generateCode();
+
+        genHelper->addContinueLabel(l2);
+        genHelper->addBreakLabel(l3);
+
+        quad += body->generateCode(genHelper);
+
+        genHelper->removeContinueLabel();
+        genHelper->removeBreakLabel();
+
+        quad = "L" + l2 + ":\n";
+        quad += cond->generateCode(genHelper);
         quad += Utils::opToQuad(OPR_JMPNZ, cond->type) + " L" + l1 + "\n";
+        quad = "L" + l3 + ":\n";
 
         return quad;
     }

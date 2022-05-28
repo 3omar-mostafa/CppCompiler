@@ -34,11 +34,11 @@ public:
         return table->insert(identifier->name, type, entryType);
     }
 
-    string generateCode() override
+    string generateCode(CodeGenerationHelper *genHelper) override
     {
         string quad;
         if (value != nullptr)
-            quad += value->generateCode();
+            quad += value->generateCode(genHelper);
         quad += Utils::convTypeToQuad(value->type, type);
         quad += Utils::opToQuad(OPR_POP, type) + " " + identifier->name + "\n";
         return quad;

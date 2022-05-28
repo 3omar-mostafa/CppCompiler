@@ -6,6 +6,7 @@
 #include "../utils/enums.h"
 #include "../utils/utils.h"
 #include "../symbolTable/SymbolTable.h"
+#include "../helpers/codeGenerationHelper.h"
 #include <algorithm>
 
 using std::string;
@@ -21,7 +22,7 @@ public:
         this->loc = loc;
     }
     virtual bool analyzeSemantic() { return true; }
-    virtual string generateCode() = 0;
+    virtual string generateCode(CodeGenerationHelper *genHelper) = 0;
 };
 
 class ExpressionNode : public Node
@@ -34,7 +35,7 @@ public:
     {
     }
     bool analyzeSemantic() override { return true; }
-    string generateCode() override = 0;
+    string generateCode(CodeGenerationHelper *genHelper) override = 0;
 };
 
 #endif

@@ -35,20 +35,45 @@ public:
         return true;
     }
 
-    string generateCode() override
+    string generateCode(CodeGenerationHelper *genHelper) override
     {
+        /*
+        -------------COND------------
+        JMPZ L1
+        -------------BODY------------
+
+        L1:
+        ------COND-NOT-SATISFIED-----
+
+        =============================
+        --------------OR-------------
+        =============================
+
+        -------------COND------------
+        JMPZ L1
+        -------------BODY------------
+        JMP L2
+
+        L1: (ELSE)
+        ------COND-NOT-SATISFIED-----
+
+        L2:
+        ------COND-SATISFIED-EXIT----
+
+        */
+
         string quad;
-        string l1 = "1";
-        quad = cond->generateCode();
+        string l1 = genHelper->getNewLabel();
+        quad = cond->generateCode(genHelper);
         quad += Utils::opToQuad(OPR_JMPZ, cond->type) + " L" + l1 + "\n";
-        quad += ifBody->generateCode();
+        quad += ifBody->generateCode(genHelper);
 
         if (elseBody != nullptr)
         {
-            string l2 = "2";
+            string l2 = genHelper->getNewLabel();
             quad += Utils::opToQuad(OPR_JMP, cond->type) + " L" + l2 + "\n";
             quad += "L" + l1 + ":\n";
-            quad += elseBody->generateCode();
+            quad += elseBody->generateCode(genHelper);
             quad += "L" + l2 + ":\n";
         }
         else

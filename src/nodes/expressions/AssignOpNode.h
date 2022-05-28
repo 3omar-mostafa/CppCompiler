@@ -32,10 +32,11 @@ public:
         return true;
     }
 
-    string generateCode() override
+    string generateCode(CodeGenerationHelper *genHelper) override
     {
         string quad;
-        quad = rhs->generateCode();
+        quad = rhs->generateCode(genHelper);
+        quad += Utils::convTypeToQuad(rhs->type, type);
         quad += Utils::opToQuad(OPR_POP, type) + " " + lhs->name + "\n";
         return quad;
     }
