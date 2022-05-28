@@ -1,15 +1,18 @@
 #ifndef NODE
 #define NODE
 
-#include "location.hpp"
 #include <string>
+#include <algorithm>
+#include <vector>
+
+#include "location.hpp"
+
 #include "../utils/enums.h"
 #include "../utils/utils.h"
 #include "../symbolTable/SymbolTable.h"
 #include "../helpers/codeGenerationHelper.h"
-#include <algorithm>
 
-using std::string;
+using namespace std;
 
 class Node
 {
@@ -37,5 +40,7 @@ public:
     bool analyzeSemantic() override { return true; }
     string generateCode(CodeGenerationHelper *genHelper) override = 0;
 };
+
+typedef vector<Node *> StmtListNode;
 
 #endif

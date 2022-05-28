@@ -70,7 +70,8 @@ namespace yy{
 
 %token IF ELSE SWITCH CASE DEFAULT FOR DO WHILE CONTINUE BREAK RETURN
 
-%nterm <Node*> statement statement_list
+%nterm <Node*> statement
+%nterm <StmtListNode*> statement_list
 %nterm <VariableDeclarationNode*> variable_declaration_statement variable_declaration
 %nterm <Node*> switch_statement case_statemnts loop_statement
 %nterm <IfElseCondNode*> if_statement
@@ -100,8 +101,8 @@ namespace yy{
 %start program;
 
 program:
-    statement_list      { $program = $statement_list; programRoot = $statement_list;}
-|   /* empty */         {}
+    statement_list      { $program = NULL; programRoot = new StmtBlockNode(@$, *$statement_list);}
+|   /* empty */         { $program = NULL; programRoot = new StmtBlockNode(@$);}
 ;
 
 statement:
@@ -111,14 +112,14 @@ statement:
 |   loop_statement                  {$statement = $loop_statement;}
 |   function_declaration_statemnt   {}
 |   return_statement                {}
-|   '{''}'                          {}
-|   '{'statement_list'}'            {$statement = $statement_list;}
+|   '{''}'                          {$statement = new StmtBlockNode(@$);}
+|   '{'statement_list'}'            {$statement = new StmtBlockNode(@$, *$statement_list);}
 |   expr ';'                        {$statement = $expr;}
 ;
 
 statement_list:
-    statement                       {$statement_list = $statement;}
-|   statement_list statement        {}
+    statement                       {$$ = new StmtListNode(); $$->push_back($statement);}
+|   statement_list[rhs] statement        {$$ = $rhs; $$->push_back($statement);}
 ;
 
 variable_declaration_statement:
