@@ -12,7 +12,7 @@ namespace Utils
         return (op >= OPR_AND && op <= OPR_NOT_EQUAL);
     }
 
-    inline std::string TypeToQuad(DataType type)
+    inline std::string typeToQuad(DataType type)
     {
         switch (type)
         {
@@ -36,41 +36,41 @@ namespace Utils
         switch (op)
         {
         case OPR_ADD:
-            return "ADD " + TypeToQuad(type);
+            return "ADD " + typeToQuad(type);
         case OPR_SUB:
-            return "SUB " + TypeToQuad(type);
+            return "SUB " + typeToQuad(type);
         case OPR_MUL:
-            return "MUL " + TypeToQuad(type);
+            return "MUL " + typeToQuad(type);
         case OPR_DIV:
-            return "DIV " + TypeToQuad(type);
+            return "DIV " + typeToQuad(type);
         case OPR_POW:
-            return "POW " + TypeToQuad(type);
+            return "POW " + typeToQuad(type);
         case OPR_SHL:
-            return "SHL " + TypeToQuad(type);
+            return "SHL " + typeToQuad(type);
         case OPR_SHR:
-            return "SHR " + TypeToQuad(type);
+            return "SHR " + typeToQuad(type);
         case OPR_AND:
-            return "AND " + TypeToQuad(type);
+            return "AND " + typeToQuad(type);
         case OPR_OR:
-            return "OR " + TypeToQuad(type);
+            return "OR " + typeToQuad(type);
         case OPR_NOT:
-            return "NOT " + TypeToQuad(type);
+            return "NOT " + typeToQuad(type);
         case OPR_GREATER:
-            return "GT " + TypeToQuad(type);
+            return "GT " + typeToQuad(type);
         case OPR_GREATER_EQUAL:
-            return "GE " + TypeToQuad(type);
+            return "GE " + typeToQuad(type);
         case OPR_LESS:
-            return "LT " + TypeToQuad(type);
+            return "LT " + typeToQuad(type);
         case OPR_LESS_EQUAL:
-            return "LE " + TypeToQuad(type);
+            return "LE " + typeToQuad(type);
         case OPR_EQUAL:
-            return "EQ " + TypeToQuad(type);
+            return "EQ " + typeToQuad(type);
         case OPR_NOT_EQUAL:
-            return "NEQ " + TypeToQuad(type);
+            return "NEQ " + typeToQuad(type);
         case OPR_PUSH:
-            return "PUSH " + TypeToQuad(type);
+            return "PUSH " + typeToQuad(type);
         case OPR_POP:
-            return "POP " + TypeToQuad(type);
+            return "POP " + typeToQuad(type);
         case OPR_RET:
             return "RET";
         case OPR_JMP:
@@ -86,7 +86,7 @@ namespace Utils
 
     inline std::string convTypeToQuad(DataType in_type, DataType out_type)
     {
-        return (in_type != out_type ? ("CONV " + TypeToQuad(in_type) + " TO " + TypeToQuad(out_type) + "\n") : "");
+        return (in_type != out_type ? ("CONV " + typeToQuad(in_type) + " TO " + typeToQuad(out_type) + "\n") : "");
     }
 }
 
