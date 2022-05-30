@@ -15,9 +15,9 @@ public:
         this->operand = operand;
     }
 
-    bool analyzeSemantic(AnalysisHelper *analysisHelper) override
+    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override
     {
-        if (!(operand->analyzeSemantic(analysisHelper)))
+        if (!(operand->analyzeSemantic(analysisHelper, true)))
             return false;
 
         if (operand->type == DTYPE_VOID)

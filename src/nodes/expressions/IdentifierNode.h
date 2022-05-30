@@ -11,16 +11,27 @@ public:
         this->name = name;
     }
 
-    bool analyzeSemantic(AnalysisHelper *analysisHelper) override
+    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used)
     {
-        EntryInfo info;
+        EntryInfo *info;
         if (!analysisHelper->lookup(name, info))
         {
             analysisHelper->log("'" + name + "' was not declared in this scope", loc, "error");
             return false;
         }
-        type = info.type;
-        entryType = info.entryType;
+        type = info->type;
+        entryType = info->entryType;
+
+        if (used)
+        {
+            info->used += 1;
+        }
+
+        if (used && !info->initialized)
+        {
+            analysisHelper->log("variable '" + name + "' used without being initialized", loc, "error");
+            return false;
+        }
         return true;
     }
 

@@ -17,9 +17,9 @@ public:
         this->rhs = rhs;
     }
 
-    bool analyzeSemantic(AnalysisHelper *analysisHelper) override
+    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override
     {
-        if (!(lhs->analyzeSemantic(analysisHelper) && rhs->analyzeSemantic(analysisHelper)))
+        if (!(lhs->analyzeSemantic(analysisHelper, true) && rhs->analyzeSemantic(analysisHelper, true)))
             return false;
 
         if (lhs->type == DTYPE_VOID || rhs->type == DTYPE_VOID)

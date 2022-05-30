@@ -16,7 +16,7 @@ public:
         this->elseBody = elseBody;
     }
 
-    bool analyzeSemantic(AnalysisHelper *analysisHelper) override
+    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override
     {
         if (analysisHelper->isGlobalScope())
         {
@@ -27,7 +27,7 @@ public:
         bool check = true;
         analysisHelper->pushScope(SCOPE_IF, this);
 
-        if (!(cond->analyzeSemantic(analysisHelper) && ifBody->analyzeSemantic(analysisHelper)))
+        if (!(cond->analyzeSemantic(analysisHelper, true) && ifBody->analyzeSemantic(analysisHelper)))
             check &= false;
 
         if (cond->type == DTYPE_VOID)
