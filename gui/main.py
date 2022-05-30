@@ -28,12 +28,10 @@ class CppCompiler(QWidget):
         super(QWidget, self).__init__()
 
         # Compiler path
-        file_path = os.path.abspath(os.path.dirname(__file__))
-        self.cpp_compiler_path = os.path.join(file_path, "../CppCompiler.exe")
+        self.cpp_compiler_path = "CppCompiler.exe"
         self.cpp_quadruples_path = "out.txt"
         self.cpp_symbols_table_path = "symbols.txt"
         self.cpp_tmp_path = "CppCompilerTmp.txt"
-
         self.file_path = ""
 
         self.left = 60
