@@ -15,7 +15,7 @@ public:
         this->rhs = rhs;
     }
 
-    bool analyzeSemantic(AnalysisHelper *analysisHelper) override
+    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override
     {
         if (analysisHelper->isGlobalScope())
         {
@@ -24,7 +24,7 @@ public:
         }
 
         // TODO::CHECK (bitwise AND instead of logical AND)
-        if (!(rhs->analyzeSemantic(analysisHelper) && lhs->analyzeSemantic(analysisHelper)))
+        if (!(rhs->analyzeSemantic(analysisHelper, true) && lhs->analyzeSemantic(analysisHelper, false)))
             return false;
 
         if (lhs->type == DTYPE_VOID || rhs->type == DTYPE_VOID)

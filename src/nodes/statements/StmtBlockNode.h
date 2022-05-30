@@ -17,7 +17,7 @@ public:
         this->stmtList = stmtList;
     }
 
-    bool analyzeSemantic(AnalysisHelper *analysisHelper) override
+    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override
     {
         // TODO::Uncomment this check after function impelementation
         // if (analysisHelper->isGlobalScope())

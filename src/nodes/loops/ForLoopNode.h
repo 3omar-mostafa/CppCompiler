@@ -19,7 +19,7 @@ public:
         this->body = body;
     }
 
-    bool analyzeSemantic(AnalysisHelper *analysisHelper) override
+    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override
     {
         if (analysisHelper->isGlobalScope())
         {
@@ -30,7 +30,7 @@ public:
         bool check = true;
         analysisHelper->pushScope(SCOPE_LOOP, this);
 
-        if (!(varDec->analyzeSemantic(analysisHelper) && cond->analyzeSemantic(analysisHelper) && step->analyzeSemantic(analysisHelper) && body->analyzeSemantic(analysisHelper)))
+        if (!(varDec->analyzeSemantic(analysisHelper) && cond->analyzeSemantic(analysisHelper, true) && step->analyzeSemantic(analysisHelper) && body->analyzeSemantic(analysisHelper)))
             check &= false;
 
         if (cond->type == DTYPE_VOID)

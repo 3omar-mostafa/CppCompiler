@@ -63,6 +63,16 @@ public:
         Scope *scope = scopes.back();
         scopes.pop_back();
 
+        for (auto &it : scope->table.getTable())
+        {
+            EntryInfo symbol = it.second;
+
+            if (symbol.used <= 0)
+            {
+                log("the value of variable '" + it.first + "' is never used", symbol.loc, "warning");
+            }
+        }
+
         delete scope;
     }
 
@@ -97,11 +107,11 @@ public:
         return false;
     }
 
-    bool addSymbol(const string &name, DataType type, EntryType entryType = TYPE_VAR, const vector<DataType> &paramsTypes = {})
+    bool addSymbol(yy::location loc, const string &name, DataType type, EntryType entryType = TYPE_VAR, const vector<DataType> &paramsTypes = {}, int used = 0, bool initialized = false)
     {
         SymbolTable &symbolTable = scopes.back()->table;
 
-        if (!symbolTable.insert(name, type, entryType, paramsTypes))
+        if (!symbolTable.insert(loc, name, type, entryType, paramsTypes, used, initialized))
         {
             return false;
         }
@@ -109,7 +119,7 @@ public:
         return true;
     }
 
-    bool lookup(const string &name, EntryInfo &info)
+    bool lookup(const string &name, EntryInfo *&info)
     {
         for (int i = (int)scopes.size() - 1; i >= 0; --i)
         {

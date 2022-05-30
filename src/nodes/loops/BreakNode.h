@@ -8,7 +8,7 @@ class BreakNode : public Node
 public:
     BreakNode(yy::location loc) : Node(loc) {}
 
-    bool analyzeSemantic(AnalysisHelper *analysisHelper) override
+    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override
     {
         if (!analysisHelper->hasBreakScope())
         {

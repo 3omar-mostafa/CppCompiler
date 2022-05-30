@@ -8,7 +8,7 @@ class ContinueNode : public Node
 public:
     ContinueNode(yy::location loc) : Node(loc) {}
 
-    bool analyzeSemantic(AnalysisHelper *analysisHelper) override
+    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override
     {
         if (!analysisHelper->hasLoopScope())
         {
