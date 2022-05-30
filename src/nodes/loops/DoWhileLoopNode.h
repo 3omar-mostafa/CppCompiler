@@ -14,17 +14,29 @@ public:
         this->body = body;
     }
 
-    bool analyzeSemantic() override
+    bool analyzeSemantic(AnalysisHelper *analysisHelper) override
     {
-        // TODO::add scopes
-
-        if (!(cond->analyzeSemantic() && body->analyzeSemantic()))
+        if (analysisHelper->isGlobalScope())
+        {
+            analysisHelper->log("do-while loop is not allowed in global scope", loc, "error");
             return false;
+        }
+
+        bool check = true;
+        analysisHelper->pushScope(SCOPE_LOOP, this);
+
+        if (!(cond->analyzeSemantic(analysisHelper) && body->analyzeSemantic(analysisHelper)))
+            check &= false;
 
         if (cond->type == DTYPE_VOID)
-            return false;
+        {
+            analysisHelper->log("invalid conversion from '" + Utils::typeToQuad(cond->type) + "' to 'bool'", cond->loc, "error");
+            check &= false;
+        }
 
-        return true;
+        analysisHelper->popScope();
+
+        return check;
     }
 
     string generateCode(CodeGenerationHelper *genHelper) override

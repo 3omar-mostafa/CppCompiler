@@ -15,13 +15,16 @@ public:
         this->operand = operand;
     }
 
-    bool analyzeSemantic() override
+    bool analyzeSemantic(AnalysisHelper *analysisHelper) override
     {
-        if (!(operand->analyzeSemantic()))
+        if (!(operand->analyzeSemantic(analysisHelper)))
             return false;
 
         if (operand->type == DTYPE_VOID)
+        {
+            analysisHelper->log("invalid operand of type '" + Utils::typeToQuad(operand->type), loc, "error");
             return false;
+        }
 
         if (Utils::isLogical(op))
             type = DTYPE_BOOL;

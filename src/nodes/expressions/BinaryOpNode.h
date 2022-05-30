@@ -17,14 +17,16 @@ public:
         this->rhs = rhs;
     }
 
-    bool analyzeSemantic() override
+    bool analyzeSemantic(AnalysisHelper *analysisHelper) override
     {
-        if (!(lhs->analyzeSemantic() && rhs->analyzeSemantic()))
+        if (!(lhs->analyzeSemantic(analysisHelper) && rhs->analyzeSemantic(analysisHelper)))
             return false;
 
         if (lhs->type == DTYPE_VOID || rhs->type == DTYPE_VOID)
+        {
+            analysisHelper->log("invalid operands of types '" + Utils::typeToQuad(lhs->type) + "' and '" + Utils::typeToQuad(rhs->type) + "'", loc, "error");
             return false;
-
+        }
         if (Utils::isLogical(op))
             type = DTYPE_BOOL;
         else

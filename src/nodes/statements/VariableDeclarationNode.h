@@ -22,16 +22,39 @@ public:
         this->entryType = constant ? EntryType::TYPE_CONST : EntryType::TYPE_VAR;
     }
 
-    bool analyzeSemantic() override
+    bool analyzeSemantic(AnalysisHelper *analysisHelper) override
     {
-        if (value != nullptr)
+        if (type == DTYPE_VOID)
         {
-            if (!value->analyzeSemantic())
-                return false;
+            analysisHelper->log("Variable '" + identifier->name + "' declared as void", identifier->loc, "error");
+            return false;
         }
 
-        SymbolTable *table = SymbolTable::getInstance();
-        return table->insert(identifier->name, type, entryType);
+        if (value != nullptr)
+        {
+            if (!value->analyzeSemantic(analysisHelper))
+                return false;
+
+            if (value->type == DTYPE_VOID)
+            {
+                analysisHelper->log("invalid conversion from '" + Utils::typeToQuad(value->type) + "' to '" + Utils::typeToQuad(type) + "'", value->loc, "error");
+                return false;
+            }
+        }
+
+        if (entryType == TYPE_CONST && value == NULL)
+        {
+            analysisHelper->log("uninitialized const '" + identifier->name + "'", identifier->loc, "error");
+            return false;
+        }
+
+        if (!analysisHelper->addSymbol(identifier->name, type, entryType))
+        {
+            analysisHelper->log("Variable '" + identifier->name + "' is already declared in this scope", identifier->loc, "error");
+            return false;
+        }
+
+        return true;
     }
 
     string generateCode(CodeGenerationHelper *genHelper) override

@@ -15,17 +15,29 @@ public:
         this->rhs = rhs;
     }
 
-    bool analyzeSemantic() override
+    bool analyzeSemantic(AnalysisHelper *analysisHelper) override
     {
+        if (analysisHelper->isGlobalScope())
+        {
+            analysisHelper->log("assign statement is not allowed in global scope", loc, "error");
+            return false;
+        }
+
         // TODO::CHECK (bitwise AND instead of logical AND)
-        if (!(rhs->analyzeSemantic() && lhs->analyzeSemantic()))
+        if (!(rhs->analyzeSemantic(analysisHelper) && lhs->analyzeSemantic(analysisHelper)))
             return false;
 
         if (lhs->type == DTYPE_VOID || rhs->type == DTYPE_VOID)
+        {
+            analysisHelper->log("invalid conversion from '" + Utils::typeToQuad(rhs->type) + "' to '" + Utils::typeToQuad(lhs->type) + "'", rhs->loc, "error");
             return false;
-        // TODO::Check that lhs not literal (not rvalue)
+        }
+
         if (lhs->entryType == TYPE_CONST)
+        {
+            analysisHelper->log("assignment of read-only (const) variable '" + lhs->name + "'", lhs->loc, "error");
             return false;
+        }
 
         type = lhs->type;
         entryType = lhs->entryType; // check if constant

@@ -17,17 +17,25 @@ public:
         this->stmtList = stmtList;
     }
 
-    bool analyzeSemantic() override
+    bool analyzeSemantic(AnalysisHelper *analysisHelper) override
     {
-        // TODO:: Check scopes
+        // TODO::Uncomment this check after function impelementation
+        // if (analysisHelper->isGlobalScope())
+        // {
+        //     analysisHelper->log("Block is not allowed in global scope", loc, "error");
+        //     return false;
+        // }
 
         bool check = true;
 
+        analysisHelper->pushScope(SCOPE_BLOCK, this);
+
         for (int i = 0; i < stmtList.size(); ++i)
         {
-            check = check & stmtList[i]->analyzeSemantic();
+            check &= stmtList[i]->analyzeSemantic(analysisHelper);
         }
 
+        analysisHelper->popScope();
         return check;
     }
 

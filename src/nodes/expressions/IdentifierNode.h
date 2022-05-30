@@ -11,12 +11,14 @@ public:
         this->name = name;
     }
 
-    bool analyzeSemantic() override
+    bool analyzeSemantic(AnalysisHelper *analysisHelper) override
     {
-        SymbolTable *table = SymbolTable::getInstance();
         EntryInfo info;
-        if (!table->lookup(name, info))
+        if (!analysisHelper->lookup(name, info))
+        {
+            analysisHelper->log("'" + name + "' was not declared in this scope", loc, "error");
             return false;
+        }
         type = info.type;
         entryType = info.entryType;
         return true;

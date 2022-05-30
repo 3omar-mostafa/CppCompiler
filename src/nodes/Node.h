@@ -10,21 +10,23 @@
 #include "../utils/enums.h"
 #include "../utils/utils.h"
 #include "../symbolTable/SymbolTable.h"
-#include "../helpers/codeGenerationHelper.h"
+#include "../helpers/CodeGenerationHelper.h"
+
+class Node;
+#include "../helpers/AnalysisHelper.h"
 
 using namespace std;
 
 class Node
 {
-private:
-    yy::location loc;
 
 public:
+    yy::location loc;
     explicit Node(yy::location loc)
     {
         this->loc = loc;
     }
-    virtual bool analyzeSemantic() { return true; }
+    virtual bool analyzeSemantic(AnalysisHelper *analysisHelper) { return true; }
     virtual string generateCode(CodeGenerationHelper *genHelper) = 0;
 };
 
@@ -37,7 +39,7 @@ public:
     explicit ExpressionNode(yy::location loc) : Node(loc)
     {
     }
-    bool analyzeSemantic() override { return true; }
+    bool analyzeSemantic(AnalysisHelper *analysisHelper) override { return true; }
     string generateCode(CodeGenerationHelper *genHelper) override = 0;
 };
 

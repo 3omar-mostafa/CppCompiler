@@ -1,6 +1,6 @@
 #include "SymbolTable.h"
 
-SymbolTable *SymbolTable::symbolTable = nullptr;
+// SymbolTable *SymbolTable::symbolTable = nullptr;
 
 bool SymbolTable::insert(const std::string &name, DataType type, EntryType entryType, const std::vector<DataType> &paramsTypes)
 {
@@ -18,11 +18,11 @@ bool SymbolTable::lookup(const std::string &name, EntryInfo &info)
     return true;
 }
 
-SymbolTable *SymbolTable::getInstance()
-{
-    if (symbolTable == nullptr)
-    {
-        symbolTable = new SymbolTable();
-    }
-    return symbolTable;
-}
+// SymbolTable *SymbolTable::getInstance()
+// {
+//     if (symbolTable == nullptr)
+//     {
+//         symbolTable = new SymbolTable();
+//     }
+//     return symbolTable;
+// }

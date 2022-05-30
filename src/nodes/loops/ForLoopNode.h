@@ -19,17 +19,29 @@ public:
         this->body = body;
     }
 
-    bool analyzeSemantic() override
+    bool analyzeSemantic(AnalysisHelper *analysisHelper) override
     {
-        // TODO::add scopes
-
-        if (!(varDec->analyzeSemantic() && cond->analyzeSemantic() && step->analyzeSemantic() && body->analyzeSemantic()))
+        if (analysisHelper->isGlobalScope())
+        {
+            analysisHelper->log("for loop is not allowed in global scope", loc, "error");
             return false;
+        }
+
+        bool check = true;
+        analysisHelper->pushScope(SCOPE_LOOP, this);
+
+        if (!(varDec->analyzeSemantic(analysisHelper) && cond->analyzeSemantic(analysisHelper) && step->analyzeSemantic(analysisHelper) && body->analyzeSemantic(analysisHelper)))
+            check &= false;
 
         if (cond->type == DTYPE_VOID)
-            return false;
+        {
+            analysisHelper->log("invalid conversion from '" + Utils::typeToQuad(cond->type) + "' to 'bool'", cond->loc, "error");
+            check &= false;
+        }
 
-        return true;
+        analysisHelper->popScope();
+
+        return check;
     }
 
     string generateCode(CodeGenerationHelper *genHelper) override

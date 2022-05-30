@@ -27,12 +27,11 @@ class SymbolTable
 {
 private:
     std::unordered_map<std::string, EntryInfo> table;
-    static SymbolTable *symbolTable;
-
-    SymbolTable() = default;
+    // static SymbolTable *symbolTable;
 
 public:
-    static SymbolTable *getInstance();
+    // static SymbolTable *getInstance();
+    SymbolTable(){};
 
     bool insert(const std::string &name, DataType type, EntryType entryType = TYPE_VAR,
                 const std::vector<DataType> &paramsTypes = {});
