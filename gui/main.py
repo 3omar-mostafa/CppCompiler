@@ -16,21 +16,23 @@ from overlay import Overlay
 from code_editor import CodeEditor
 from colors import colors
 
-class MppCompiler(QWidget):
+import os.path
 
-    TITLE = "Compiler"
+
+class CppCompiler(QWidget):
+
+    TITLE = "CppCompiler"
     BACKGROUND_COLOR = colors["grey"]
 
     def __init__(self, args):
         super(QWidget, self).__init__()
 
-        self.mpp_compiler_path = args[1] if len(
-            args) >= 2 else "/Users/ibrahimradwan/Development/MppCompiler/build/MppCompiler"
-        self.mpp_quadruples_path = args[2] if len(
-            args) >= 3 else "/Users/ibrahimradwan/Desktop/quads.txt"
-        self.mpp_symbols_table_path = args[3] if len(
-            args) >= 4 else "/Users/ibrahimradwan/Desktop/symbols_table.txt"
-        self.mpp_tmp_path = "MppCompilerTmp.txt"
+        # Compiler path
+        file_path = os.path.abspath(os.path.dirname(__file__))
+        self.cpp_compiler_path = os.path.join(file_path, "../CppCompiler.exe")
+        self.cpp_quadruples_path = "out.txt"
+        self.cpp_symbols_table_path = "symbols.txt"
+        self.cpp_tmp_path = "CppCompilerTmp.txt"
 
         self.file_path = ""
 
@@ -60,13 +62,13 @@ class MppCompiler(QWidget):
         self.show()
 
     def setup_window(self):
-        self.setWindowTitle(MppCompiler.TITLE)
+        self.setWindowTitle(CppCompiler.TITLE)
         self.setGeometry(self.left, self.top, self.width, self.height)
 
         # Set window background color
         self.setAutoFillBackground(True)
         p = self.palette()
-        p.setColor(self.backgroundRole(), MppCompiler.BACKGROUND_COLOR)
+        p.setColor(self.backgroundRole(), CppCompiler.BACKGROUND_COLOR)
         self.setPalette(p)
 
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
@@ -77,7 +79,7 @@ class MppCompiler(QWidget):
 
     def setup_window_title(self):
         self.title = QLabel(self)
-        self.title.setText(MppCompiler.TITLE)
+        self.title.setText(CppCompiler.TITLE)
         self.title.setStyleSheet("font-size: 28px; padding-bottom: 6px; font-weight: bold; color: #ccc; font-family: Courier New;")
         self.title.setGeometry(QtCore.QRect(20, 20, self.width - 40, 55))
         self.title.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
@@ -245,30 +247,31 @@ class MppCompiler(QWidget):
     def compile(self):
         print("Compiling")
 
-        with open(self.mpp_tmp_path, 'w') as f:
+        with open(self.cpp_tmp_path, 'w') as f:
             f.write(self.input_code_editor.toPlainText())
 
         # Compile
-        result = subprocess.check_output([self.mpp_compiler_path, "-o", self.mpp_quadruples_path,
-                                         "-s", self.mpp_symbols_table_path, self.mpp_tmp_path], stderr=subprocess.PIPE)
+        result = subprocess.check_output([self.cpp_compiler_path, self.cpp_tmp_path], stderr=subprocess.PIPE)
+        result = result.decode("utf-8") 
 
         self.logs_view.clear()
         self.logs_view.insertPlainText(result)
 
-        if (not os.path.isfile(self.mpp_quadruples_path) or not os.path.isfile(self.mpp_symbols_table_path)):
+        if not os.path.isfile(self.cpp_quadruples_path):
             return
 
-        with open(self.mpp_quadruples_path, 'r') as f:
+        with open(self.cpp_quadruples_path, 'r') as f:
             content = f.read()
 
             self.quadruples_view.clear()
             self.quadruples_view.insertPlainText(content)
 
-        with open(self.mpp_symbols_table_path, 'r') as f:
-            content = f.read()
+        if os.path.isfile(self.cpp_symbols_table_path):
+            with open(self.cpp_symbols_table_path, 'r') as f:
+                content = f.read()
 
-            self.symbols_view.clear()
-            self.symbols_view.insertPlainText(content)
+                self.symbols_view.clear()
+                self.symbols_view.insertPlainText(content)
 
     def resizeEvent(self, event):
         self.overlay.resize(event.size())
@@ -317,12 +320,12 @@ class TaskThread(QtCore.QThread):
     task_finished = QtCore.pyqtSignal()
 
     def run(self):
-        mpp.compile()
+        cpp.compile()
 
         self.task_finished.emit()
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    mpp = MppCompiler(sys.argv)
+    cpp = CppCompiler(sys.argv)
     sys.exit(app.exec_())
