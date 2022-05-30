@@ -88,6 +88,23 @@ namespace Utils
     {
         return (in_type != out_type ? ("CONV " + typeToQuad(in_type) + " TO " + typeToQuad(out_type) + "\n") : "");
     }
+
+    inline std::string replaceTabsWithSpaces(const std::string &str)
+    {
+        std::string ret;
+        for (int i = 0; i < str.size(); ++i)
+        {
+            if (str[i] == '\t')
+            {
+                ret += "    ";
+            }
+            else
+            {
+                ret += str[i];
+            }
+        }
+        return ret;
+    }
 }
 
 #endif // __UTILS__H

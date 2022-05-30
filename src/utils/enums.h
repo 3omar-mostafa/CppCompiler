@@ -45,4 +45,13 @@ enum Operator
     OPR_JMPNZ,
 };
 
+enum ScopeType
+{
+    SCOPE_BLOCK = 400,
+    SCOPE_FUNCTION,
+    SCOPE_LOOP,
+    SCOPE_IF,
+    SCOPE_SWITCH,
+};
+
 #endif // __ENUMS__H
