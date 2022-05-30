@@ -35,7 +35,7 @@ public:
         if (value != nullptr)
         {
             initialized = true;
-            if (!value->analyzeSemantic(analysisHelper))
+            if (!value->analyzeSemantic(analysisHelper, true))
                 return false;
 
             if (value->type == DTYPE_VOID)

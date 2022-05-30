@@ -12,6 +12,8 @@
 #include "../src/nodes/statements/VariableDeclarationNode.h"
 #include "../src/nodes/statements/StmtBlockNode.h"
 #include "../src/nodes/conditions/IfElseCondNode.h"
+#include "../src/nodes/conditions/SwitchCondNode.h"
+#include "../src/nodes/conditions/CaseNode.h"
 #include "../src/nodes/loops/WhileLoopNode.h"
 #include "../src/nodes/loops/DoWhileLoopNode.h"
 #include "../src/nodes/loops/ForLoopNode.h"

@@ -35,9 +35,9 @@ int main(int argc, char *argv[])
     if (!analyze)
     {
         std::cout << "Semantic Error Can not generate quadraples\n";
-        return -1;
+        return 0;
     }
-
+    std::cout << "Finished Semantic analysis\n";
     CodeGenerationHelper *genHelper = new CodeGenerationHelper();
 
     std::string quad = programRoot->generateCode(genHelper);
@@ -54,8 +54,8 @@ int main(int argc, char *argv[])
 
     writeToFile(quad, outFile);
 
-    std::cout << "Finished code generation with result = \n"
-              << quad << std::endl;
+    std::cout << "Finished code generation with result = \n";
+    //   << quad << std::endl;
 
     return 0;
 }

@@ -73,7 +73,9 @@ namespace yy{
 %nterm <Node*> statement
 %nterm <StmtListNode*> statement_list
 %nterm <VariableDeclarationNode*> variable_declaration_statement variable_declaration
-%nterm <Node*> switch_statement case_statemnts loop_statement
+%nterm <Node*> loop_statement
+%nterm <SwitchCondNode*> switch_statement
+%nterm <CaseNode*> case_statement
 %nterm <IfElseCondNode*> if_statement
 %nterm <ExpressionNode*> expr
 %nterm <LiteralNode*> literal
@@ -108,7 +110,8 @@ program:
 statement:
     variable_declaration_statement  {$statement = $variable_declaration_statement;}
 |   if_statement                    {$statement = $if_statement;}
-|   switch_statement                {}
+|   switch_statement                {$statement = $switch_statement;}
+|   case_statement                  {$statement = $case_statement;}
 |   loop_statement                  {$statement = $loop_statement;}
 |   function_declaration_statemnt   {}
 |   return_statement                {}
@@ -118,12 +121,12 @@ statement:
 ;
 
 statement_list:
-    statement                       {$$ = new StmtListNode(); $$->push_back($statement);}
-|   statement_list[rhs] statement        {$$ = $rhs; $$->push_back($statement);}
+    statement                           {$$ = new StmtListNode(); $$->push_back($statement);}
+|   statement_list[rhs] statement       {$$ = $rhs; $$->push_back($statement);}
 ;
 
 variable_declaration_statement:
-    variable_declaration ';'        { $$ = $variable_declaration;}
+    variable_declaration ';'            { $$ = $variable_declaration;}
 ;
 
 variable_declaration:
@@ -138,12 +141,12 @@ if_statement:
 ;
 
 switch_statement:
-    SWITCH '(' expr ')' '{' case_statemnts '}'      {}
+    SWITCH '(' expr ')' statement           {$$ = new SwitchCondNode(@$, $expr, $statement);}
 ;
 
-case_statemnts:
-    case_statemnts CASE expr ':' statement  {}
-|   CASE expr ':' statement                 {}
+case_statement:
+    CASE expr ':' statement                 {$$ = new CaseNode(@$, $expr, $statement);}
+|   DEFAULT ':' statement                   {$$ = new CaseNode(@$, NULL, $statement);}
 ;
 
 loop_statement:

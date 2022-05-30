@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+
 #include "../nodes/Node.h"
 #include "../utils/enums.h"
 using namespace std;
@@ -79,6 +80,19 @@ public:
     bool isGlobalScope()
     {
         return scopes.size() == 1;
+    }
+
+    bool hasSwitchScope()
+    {
+        for (int i = (int)scopes.size() - 1; i >= 0; --i)
+        {
+            if (scopes[i]->type == SCOPE_SWITCH)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     bool hasBreakScope()

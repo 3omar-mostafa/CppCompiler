@@ -105,6 +105,11 @@ namespace Utils
         }
         return ret;
     }
+
+    inline bool isIntegerType(DataType type)
+    {
+        return (type == DTYPE_BOOL || type == DTYPE_CHAR || type == DTYPE_INT);
+    }
 }
 
 #endif // __UTILS__H
