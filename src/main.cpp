@@ -10,6 +10,19 @@ void writeToFile(string data, string filename);
 
 int main(int argc, char *argv[])
 {
+    std::string outFile = "out.txt", symbolOutFile = "symbols.txt";
+
+    switch (argc)
+    {
+    case 3:
+        outFile = argv[2];
+        break;
+    case 4:
+        outFile = argv[2];
+        symbolOutFile = argv[3];
+        break;
+    }
+
     if (argc >= 2)
     {
         yyin = fopen(argv[1], "r");
@@ -42,17 +55,8 @@ int main(int argc, char *argv[])
 
     std::string quad = programRoot->generateCode(genHelper);
 
-    std::string outFile;
-    if (argc == 3)
-    {
-        outFile = argv[2];
-    }
-    else
-    {
-        outFile = "out.txt";
-    }
-
     writeToFile(quad, outFile);
+    writeToFile(analysisHelper->getSymbolTableString(), symbolOutFile);
 
     std::cout << "Finished code generation with result = \n";
     //   << quad << std::endl;

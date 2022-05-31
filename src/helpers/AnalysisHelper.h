@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <sstream>
+#include <iomanip>
 
 #include "../nodes/Node.h"
 #include "../utils/enums.h"
@@ -28,6 +30,7 @@ class AnalysisHelper
     string srcCodeFile;
     vector<string> srcCode;
     vector<Scope *> scopes;
+    string symbTableStr;
 
     void readSourceCode()
     {
@@ -45,6 +48,54 @@ class AnalysisHelper
         }
 
         fin.close();
+    }
+
+    void initSymbolTableString()
+    {
+        string tmp;
+        tmp += "+---------+---------------------+----------------+-------+\n";
+        tmp += "| scope   | identifier          | type           | used  |\n";
+        tmp += "+---------+---------------------+----------------+-------+\n";
+        symbTableStr = tmp + symbTableStr;
+    }
+
+    void updateSymbolTableString(SymbolTable t, int scope)
+    {
+        string scopeStr;
+        switch (scope)
+        {
+        case SCOPE_LOOP:
+            scopeStr = "loop";
+            break;
+        case SCOPE_IF:
+            scopeStr = "if";
+            break;
+        case SCOPE_SWITCH:
+            scopeStr = "switch";
+            break;
+        case SCOPE_FUNCTION:
+            scopeStr = "func";
+            break;
+        case SCOPE_BLOCK:
+            scopeStr = "block";
+            break;
+        default:
+            scopeStr = "global";
+            break;
+        }
+
+        stringstream ss;
+        for (auto &it : t.getTable())
+        {
+            EntryInfo symbol = it.second;
+
+            ss << "| " << left << setw(8) << scopeStr;
+            ss << "| " << left << setw(20) << it.first;
+            ss << "| " << left << setw(15) << Utils::typeToQuad(symbol.type);
+            ss << "| " << left << setw(6) << symbol.used << "|\n";
+            ss << "+---------+---------------------+----------------+-------+\n";
+        }
+        symbTableStr = ss.str() + symbTableStr;
     }
 
 public:
@@ -73,6 +124,8 @@ public:
                 log("the value of variable '" + it.first + "' is never used", symbol.loc, "warning");
             }
         }
+
+        updateSymbolTableString(scope->table, scopes.size() == 0 ? 0 : scope->type);
 
         delete scope;
     }
@@ -150,6 +203,20 @@ public:
     {
 
         fprintf(stdout, "%s:%d:%d: %s: %s\n", srcCodeFile.c_str(), loc.begin.line, loc.begin.column, logType.c_str(), message.c_str());
+        fprintf(stdout, "%s\n", srcCode[loc.begin.line - 1].c_str());
+        fprintf(stdout, "%*s", loc.begin.column, "^");
+
+        if (loc.begin.line > 1)
+        {
+            fprintf(stdout, "%s", string(loc.begin.line - 1, '~').c_str());
+        }
+        fprintf(stdout, "\n");
+    }
+
+    string getSymbolTableString()
+    {
+        initSymbolTableString();
+        return symbTableStr;
     }
 };
 
