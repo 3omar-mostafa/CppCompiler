@@ -1,20 +1,19 @@
 #include "SymbolTable.h"
 
 
-bool SymbolTable::insert(yy::location loc, const std::string &name, DataType type, EntryType entryType, const std::vector<DataType> &paramsTypes, int used, bool initialized)
+EntryInfo* SymbolTable::insert(yy::location loc, const std::string &name, DataType type, EntryType entryType, const std::vector<DataType> &paramsTypes, int used, bool initialized)
 {
     if (table.find(name) != table.end())
-        return false;
+        return nullptr;
     table[name] = EntryInfo(loc, type, entryType, paramsTypes, used, initialized);
-    return true;
+    return &(table[name]);
 }
 
-bool SymbolTable::lookup(const std::string& name, EntryInfo*& info)
+EntryInfo* SymbolTable::lookup(const std::string& name)
 {
     if (table.find(name) == table.end())
-        return false;
-    info = &(table[name]);
-    return true;
+        return nullptr;
+    return &(table[name]);
 }
 
 std::unordered_map<std::string, EntryInfo> SymbolTable::getTable()

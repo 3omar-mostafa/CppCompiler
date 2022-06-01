@@ -209,33 +209,32 @@ public:
         return false;
     }
 
-    bool addSymbol(yy::location loc, const string &name, DataType type, EntryType entryType = TYPE_VAR,
-                   const vector<DataType> &paramsTypes = {}, int used = 0, bool initialized = false)
+    EntryInfo* addSymbol(yy::location loc, const string& name, DataType type, EntryType entryType = TYPE_VAR,
+              const vector<DataType>& paramsTypes = {}, int used = 0, bool initialized = false)
     {
-        SymbolTable &symbolTable = scopes.back()->table;
+        SymbolTable& symbolTable = scopes.back()->table;
 
-        if (!symbolTable.insert(loc, name, type, entryType, paramsTypes, used, initialized))
+        auto info = symbolTable.insert(loc, name, type, entryType, paramsTypes, used, initialized);
+        if (!info)
         {
-            return false;
+            return nullptr;
         }
 
-        EntryInfo info = EntryInfo(loc, type, entryType, paramsTypes, used, initialized);
-        symbolTableRepresentation += string(indent, ' ') + name + ": " + info.to_string() + "\n";
-        //        str += string(indent, ' ') + identifier + ": " + entryInfo.to_string(string(indent + 4, ' ')) + "\n";
-        return true;
+        symbolTableRepresentation += string(indent, ' ') + name + ": " + info->to_string() + "\n";
+        return info;
     }
 
-    bool lookup(const string &name, EntryInfo *&info)
+    EntryInfo* lookup(const string &name)
     {
         for (int i = (int)scopes.size() - 1; i >= 0; --i)
         {
-            if (scopes[i]->table.lookup(name, info))
+            if (auto info = scopes[i]->table.lookup(name))
             {
-                return true;
+                return info;
             }
         }
 
-        return false;
+        return nullptr;
     }
 
     void log(const string &message, yy::location loc, const string &logType)

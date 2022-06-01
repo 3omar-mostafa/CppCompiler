@@ -13,8 +13,8 @@ public:
 
     bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used)
     {
-        EntryInfo *info;
-        if (!analysisHelper->lookup(name, info))
+        EntryInfo* info = analysisHelper->lookup(name);
+        if (!info)
         {
             analysisHelper->log("'" + name + "' was not declared in this scope", loc, "error");
             return false;

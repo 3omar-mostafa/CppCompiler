@@ -39,8 +39,7 @@ public:
             return false;
         }
 
-        EntryInfo *info;
-        analysisHelper->lookup(lhs->name, info);
+        EntryInfo *info = analysisHelper->lookup(lhs->name);
         info->initialized = true;
 
         type = lhs->type;

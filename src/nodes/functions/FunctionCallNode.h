@@ -37,13 +37,12 @@ public:
 
         bool check = true;
 
-        EntryInfo *info;
-        if (!analysisHelper->lookup(identifier->name, info))
+        EntryInfo* info = analysisHelper->lookup(identifier->name);
+        if (!info)
         {
             analysisHelper->log("'" + identifier->name + "' was not declared in this scope", loc, "error");
             check &= false;
-        }
-        else
+        } else
         {
             type = info->type;
             entryType = TYPE_CONST;

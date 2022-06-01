@@ -58,12 +58,12 @@ public:
     // static SymbolTable *getInstance();
     SymbolTable() = default;
 
-    bool insert(yy::location loc, const std::string &name, DataType type, EntryType entryType = TYPE_VAR,
-                const std::vector<DataType> &paramsTypes = {}, int used = 0, bool initialized = false);
+    EntryInfo* insert(yy::location loc, const std::string& name, DataType type, EntryType entryType = TYPE_VAR,
+                      const std::vector<DataType>& paramsTypes = {}, int used = 0, bool initialized = false);
 
     std::unordered_map<std::string, EntryInfo> getTable();
 
-    bool lookup(const std::string &name, EntryInfo *&info);
+    EntryInfo* lookup(const std::string& name);
 };
 
 #endif //__SYMBOL_TABLE__
