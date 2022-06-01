@@ -107,52 +107,52 @@ MULTILINE_COMMENT   [/][*]+([^*/][^*]*[*]+)+[/]
 loc.step();
 %}
 
-"int"                   {printf("[LEXER] Data Type keyword: int"); printLocation(loc); return yy::parser::make_TYPE_INT(loc);}
-"float"                 {printf("[LEXER] Data Type keyword: float"); printLocation(loc); return yy::parser::make_TYPE_FLOAT(loc);}
-"char"                  {printf("[LEXER] Data Type keyword: char"); printLocation(loc); return yy::parser::make_TYPE_CHAR(loc);}
-"bool"                  {printf("[LEXER] Data Type keyword: bool"); printLocation(loc); return yy::parser::make_TYPE_BOOL(loc);}
-"void"                  {printf("[LEXER] Data Type keyword: void"); printLocation(loc); return yy::parser::make_TYPE_VOID(loc);}
-"string"                {printf("[LEXER] Data Type keyword: string"); printLocation(loc); return yy::parser::make_TYPE_STRING(loc);}
+"int"                   {return yy::parser::make_TYPE_INT(loc);}
+"float"                 {return yy::parser::make_TYPE_FLOAT(loc);}
+"char"                  {return yy::parser::make_TYPE_CHAR(loc);}
+"bool"                  {return yy::parser::make_TYPE_BOOL(loc);}
+"void"                  {return yy::parser::make_TYPE_VOID(loc);}
+"string"                {return yy::parser::make_TYPE_STRING(loc);}
 
-"const"                 {printf("[LEXER] reserved keyword: const"); printLocation(loc); return yy::parser::make_CONST(loc);}
+"const"                 {return yy::parser::make_CONST(loc);}
 
-"if"                    {printf("[LEXER] reserved keyword: if"); printLocation(loc); return yy::parser::make_IF(loc);}
-"else"                  {printf("[LEXER] reserved keyword: else"); printLocation(loc); return yy::parser::make_ELSE(loc);}
-"switch"                {printf("[LEXER] reserved keyword: switch"); printLocation(loc); return yy::parser::make_SWITCH(loc);}
-"case"                  {printf("[LEXER] reserved keyword: case"); printLocation(loc); return yy::parser::make_CASE(loc);}
-"default"               {printf("[LEXER] reserved keyword: default"); printLocation(loc); return yy::parser::make_DEFAULT(loc);}
-"for"                   {printf("[LEXER] reserved keyword: for"); printLocation(loc); return yy::parser::make_FOR(loc);}
-"do"                    {printf("[LEXER] reserved keyword: do"); printLocation(loc); return yy::parser::make_DO(loc);}
-"while"                 {printf("[LEXER] reserved keyword: while"); printLocation(loc); return yy::parser::make_WHILE(loc);}
-"break"                 {printf("[LEXER] reserved keyword: break"); printLocation(loc); return yy::parser::make_BREAK(loc);}
-"continue"              {printf("[LEXER] reserved keyword: continue"); printLocation(loc); return yy::parser::make_CONTINUE(loc);}
-"return"                {printf("[LEXER] reserved keyword: return"); printLocation(loc); return yy::parser::make_RETURN(loc);}
+"if"                    {return yy::parser::make_IF(loc);}
+"else"                  {return yy::parser::make_ELSE(loc);}
+"switch"                {return yy::parser::make_SWITCH(loc);}
+"case"                  {return yy::parser::make_CASE(loc);}
+"default"               {return yy::parser::make_DEFAULT(loc);}
+"for"                   {return yy::parser::make_FOR(loc);}
+"do"                    {return yy::parser::make_DO(loc);}
+"while"                 {return yy::parser::make_WHILE(loc);}
+"break"                 {return yy::parser::make_BREAK(loc);}
+"continue"              {return yy::parser::make_CONTINUE(loc);}
+"return"                {return yy::parser::make_RETURN(loc);}
 
-"++"                    {printf("[LEXER] operator INC: ++"); printLocation(loc); return yy::parser::make_INC(loc);}
-"--"                    {printf("[LEXER] operator DEC: --"); printLocation(loc); return yy::parser::make_DEC(loc);}
-"=="                    {printf("[LEXER] operator EQUAL: =="); printLocation(loc); return yy::parser::make_EQ(loc);}
-"!="                    {printf("[LEXER] operator NOT_EQUAL: !="); printLocation(loc); return yy::parser::make_NE(loc);}
-">="                    {printf("[LEXER] operator GREATER_EQUAL: >="); printLocation(loc); return yy::parser::make_GE(loc);}
-"<="                    {printf("[LEXER] operator LESS_EQUAL: <="); printLocation(loc); return yy::parser::make_LE(loc);}
-"<<"                    {printf("[LEXER] operator SHIFT_LEFT: <<"); printLocation(loc); return yy::parser::make_SHL(loc);}
-">>"                    {printf("[LEXER] operator SHIFT_RIGHT: >>"); printLocation(loc); return yy::parser::make_SHR(loc);}
-"&&"|"and"              {printf("[LEXER] operator AND:: %s", yytext); printLocation(loc); return yy::parser::make_AND(loc);}
-"||"|"or"               {printf("[LEXER] operator OR:: %s", yytext); printLocation(loc); return yy::parser::make_OR(loc);}
-"!"|"not"               {printf("[LEXER] operator NOT: %s", yytext); printLocation(loc); return yy::parser::make_NOT(loc);}
-"**"                    {printf("[LEXER] operator POWER: **"); printLocation(loc); return yy::parser::make_POWER(loc);}
+"++"                    {return yy::parser::make_INC(loc);}
+"--"                    {return yy::parser::make_DEC(loc);}
+"=="                    {return yy::parser::make_EQ(loc);}
+"!="                    {return yy::parser::make_NE(loc);}
+">="                    {return yy::parser::make_GE(loc);}
+"<="                    {return yy::parser::make_LE(loc);}
+"<<"                    {return yy::parser::make_SHL(loc);}
+">>"                    {return yy::parser::make_SHR(loc);}
+"&&"|"and"              {return yy::parser::make_AND(loc);}
+"||"|"or"               {return yy::parser::make_OR(loc);}
+"!"|"not"               {return yy::parser::make_NOT(loc);}
+"**"                    {return yy::parser::make_POWER(loc);}
 
-[-+*/=;<>(){}[\],:]     {printf("[LEXER] ANOTHER operator: %s", yytext); printLocation(loc); return yy::parser::symbol_type(yytext[0], loc);}
+[-+*/=;<>(){}[\],:]     {return yy::parser::symbol_type(yytext[0], loc);}
 
-"true"                  {printf("[LEXER] BOOLEAN TRUE: %s", yytext); printLocation(loc); return yy::parser::make_BOOL(true, loc);}
-"false"                 {printf("[LEXER] BOOLEAN FALSE: %s", yytext); printLocation(loc); return yy::parser::make_BOOL(false, loc);}
+"true"                  {return yy::parser::make_BOOL(true, loc);}
+"false"                 {return yy::parser::make_BOOL(false, loc);}
 
-{INTEGER}               {printf("[LEXER] INTEGER: %s", yytext); printLocation(loc); return yy::parser::make_INTEGER(yytext, loc);}
-{REAL}                  {printf("[LEXER] REAL: %s", yytext); printLocation(loc);return yy::parser::make_REAL(yytext, loc);}
-{CHAR}                  {printf("[LEXER] CHAR: %s", yytext); printLocation(loc); return yy::parser::make_CHAR(yytext[1], loc);}
-{STRING}                {printf("[LEXER] STRING: %s", yytext); printLocation(loc); return yy::parser::make_STRING(yytext, loc);}
-{IDENTIFIER}            {printf("[LEXER] IDENTIFIER: %s", yytext); printLocation(loc);return yy::parser::make_IDENTIFIER(new IdentifierNode(loc, yytext), loc);}
-{LINE_COMMENT}          {printf("[LEXER] SINGLE LINE COMMENT: %s\n", yytext); printLocation(loc);}
-{MULTILINE_COMMENT}     {printf("[LEXER] MULTI_LINE COMMENT: %s", yytext); printLocation(loc);}
+{INTEGER}               {return yy::parser::make_INTEGER(yytext, loc);}
+{REAL}                  {return yy::parser::make_REAL(yytext, loc);}
+{CHAR}                  {return yy::parser::make_CHAR(yytext[1], loc);}
+{STRING}                {return yy::parser::make_STRING(yytext, loc);}
+{IDENTIFIER}            {return yy::parser::make_IDENTIFIER(new IdentifierNode(loc, yytext), loc);}
+{LINE_COMMENT}          {}
+{MULTILINE_COMMENT}     {}
 [ ]+                    {loc.step();} /* skip empty spaces */
 [\t]+                   {   /*  
                                 Skip tabs (assume tab = 4 spaces)
@@ -164,7 +164,7 @@ loc.step();
                         }
 [\n]+                   {loc.step();} /* skip new lines */
 [\r]                    {} /* ignore new lines of CRLF Line Endings to convert it to LF only */
-<<EOF>>                 {printf("[LEXER] END OF FILE\n"); return yy::parser::make_EOF(loc);}
+<<EOF>>                 {return yy::parser::make_EOF(loc);}
 .                       {throw yy::parser::syntax_error(loc, "[LEXER] invalid character: " + std::string(yytext));}
 
 %%
