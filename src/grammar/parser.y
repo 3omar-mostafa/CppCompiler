@@ -47,6 +47,7 @@ Node* programRoot = nullptr;
 %code provides {
 namespace yy{
     void printLocation(const yy::parser::location_type& location);
+    std::string getLine(const std::string& filename, int line);
 }
 }
 
@@ -227,7 +228,22 @@ literal:
 %%
 
 
-void yy::parser::error(const location_type &l, const std::string &err_message)
+std::string yy::getLine(const std::string& filename, int line) {
+    std::ifstream file(filename);
+    std::string s;
+
+    for (int i = 1; i <= line; i++)
+    	std::getline(file, s);
+
+    return s;
+}
+
+void yy::parser::error(const location_type &loc, const std::string &err_message)
 {
-   std::cerr << "Error: " << err_message << " at " << l << "\n";
+   fprintf(stdout, "%s:%d:%d: %s: %s\n", loc.begin.filename->c_str(), loc.begin.line, loc.begin.column, "error", err_message.c_str());
+   fprintf(stdout, "%s\n", getLine(*loc.begin.filename, loc.begin.line).c_str());
+   fprintf(stdout, "%*s", loc.begin.column, "^");
+   fprintf(stdout, "%s", string(loc.end.column - loc.begin.column - 1, '~').c_str());
+   fprintf(stdout, "\n");
+   exit(-1);
 }

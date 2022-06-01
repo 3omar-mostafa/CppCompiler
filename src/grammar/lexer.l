@@ -69,7 +69,11 @@ int countLines(std::string text) {
     return lines;
 }
 
+std::string yyfilename;
+
 yy::location loc; // Global location object, used to store the location current token
+
+#define YY_USER_INIT loc.initialize(&yyfilename)
 
 // Code run each time a pattern is matched.
 // Move the location forward by the length of the matched token

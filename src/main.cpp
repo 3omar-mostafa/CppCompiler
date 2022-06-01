@@ -4,6 +4,7 @@
 #include "nodes/Node.h"
 
 extern FILE *yyin;
+extern std::string yyfilename;
 extern Node *programRoot;
 
 void writeToFile(const string& data, const string& filename);
@@ -31,6 +32,7 @@ int main(int argc, char *argv[])
             fprintf(stderr, "error: could not open the input file %s", argv[1]);
             exit(-1);
         }
+        yyfilename = argv[1];
         std::cout << "Compiling " << argv[1] << std::endl;
     }
     else
