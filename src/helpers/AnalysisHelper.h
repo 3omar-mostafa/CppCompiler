@@ -129,13 +129,17 @@ public:
         Scope *scope = scopes.back();
         scopes.pop_back();
 
-        for (auto &it : scope->table.getTable())
+        for (auto& [name, info]: scope->table.getTable())
         {
-            EntryInfo symbol = it.second;
-
-            if (symbol.used <= 0)
+            if (info.used <= 0)
             {
-                log("the value of variable '" + it.first + "' is never used", symbol.loc, "warning");
+                if (info.entryType == TYPE_VAR)
+                {
+                    log("the value of variable '" + name + "' is never used", info.loc, "warning");
+                } else if (info.entryType == TYPE_FUNC and name != "main")
+                {
+                    log("the function '" + name + "' is never called", info.loc, "warning");
+                }
             }
         }
 
@@ -143,7 +147,7 @@ public:
         string scope_str = (scope->type == SCOPE_BLOCK) ? "}" : "====== End " + Utils::scopeToString(scope->type) + " ======";
         symbolTableRepresentation += string(indent, ' ') + scope_str + "\n";
 
-        updateSymbolTableString(scope->table, scopes.size() == 0 ? 0 : scope->type);
+        updateSymbolTableString(scope->table, scopes.empty() ? 0 : scope->type);
 
         delete scope;
     }
