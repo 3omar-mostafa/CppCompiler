@@ -6,20 +6,25 @@
 #include <algorithm>
 
 #include "../../utils/enums.h"
+#include "../../utils/utils.h"
 #include "../expressions/IdentifierNode.h"
+#include "FunctionDeclarationNode.h"
 
-typedef vector<ExpressionNode *> ExpressionList;
+
+typedef vector<ExpressionNode*> ExpressionList;
+
 class FunctionCallNode : public ExpressionNode
 {
-    IdentifierNode *identifier;
+    IdentifierNode* identifier;
     ExpressionList args;
+    std::vector<DataType> functionParamsTypes;
 
 public:
     FunctionCallNode(yy::location loc, IdentifierNode *identifier, vector<ExpressionNode *> args)
         : ExpressionNode(loc)
     {
         this->identifier = identifier;
-        this->args = args;
+        this->args = std::move(args);
     }
 
     bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override
@@ -43,11 +48,18 @@ public:
             type = info->type;
             entryType = TYPE_CONST;
             info->used += 1;
+            functionParamsTypes = info->paramsTypes;
         }
 
-        for (int i = 0; i < args.size(); ++i)
+        for (auto& arg: args)
         {
-            check &= args[i]->analyzeSemantic(analysisHelper);
+            check &= arg->analyzeSemantic(analysisHelper);
+        }
+
+        if (args.size() != functionParamsTypes.size())
+        {
+            analysisHelper->log("wrong number of arguments", loc, "error");
+            check &= false;
         }
 
         return check;
@@ -57,11 +69,10 @@ public:
     {
         string quad;
 
-        // std::reverse(args.begin(), args.end());
-
-        for (auto &arg : args)
+        for (int i = (int) args.size() - 1; i >= 0; --i)
         {
-            quad = arg->generateCode(genHelper) + quad;
+            quad += args[i]->generateCode(genHelper);
+            quad += Utils::convTypeToQuad(args[i]->type, functionParamsTypes[i]);
         }
 
         quad += "CALL " + identifier->name + " \n";

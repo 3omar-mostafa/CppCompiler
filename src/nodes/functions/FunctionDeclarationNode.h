@@ -5,24 +5,28 @@
 #include <vector>
 
 #include "../../utils/enums.h"
+#include "../../utils/utils.h"
 #include "../statements/VariableDeclarationNode.h"
 
 typedef vector<VariableDeclarationNode *> VarDecList;
+
 class FunctionDeclarationNode : public Node
 {
     DataType type;
-    IdentifierNode *identifier;
-    VarDecList params;
-    Node *body;
+    IdentifierNode* identifier;
+    Node* body;
     EntryType entryType;
 
 public:
-    FunctionDeclarationNode(yy::location loc, DataType type, IdentifierNode *identifier, vector<VariableDeclarationNode *> params, Node *body)
-        : Node(loc)
+    VarDecList params;
+
+    FunctionDeclarationNode(yy::location loc, DataType type, IdentifierNode* identifier,
+                            vector<VariableDeclarationNode*> params, Node* body)
+            : Node(loc)
     {
         this->type = type;
         this->identifier = identifier;
-        this->params = params;
+        this->params = std::move(params);
         this->body = body;
         this->entryType = TYPE_FUNC;
     }
@@ -37,7 +41,13 @@ public:
 
         bool check = true;
 
-        if (!analysisHelper->addSymbol(identifier->loc, identifier->name, type, entryType, {}, 0, true))
+        std::vector<DataType> paramsTypes;
+        for (auto& param: params)
+        {
+            paramsTypes.push_back(param->type);
+        }
+
+        if (!analysisHelper->addSymbol(identifier->loc, identifier->name, type, entryType, paramsTypes, 0, true))
         {
             analysisHelper->log("'" + identifier->name + "' is already declared", identifier->loc, "error");
             check = false;
