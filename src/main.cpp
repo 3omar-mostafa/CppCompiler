@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     bool analyze = programRoot->analyzeSemantic(analysisHelper);
     if (!analyze)
     {
-        std::cout << "Semantic Error Can not generate quadraples\n";
+        std::cout << "Semantic Error Can not generate quadruples\n";
         return 0;
     }
     std::cout << "Finished Semantic analysis\n";
@@ -55,6 +55,8 @@ int main(int argc, char *argv[])
     writeToFile(quad, outFile);
 
     std::cout << "Finished code generation with result = \n";
+
+    writeToFile(analysisHelper->getSymbolTableRepresentation(), "symbols.txt");
     //   << quad << std::endl;
 
     return 0;

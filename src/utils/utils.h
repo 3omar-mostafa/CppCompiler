@@ -12,6 +12,25 @@ namespace Utils
         return (op >= OPR_AND && op <= OPR_NOT_EQUAL);
     }
 
+    inline std::string scopeToString(ScopeType scope)
+    {
+        switch (scope)
+        {
+            case SCOPE_BLOCK:
+                return "Block";
+            case SCOPE_FUNCTION:
+                return "Function";
+            case SCOPE_LOOP:
+                return "Loop";
+            case SCOPE_IF:
+                return "If";
+            case SCOPE_SWITCH:
+                return "Switch";
+            default:
+                return "";
+        }
+    }
+
     inline std::string typeToQuad(DataType type)
     {
         switch (type)

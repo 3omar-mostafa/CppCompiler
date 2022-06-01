@@ -6,7 +6,11 @@
 #include <string>
 #include <iostream>
 #include "../utils/enums.h"
+#include "../utils/utils.h"
 #include "location.hpp"
+#include <sstream>
+#include <iomanip>
+
 
 struct EntryInfo
 {
@@ -27,6 +31,20 @@ struct EntryInfo
         this->paramsTypes = paramsTypes;
         this->used = used;
         this->initialized = initialized;
+    }
+
+    std::string to_string() const
+    {
+        std::string kind = (entryType == TYPE_VAR) ? "Variable" : (entryType == TYPE_CONST) ? "Constant" : "Function";
+
+        std::stringstream ss;
+        ss << std::left;
+        ss << "datatype: " << std::setw(5) << Utils::typeToQuad(type) << ", ";
+        ss << "kind: " << std::setw(8) << kind << ", ";
+        ss << "is_used: " << std::setw(5) << (used ? "true" : "false") << ", ";
+        ss << "is_initialized: " << std::setw(5) << (initialized ? "true" : "false") << ", ";
+        ss << "location: " << loc;
+        return ss.str();
     }
 };
 
