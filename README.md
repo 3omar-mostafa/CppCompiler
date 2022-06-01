@@ -77,15 +77,15 @@ We use C++ 17, Bison >= 3.0 because we use it to generate C++ files and use C++ 
 # Usage
   The program takes one argument of the file to compile
 
-  If no arguments are given, the program reads from standard input
+  If no arguments are given, the program reads from standard input, saves output to `out.txt` and saves symbol table to `symbols.txt`
 
   Example:
   * Ubuntu
     ```bash
-      CppCompiler test.txt
+      CppCompiler test.txt out.txt symbols.txt
     ```
   * Windows
     ```cmd
-      CppCompiler.exe test.txt
+      CppCompiler.exe test.txt out.txt symbols.txt
     ```
 
