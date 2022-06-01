@@ -1,0 +1,27 @@
+if(true)
+{
+}
+
+void foo(int y, float z)
+{
+	while(true)
+	{
+		if(true)
+		{
+			continue;
+		}
+		break;		
+	}
+}
+
+void main()
+{
+	foo(7);
+	char y = 'a';
+	switch (y) {
+        case 'a' : {break;}
+        case 'b' : {break;}
+		default: {break;}
+		default: {break;}
+    }
+}

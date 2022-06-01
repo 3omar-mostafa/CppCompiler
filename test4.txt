@@ -1,0 +1,14 @@
+int foo(float x,float y)
+{
+	return x * y;
+}
+
+int main()
+{
+	int sum = 0;
+	for(int i = 10; i < 50;i=i+1)
+	{
+		sum = sum + foo(i,i*2);
+	}
+}
+

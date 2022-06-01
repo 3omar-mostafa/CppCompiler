@@ -1,0 +1,15 @@
+int x = 10;
+const float y = 10;
+
+int main()
+{
+	if(y == 10)
+	{
+		x = x * y;
+	}
+	else
+	{
+		x = x + 1;
+	}
+}
+
