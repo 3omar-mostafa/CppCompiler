@@ -244,6 +244,11 @@ class CppCompiler(QWidget):
     def compile(self):
         print("Compiling")
 
+        # Empty the output files
+        open("out.txt", 'w').close()
+        # open("symbols.txt", 'w').close()
+
+
         with open(self.cpp_tmp_path, 'w') as f:
             f.write(self.input_code_editor.toPlainText())
 
