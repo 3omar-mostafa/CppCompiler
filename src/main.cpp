@@ -6,7 +6,7 @@
 extern FILE *yyin;
 extern Node *programRoot;
 
-void writeToFile(string data, string filename);
+void writeToFile(const string& data, const string& filename);
 
 int main(int argc, char *argv[])
 {
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void writeToFile(string data, string filename)
+void writeToFile(const string& data, const string& filename)
 {
     if (filename.empty())
     {

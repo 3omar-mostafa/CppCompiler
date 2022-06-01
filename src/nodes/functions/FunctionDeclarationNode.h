@@ -21,8 +21,7 @@ public:
     VarDecList params;
 
     FunctionDeclarationNode(yy::location loc, DataType type, IdentifierNode* identifier,
-                            vector<VariableDeclarationNode*> params, Node* body)
-            : Node(loc)
+                            vector<VariableDeclarationNode*> params, Node* body) : Node(loc)
     {
         this->type = type;
         this->identifier = identifier;
@@ -57,9 +56,9 @@ public:
 
         analysisHelper->declareParamas = true;
 
-        for (int i = 0; i < params.size(); ++i)
+        for (auto& param: params)
         {
-            check &= params[i]->analyzeSemantic(analysisHelper);
+            check &= param->analyzeSemantic(analysisHelper);
         }
 
         analysisHelper->declareParamas = false;

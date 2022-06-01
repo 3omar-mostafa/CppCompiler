@@ -56,7 +56,7 @@ private:
 
 public:
     // static SymbolTable *getInstance();
-    SymbolTable(){};
+    SymbolTable() = default;
 
     bool insert(yy::location loc, const std::string &name, DataType type, EntryType entryType = TYPE_VAR,
                 const std::vector<DataType> &paramsTypes = {}, int used = 0, bool initialized = false);

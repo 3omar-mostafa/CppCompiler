@@ -111,16 +111,10 @@ namespace Utils
     inline std::string replaceTabsWithSpaces(const std::string &str)
     {
         std::string ret;
-        for (int i = 0; i < str.size(); ++i)
+        ret.reserve(str.size());
+        for (char c: str)
         {
-            if (str[i] == '\t')
-            {
-                ret += "    ";
-            }
-            else
-            {
-                ret += str[i];
-            }
+            ret += (c == '\t') ? std::string(4, ' ') : std::string(1, c);
         }
         return ret;
     }

@@ -10,7 +10,7 @@ class StmtBlockNode : public Node
 public:
     StmtListNode stmtList;
 
-    StmtBlockNode(yy::location loc) : Node(loc) {}
+    explicit StmtBlockNode(yy::location loc) : Node(loc) {}
 
     StmtBlockNode(yy::location loc, const StmtListNode &stmtList) : Node(loc)
     {
@@ -19,7 +19,7 @@ public:
 
     bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override
     {
-        // TODO::Uncomment this check after function impelementation
+        // TODO::Uncomment this check after function implementation
         // if (analysisHelper->isGlobalScope())
         // {
         //     analysisHelper->log("Block is not allowed in global scope", loc, "error");
@@ -30,9 +30,9 @@ public:
 
         analysisHelper->pushScope(SCOPE_BLOCK, this);
 
-        for (int i = 0; i < stmtList.size(); ++i)
+        for (auto& statement: stmtList)
         {
-            check &= stmtList[i]->analyzeSemantic(analysisHelper);
+            check &= statement->analyzeSemantic(analysisHelper);
         }
 
         analysisHelper->popScope();
@@ -43,9 +43,9 @@ public:
     {
         string quad;
 
-        for (int i = 0; i < stmtList.size(); ++i)
+        for (auto& statement: stmtList)
         {
-            quad += stmtList[i]->generateCode(genHelper);
+            quad += statement->generateCode(genHelper);
         }
         return quad;
     }

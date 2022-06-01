@@ -26,7 +26,7 @@ public:
     {
         this->loc = loc;
     }
-    virtual bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) { return true; }
+    virtual bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) = 0;
     virtual string generateCode(CodeGenerationHelper *genHelper) = 0;
 };
 
@@ -39,7 +39,7 @@ public:
     explicit ExpressionNode(yy::location loc) : Node(loc)
     {
     }
-    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override { return true; }
+    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override = 0;
     string generateCode(CodeGenerationHelper *genHelper) override = 0;
 };
 

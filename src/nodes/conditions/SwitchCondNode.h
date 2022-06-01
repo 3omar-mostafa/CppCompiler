@@ -25,15 +25,15 @@ public:
     {
         StmtBlockNode *block = dynamic_cast<StmtBlockNode *>(body);
 
-        if (block == NULL)
+        if (block == nullptr)
         {
             addCaseBlock(body);
             return;
         }
 
-        for (int i = 0; i < block->stmtList.size(); ++i)
+        for (auto& statement: block->stmtList)
         {
-            addCaseBlock(block->stmtList[i]);
+            addCaseBlock(statement);
         }
     }
 
@@ -44,12 +44,12 @@ public:
         while (caseLabel = dynamic_cast<CaseNode *>(stmt))
         {
             caseLabels.push_back(caseLabel->cond);
-            caseStmts.push_back(StmtListNode());
+            caseStmts.emplace_back();
 
             stmt = caseLabel->body;
         }
 
-        if (caseStmts.size() > 0)
+        if (!caseStmts.empty())
         {
             caseStmts.back().push_back(stmt);
         }
@@ -68,15 +68,14 @@ public:
         bool check = true;
         analysisHelper->pushScope(SCOPE_SWITCH, this);
 
-        for (int i = 0; i < caseLabels.size(); ++i)
+        for (auto& caseLabel: caseLabels)
         {
-            if (caseLabels[i] == NULL && hasDefaultLabel)
+            if (caseLabel == nullptr && hasDefaultLabel)
             {
                 analysisHelper->log("multiple default labels in one switch", loc, "error");
                 check &= false;
                 break;
-            }
-            else if (caseLabels[i] == NULL)
+            } else if (caseLabel == nullptr)
                 hasDefaultLabel = true;
         }
 
@@ -122,25 +121,24 @@ public:
 
         string quad;
         vector<pair<string, string>> labelPairs;
-        string defaultLabel = "";
+        string defaultLabel;
         string breakLabel = genHelper->getNewLabel();
 
         quad += cond->generateCode(genHelper);
         quad += Utils::opToQuad(OPR_POP, cond->type) + " SWITCH_COND_" + breakLabel + "\n";
         genHelper->addBreakLabel(breakLabel);
 
-        for (int i = 0; i < caseLabels.size(); i++)
+        for (auto& caseLabel: caseLabels)
         {
             string l1 = genHelper->getNewLabel();
-            if (caseLabels[i] == NULL)
+            if (caseLabel == nullptr)
             {
                 defaultLabel = l1;
-                labelPairs.push_back({"", l1});
-            }
-            else
+                labelPairs.emplace_back("", l1);
+            } else
             {
                 string l2 = genHelper->getNewLabel();
-                labelPairs.push_back({l1, l2});
+                labelPairs.emplace_back(l1, l2);
             }
         }
 
@@ -161,12 +159,10 @@ public:
                 if (i == caseLabels.size() - 1)
                 {
                     quad += (hasDefaultLabel ? defaultLabel : breakLabel) + "\n";
-                }
-                else if (labelPairs[i + 1].first == "")
+                } else if (labelPairs[i + 1].first.empty())
                 {
                     quad += ((i + 1 == caseLabels.size() - 1) ? defaultLabel : labelPairs[i + 2].first) + "\n";
-                }
-                else
+                } else
                 { // my next is case
                     quad += labelPairs[i + 1].first + "\n";
                 }
@@ -174,9 +170,9 @@ public:
 
             quad += "L" + labelPairs[i].second + ":\n";
 
-            for (int j = 0; j < caseStmts[i].size(); j++)
+            for (auto& statement: caseStmts[i])
             {
-                quad += caseStmts[i][j]->generateCode(genHelper);
+                quad += statement->generateCode(genHelper);
             }
         }
 

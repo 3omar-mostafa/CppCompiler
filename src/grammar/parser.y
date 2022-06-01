@@ -40,7 +40,7 @@
 %code {
 // Forward declaration for yylex created by the lexer (flex)
 yy::parser::symbol_type yylex();
-Node* programRoot = NULL;
+Node* programRoot = nullptr;
 }
 
 // `provides` makes this section available to the lexer (code it put in the header file)
@@ -104,8 +104,8 @@ namespace yy{
 %start program;
 
 program:
-    statement_list      { $program = NULL; programRoot = new StmtBlockNode(@$, *$statement_list);}
-|   /* empty */         { $program = NULL; programRoot = new StmtBlockNode(@$);}
+    statement_list      { $program = nullptr; programRoot = new StmtBlockNode(@$, *$statement_list);}
+|   /* empty */         { $program = nullptr; programRoot = new StmtBlockNode(@$);}
 ;
 
 statement:
@@ -151,40 +151,41 @@ case_statement:
 ;
 
 loop_statement:
-    FOR '(' variable_declaration_statement[varDec] expr[cond] ';' expr[step] ')' statement  {$$ = new ForLoopNode(@$, $varDec, $cond, $step, $statement);}
-|   WHILE '(' expr ')' statement                                        {$$ = new WhileLoopNode(@$, $expr, $statement);}
-|   DO statement WHILE '(' expr ')' ';'                                 {$$ = new DoWhileLoopNode(@$, $expr, $statement);}
-|   CONTINUE ';'                                                        {$$ = new ContinueNode(@$);}
-|   BREAK ';'                                                           {$$ = new BreakNode(@$);}
+    FOR '(' variable_declaration_statement[varDec] expr[cond] ';' expr[step] ')' statement  	{$$ = new ForLoopNode(@$, $varDec, $cond, $step, $statement);}
+|   WHILE '(' expr ')' statement                                        			{$$ = new WhileLoopNode(@$, $expr, $statement);}
+|   DO statement WHILE '(' expr ')' ';'                                 			{$$ = new DoWhileLoopNode(@$, $expr, $statement);}
+|   CONTINUE ';'                                                        			{$$ = new ContinueNode(@$);}
+|   BREAK ';'                                                           			{$$ = new BreakNode(@$);}
 ;
 
 function_declaration_statemnt:
-    data_type IDENTIFIER '(' func_params ')' statement          {$$ = new FunctionDeclarationNode(@$, $data_type, $IDENTIFIER, *$func_params, $statement);}
+    data_type IDENTIFIER '(' func_params ')' statement	{$$ = new FunctionDeclarationNode(@$, $data_type, $IDENTIFIER, *$func_params, $statement);}
 ;
 
 parameters:
-   variable_declaration                         {$$ = new VarDecList(); $$->push_back($variable_declaration);}
-|    parameters[rhs] ',' variable_declaration        {$$ = $rhs; $$->push_back($variable_declaration);}
+   variable_declaration                         	{$$ = new VarDecList(); $$->push_back($variable_declaration);}
+|    parameters[rhs] ',' variable_declaration        	{$$ = $rhs; $$->push_back($variable_declaration);}
 ;
 
 func_params:
-    parameters                      {$$ = $parameters;}
-|   /* empty */                     {$$ = new VarDecList();}
+    parameters                	{$$ = $parameters;}
+|   /* empty */               	{$$ = new VarDecList();}
 ;
 
 arguments:
-   expr                             {$$ = new ExpressionList(); $$->push_back($expr);}
-|    arguments[rhs] ',' expr        {$$ = $rhs; $$->push_back($expr);}
+   expr                        	{$$ = new ExpressionList(); $$->push_back($expr);}
+|    arguments[rhs] ',' expr   	{$$ = $rhs; $$->push_back($expr);}
 ;
 
 func_args:
-    arguments                     {$$ = $arguments;}
-|   /* empty */                   {$$ = new ExpressionList();}
+    arguments             	{$$ = $arguments;}
+|   /* empty */                 {$$ = new ExpressionList();}
 ;
 
 return_statement:
     RETURN ';'              {$$ = new ReturnNode(@$, NULL);}
 |   RETURN expr ';'         {$$ = new ReturnNode(@$, $expr);}
+;
 
 data_type:
     TYPE_INT    { $data_type = DTYPE_INT;}
@@ -214,8 +215,8 @@ expr[result]:
 |   expr[left] SHR expr[right]      { $result = new BinaryOpNode(@$, $left, OPR_SHR, $right);}
 |   '(' expr[left] ')'              { $result = $left;}
 |   IDENTIFIER                      { $result = $IDENTIFIER;}
-|   IDENTIFIER '=' expr[right]       { $result = new AssignOpNode(@$, $IDENTIFIER, $right);}
-|   IDENTIFIER '(' func_args ')'    { $result = new FunctionCallNode(@$, $IDENTIFIER, *$func_args);                  }
+|   IDENTIFIER '=' expr[right]      { $result = new AssignOpNode(@$, $IDENTIFIER, $right);}
+|   IDENTIFIER '(' func_args ')'    { $result = new FunctionCallNode(@$, $IDENTIFIER, *$func_args);}
 ;
 
 literal:

@@ -15,6 +15,11 @@ public:
         this->entryType = EntryType::TYPE_CONST;
     }
 
+    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override
+    {
+        return true;
+    }
+
     string generateCode(CodeGenerationHelper *genHelper) override
     {
         return Utils::opToQuad(OPR_PUSH, type) + " " + value + "\n";
