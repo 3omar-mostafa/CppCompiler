@@ -95,6 +95,7 @@ namespace yy{
 %left '+' '-'
 %left '*' '/'
 %right POWER
+%right UNARY_MINUS
 
 %token EOF 0;
 
@@ -197,27 +198,28 @@ data_type:
 ;
 
 expr[result]:
-    literal                         { $result = $literal;}
-|   expr[left] '+' expr[right]      { $result = new BinaryOpNode(@$, $left, OPR_ADD, $right);}
-|   expr[left] '-' expr[right]      { $result = new BinaryOpNode(@$, $left, OPR_SUB, $right);}
-|   expr[left] '*' expr[right]      { $result = new BinaryOpNode(@$, $left, OPR_MUL, $right);}
-|   expr[left] '/' expr[right]      { $result = new BinaryOpNode(@$, $left, OPR_DIV, $right);}
-|   expr[left] POWER expr[right]    { $result = new BinaryOpNode(@$, $left, OPR_POW, $right);}
-|   expr[left] AND expr[right]      { $result = new BinaryOpNode(@$, $left, OPR_AND, $right);}
-|   expr[left] OR expr[right]       { $result = new BinaryOpNode(@$, $left, OPR_OR, $right);}
-|   NOT expr[right]                 { $result = new UnaryOpNode(@$, OPR_NOT, $right);}
-|   expr[left] '>' expr[right]      { $result = new BinaryOpNode(@$, $left, OPR_GREATER, $right);}
-|   expr[left] GE expr[right]       { $result = new BinaryOpNode(@$, $left, OPR_GREATER_EQUAL, $right);}
-|   expr[left] '<' expr[right]      { $result = new BinaryOpNode(@$, $left, OPR_LESS, $right);}
-|   expr[left] LE expr[right]       { $result = new BinaryOpNode(@$, $left, OPR_LESS_EQUAL, $right);}
-|   expr[left] EQ expr[right]       { $result = new BinaryOpNode(@$, $left, OPR_EQUAL, $right);}
-|   expr[left] NE expr[right]       { $result = new BinaryOpNode(@$, $left, OPR_NOT_EQUAL, $right);}
-|   expr[left] SHL expr[right]      { $result = new BinaryOpNode(@$, $left, OPR_SHL, $right);}
-|   expr[left] SHR expr[right]      { $result = new BinaryOpNode(@$, $left, OPR_SHR, $right);}
-|   '(' expr[left] ')'              { $result = $left;}
-|   IDENTIFIER                      { $result = $IDENTIFIER;}
-|   IDENTIFIER '=' expr[right]      { $result = new AssignOpNode(@$, $IDENTIFIER, $right);}
-|   IDENTIFIER '(' func_args ')'    { $result = new FunctionCallNode(@$, $IDENTIFIER, *$func_args);}
+    literal                         	{ $result = $literal;}
+|   expr[left] '+' expr[right]      	{ $result = new BinaryOpNode(@$, $left, OPR_ADD, $right);}
+|   expr[left] '-' expr[right]      	{ $result = new BinaryOpNode(@$, $left, OPR_SUB, $right);}
+|   '-' expr[right] %prec UNARY_MINUS 	{ $result = new UnaryOpNode(@$, OPR_UNARY_MINUS, $right);}
+|   expr[left] '*' expr[right]      	{ $result = new BinaryOpNode(@$, $left, OPR_MUL, $right);}
+|   expr[left] '/' expr[right]      	{ $result = new BinaryOpNode(@$, $left, OPR_DIV, $right);}
+|   expr[left] POWER expr[right]    	{ $result = new BinaryOpNode(@$, $left, OPR_POW, $right);}
+|   expr[left] AND expr[right]      	{ $result = new BinaryOpNode(@$, $left, OPR_AND, $right);}
+|   expr[left] OR expr[right]       	{ $result = new BinaryOpNode(@$, $left, OPR_OR, $right);}
+|   NOT expr[right]                 	{ $result = new UnaryOpNode(@$, OPR_NOT, $right);}
+|   expr[left] '>' expr[right]      	{ $result = new BinaryOpNode(@$, $left, OPR_GREATER, $right);}
+|   expr[left] GE expr[right]       	{ $result = new BinaryOpNode(@$, $left, OPR_GREATER_EQUAL, $right);}
+|   expr[left] '<' expr[right]      	{ $result = new BinaryOpNode(@$, $left, OPR_LESS, $right);}
+|   expr[left] LE expr[right]       	{ $result = new BinaryOpNode(@$, $left, OPR_LESS_EQUAL, $right);}
+|   expr[left] EQ expr[right]       	{ $result = new BinaryOpNode(@$, $left, OPR_EQUAL, $right);}
+|   expr[left] NE expr[right]       	{ $result = new BinaryOpNode(@$, $left, OPR_NOT_EQUAL, $right);}
+|   expr[left] SHL expr[right]      	{ $result = new BinaryOpNode(@$, $left, OPR_SHL, $right);}
+|   expr[left] SHR expr[right]      	{ $result = new BinaryOpNode(@$, $left, OPR_SHR, $right);}
+|   '(' expr[left] ')'              	{ $result = $left;}
+|   IDENTIFIER                      	{ $result = $IDENTIFIER;}
+|   IDENTIFIER '=' expr[right]      	{ $result = new AssignOpNode(@$, $IDENTIFIER, $right);}
+|   IDENTIFIER '(' func_args ')'    	{ $result = new FunctionCallNode(@$, $IDENTIFIER, *$func_args);}
 ;
 
 literal:

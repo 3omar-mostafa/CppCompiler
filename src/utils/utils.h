@@ -98,6 +98,8 @@ namespace Utils
             return "JMPZ";
         case OPR_JMPNZ:
             return "JMPNZ";
+        case OPR_UNARY_MINUS:
+            return "NEG " + typeToQuad(type);
         default:
             return "";
         }
