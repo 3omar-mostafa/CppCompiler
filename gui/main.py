@@ -28,7 +28,7 @@ class CppCompiler(QWidget):
         super(QWidget, self).__init__()
 
         # Compiler path
-        self.cpp_compiler_path = "CppCompiler.exe"
+        self.cpp_compiler_path = "CppCompiler.exe" if sys.platform == "win32" else "./CppCompiler"
         self.cpp_quadruples_path = "out.txt"
         self.cpp_symbols_table_path = "symbols.txt"
         self.cpp_tmp_path = "CppCompilerTmp.txt"
@@ -36,7 +36,7 @@ class CppCompiler(QWidget):
 
         self.left = 60
         self.top = 30
-        self.width = self.getWindowSize()[1]
+        self.width = int(self.getWindowSize()[1])
         self.height = int(self.getWindowSize()[0])
 
         # Animation
@@ -61,7 +61,7 @@ class CppCompiler(QWidget):
 
     def setup_window(self):
         self.setWindowTitle(CppCompiler.TITLE)
-        self.setGeometry(self.left, self.top, self.width, self.height)
+        self.setGeometry(int(self.left), int(self.top), int(self.width), int(self.height))
 
         # Set window background color
         self.setAutoFillBackground(True)
@@ -79,12 +79,12 @@ class CppCompiler(QWidget):
         self.title = QLabel(self)
         self.title.setText(CppCompiler.TITLE)
         self.title.setStyleSheet("font-size: 28px; padding-bottom: 6px; font-weight: bold; color: #ccc; font-family: Courier New;")
-        self.title.setGeometry(QtCore.QRect(20, 20, self.width - 40, 55))
+        self.title.setGeometry(QtCore.QRect(20, 20, int(self.width - 40), 55))
         self.title.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
 
     def setup_window_exit_btn(self):
         self.windowExitBtn = QPushButton('×', parent=self)
-        self.windowExitBtn.move(self.width - 55, 28)
+        self.windowExitBtn.move(int(self.width - 55), 28)
         self.windowExitBtn.setCursor(Qt.PointingHandCursor)
         self.windowExitBtn.setStyleSheet(
             "border-radius: 0px; font-family: Courier New; font-size: 48px; color: #ffffff; background: #00ffffff; text-decoration: none;")
@@ -96,19 +96,18 @@ class CppCompiler(QWidget):
         self.input_code_editor = CodeEditor(self)
         self.input_code_editor.setFont(font)
         self.input_code_editor.setGeometry(QtCore.QRect(
-            20, 100, self.width / 2 - 10, self.height * 5.5 / 9))
+            20, 100, int(self.width / 2 - 10), int(self.height * 5.5 / 9)))
         self.input_code_editor.setGraphicsEffect(self.getShadow())
         self.input_code_editor.show()
 
-        self.highlight = syntax.CPPHighlighter(
-            self.input_code_editor.document())
+        self.highlight = syntax.CPPHighlighter(self.input_code_editor.document())
 
     def setup_quadruples_view(self):
         font = self.getFont()
         self.quadruples_view = CodeEditor(self)
         self.quadruples_view.setFont(font)
         self.quadruples_view.setGeometry(QtCore.QRect(
-            self.width / 2 + 40, 100, self.width / 2 - 59, self.height * 5.5 / 9))
+            int(self.width / 2 + 40), 100, int(self.width / 2 - 59), int(self.height * 5.5 / 9)))
         self.quadruples_view.setGraphicsEffect(self.getShadow())
         self.quadruples_view.setReadOnly(True)
         self.quadruples_view.show()
@@ -118,7 +117,7 @@ class CppCompiler(QWidget):
         self.symbols_view = CodeEditor(self)
         self.symbols_view.setFont(font)
         self.symbols_view.setGeometry(QtCore.QRect(
-            self.width / 2 + 40, 100, self.width / 2 - 59, self.height * 5.5 / 9))
+            int(self.width / 2 + 40), 100, int(self.width / 2 - 59), int(self.height * 5.5 / 9)))
         self.symbols_view.setGraphicsEffect(self.getShadow())
         self.symbols_view.setReadOnly(True)
         self.symbols_view.hide()
@@ -128,7 +127,7 @@ class CppCompiler(QWidget):
         self.logs_view = CodeEditor(self)
         self.logs_view.setFont(font)
         self.logs_view.setGeometry(QtCore.QRect(
-            20, self.height * 7 / 9 + 20, self.width - 37, 167))
+            20, int(self.height * 7 / 9 + 20), self.width - 37, 167))
         self.logs_view.setGraphicsEffect(self.getShadow())
         self.logs_view.setReadOnly(True)
         self.logs_view.show()
@@ -250,7 +249,7 @@ class CppCompiler(QWidget):
 
         # Compile
         result = subprocess.check_output([self.cpp_compiler_path, self.cpp_tmp_path], stderr=subprocess.PIPE)
-        result = result.decode("utf-8") 
+        result = result.decode("utf-8")
 
         self.logs_view.clear()
         self.logs_view.insertPlainText(result)
@@ -293,7 +292,8 @@ class CppCompiler(QWidget):
 
 class HoverButton(QToolButton):
 
-    def __init__(self, text, BKColor="#3498db", hoverBKColor="#3cb0fd", color="#ffffff", padding="8px 18px 8px 18px", fontSize="18px", parent=None):
+    def __init__(self, text, BKColor="#3498db", hoverBKColor="#3cb0fd", color="#ffffff", padding="8px 18px 8px 18px",
+                 fontSize="18px", parent=None):
         super(HoverButton, self).__init__(parent)
 
         self.setMouseTracking(True)
@@ -306,11 +306,11 @@ class HoverButton(QToolButton):
 
     def enterEvent(self, event):
         self.setStyleSheet("border-radius: 0px;  font-family: Courier New; color: " + self.color + "; font-size: " +
-                           self.fontSize+"; background: " + self.hoverBKColor + "; padding: " + self.padding + "; text-decoration: none;")
+                           self.fontSize + "; background: " + self.hoverBKColor + "; padding: " + self.padding + "; text-decoration: none;")
 
     def leaveEvent(self, event):
         self.setStyleSheet("border-radius: 0px;  font-family: Courier New; color: " + self.color + "; font-size: " +
-                           self.fontSize+"; background: " + self.BKColor + "; padding: " + self.padding + "; text-decoration: none;")
+                           self.fontSize + "; background: " + self.BKColor + "; padding: " + self.padding + "; text-decoration: none;")
 
 
 class TaskThread(QtCore.QThread):

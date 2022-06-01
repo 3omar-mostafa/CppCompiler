@@ -9,6 +9,7 @@
 
 #include "../nodes/Node.h"
 #include "../utils/enums.h"
+
 using namespace std;
 
 class Scope
@@ -31,6 +32,8 @@ class AnalysisHelper
     vector<string> srcCode;
     vector<Scope *> scopes;
     string symbTableStr;
+    string symbolTableRepresentation;
+    static inline int indent = 0;
 
     void readSourceCode()
     {
@@ -105,9 +108,18 @@ public:
         readSourceCode();
     }
 
-    void pushScope(ScopeType type, Node *scopePtr = NULL)
+    const string &getSymbolTableRepresentation() const
+    {
+        return symbolTableRepresentation;
+    }
+
+    void pushScope(ScopeType type, Node *scopePtr = nullptr)
     {
         scopes.push_back(new Scope(type, scopePtr));
+
+        string scope_str = (type == SCOPE_BLOCK) ? "{" : "====== Begin " + Utils::scopeToString(type) + " ======";
+        symbolTableRepresentation += string(indent, ' ') + scope_str + "\n";
+        indent += 4;
     }
 
     void popScope()
@@ -124,6 +136,10 @@ public:
                 log("the value of variable '" + it.first + "' is never used", symbol.loc, "warning");
             }
         }
+
+        indent -= 4;
+        string scope_str = (scope->type == SCOPE_BLOCK) ? "}" : "====== End " + Utils::scopeToString(scope->type) + " ======";
+        symbolTableRepresentation += string(indent, ' ') + scope_str + "\n";
 
         updateSymbolTableString(scope->table, scopes.size() == 0 ? 0 : scope->type);
 
@@ -174,7 +190,8 @@ public:
         return false;
     }
 
-    bool addSymbol(yy::location loc, const string &name, DataType type, EntryType entryType = TYPE_VAR, const vector<DataType> &paramsTypes = {}, int used = 0, bool initialized = false)
+    bool addSymbol(yy::location loc, const string &name, DataType type, EntryType entryType = TYPE_VAR,
+                   const vector<DataType> &paramsTypes = {}, int used = 0, bool initialized = false)
     {
         SymbolTable &symbolTable = scopes.back()->table;
 
@@ -183,6 +200,9 @@ public:
             return false;
         }
 
+        EntryInfo info = EntryInfo(loc, type, entryType, paramsTypes, used, initialized);
+        symbolTableRepresentation += string(indent, ' ') + name + ": " + info.to_string() + "\n";
+        //        str += string(indent, ' ') + identifier + ": " + entryInfo.to_string(string(indent + 4, ' ')) + "\n";
         return true;
     }
 

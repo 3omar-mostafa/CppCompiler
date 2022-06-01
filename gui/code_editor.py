@@ -33,7 +33,7 @@ class CodeEditor(QPlainTextEdit):
         self.updateLineNumberAreaWidth(0)
 
     def onTextChange(self):
-        syntax.PythonHighlighter(self.document())
+        syntax.CPPHighlighter(self.document())
 
     def lineNumberAreaWidth(self):
         space = 10 + self.fontMetrics().width('9') * 3
@@ -80,7 +80,7 @@ class CodeEditor(QPlainTextEdit):
             if block.isVisible() and (bottom >= event.rect().top()):
                 number = str(blockNumber + 1)
                 mypainter.setPen(colors["white"])
-                mypainter.drawText(0, top, self.lineNumberArea.width(), height,
+                mypainter.drawText(0, int(top), int(self.lineNumberArea.width()), int(height),
                  Qt.AlignHCenter, number)
 
             block = block.next()
