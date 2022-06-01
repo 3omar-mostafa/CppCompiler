@@ -34,6 +34,7 @@
 
 %code requires {
 #include "headers.h"
+#include <algorithm>
 
 }
 
@@ -245,7 +246,7 @@ void yy::parser::error(const location_type &loc, const std::string &err_message)
    fprintf(stderr, "%s:%d:%d: %s: %s\n", loc.begin.filename->c_str(), loc.begin.line, loc.begin.column, "error", err_message.c_str());
    fprintf(stderr, "%s\n", getLine(*loc.begin.filename, loc.begin.line).c_str());
    fprintf(stderr, "%*s", loc.begin.column, "^");
-   fprintf(stderr, "%s", string(loc.end.column - loc.begin.column - 1, '~').c_str());
+   fprintf(stderr, "%s", string(std::max(0, loc.end.column - loc.begin.column - 1), '~').c_str());
    fprintf(stderr, "\n");
    exit(1);
 }
