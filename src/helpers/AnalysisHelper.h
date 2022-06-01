@@ -10,6 +10,8 @@
 #include "../nodes/Node.h"
 #include "../utils/enums.h"
 
+class FunctionDeclarationNode;
+
 using namespace std;
 
 class Scope
@@ -170,17 +172,17 @@ public:
         return false;
     }
 
-    bool hasFunctionScope()
+    FunctionDeclarationNode* hasFunctionScope()
     {
         for (int i = (int)scopes.size() - 1; i >= 0; --i)
         {
             if (scopes[i]->type == SCOPE_FUNCTION)
             {
-                return true;
+                return reinterpret_cast<FunctionDeclarationNode*>(scopes[i]->ptr);
             }
         }
 
-        return false;
+        return nullptr;
     }
 
     bool hasBreakScope()

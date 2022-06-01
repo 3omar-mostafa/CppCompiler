@@ -11,10 +11,10 @@
 class ReturnNode : public Node
 {
     ExpressionNode *exp;
+    FunctionDeclarationNode *function;
 
 public:
-    ReturnNode(yy::location loc, ExpressionNode *exp)
-        : Node(loc)
+    ReturnNode(yy::location loc, ExpressionNode* exp) : Node(loc)
     {
         this->exp = exp;
     }
@@ -29,14 +29,26 @@ public:
 
         bool check = true;
 
-        if (!analysisHelper->hasFunctionScope())
+        function = analysisHelper->hasFunctionScope();
+        if (!function)
         {
             analysisHelper->log("return statement not within function", loc, "error");
             check &= false;
         }
 
-        if (exp)
+        if (exp and function->type == DTYPE_VOID) {
+            analysisHelper->log("return statement can not have value in void functions", loc, "error");
+            check &= false;
+        }
+
+        if (not exp and function->type != DTYPE_VOID) {
+            analysisHelper->log("return statement must have value in non-void functions", loc, "error");
+            check &= false;
+        }
+
+        if (exp) {
             check &= exp->analyzeSemantic(analysisHelper, true);
+        }
 
         return check;
     }
@@ -45,8 +57,10 @@ public:
     {
         string quad;
 
-        if (exp)
+        if (exp) {
             quad += exp->generateCode(genHelper);
+            quad += Utils::convTypeToQuad(exp->type, function->type);
+        }
         quad += "RET\n";
         return quad;
     }

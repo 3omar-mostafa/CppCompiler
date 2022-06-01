@@ -12,12 +12,12 @@ typedef vector<VariableDeclarationNode *> VarDecList;
 
 class FunctionDeclarationNode : public Node
 {
-    DataType type;
     IdentifierNode* identifier;
     Node* body;
     EntryType entryType;
 
 public:
+    DataType type;
     VarDecList params;
 
     FunctionDeclarationNode(yy::location loc, DataType type, IdentifierNode* identifier,
