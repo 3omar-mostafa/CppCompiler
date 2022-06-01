@@ -48,6 +48,15 @@ public:
         }
         return quad;
     }
+
+    ~StmtBlockNode() override
+    {
+        for (auto& statement: stmtList)
+        {
+            delete statement;
+            statement = nullptr;
+        }
+    }
 };
 
 #endif

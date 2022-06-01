@@ -45,6 +45,12 @@ public:
         quad += Utils::opToQuad(op, type) + "\n";
         return quad;
     }
+
+    ~UnaryOpNode() override
+    {
+        delete operand;
+        operand = nullptr;
+    }
 };
 
 #endif

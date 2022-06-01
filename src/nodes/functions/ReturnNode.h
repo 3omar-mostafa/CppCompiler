@@ -64,6 +64,12 @@ public:
         quad += "RET\n";
         return quad;
     }
+
+    ~ReturnNode() override
+    {
+        delete exp;
+        exp = nullptr;
+    }
 };
 
 #endif // RETURN_NODE

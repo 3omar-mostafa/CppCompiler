@@ -58,6 +58,14 @@ public:
 
         return quad;
     }
+
+    ~BinaryOpNode() override
+    {
+        delete lhs;
+        lhs = nullptr;
+        delete rhs;
+        rhs = nullptr;
+    }
 };
 
 #endif

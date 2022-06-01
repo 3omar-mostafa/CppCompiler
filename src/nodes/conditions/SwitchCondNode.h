@@ -79,7 +79,7 @@ public:
                 hasDefaultLabel = true;
         }
 
-        if (!(cond->analyzeSemantic(analysisHelper) && body->analyzeSemantic(analysisHelper)))
+        if (!(cond->analyzeSemantic(analysisHelper, true) && body->analyzeSemantic(analysisHelper)))
             check &= false;
 
         if (cond->type == DTYPE_VOID)
@@ -181,5 +181,16 @@ public:
 
         return quad;
     }
+
+    ~SwitchCondNode() override
+    {
+        delete cond;
+        cond = nullptr;
+        delete body;
+        body = nullptr;
+
+        // TODO: Check switch destructor
+    }
 };
+
 #endif

@@ -84,6 +84,20 @@ public:
         quad += "END " + identifier->name + " \n";
         return quad;
     }
+
+    ~FunctionDeclarationNode() override
+    {
+        delete identifier;
+        delete body;
+        identifier = nullptr;
+        body = nullptr;
+
+        for (auto &param : params)
+        {
+            delete param;
+            param = nullptr;
+        }
+    }
 };
 
 #endif // FUNCTION_DECLARATION_NODE

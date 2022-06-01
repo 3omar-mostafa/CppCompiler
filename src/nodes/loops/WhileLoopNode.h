@@ -73,5 +73,14 @@ public:
 
         return quad;
     }
+
+    ~WhileLoopNode() override
+    {
+        delete cond;
+        delete body;
+
+        cond = nullptr;
+        body = nullptr;
+    }
 };
 #endif

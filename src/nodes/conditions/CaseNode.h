@@ -49,5 +49,13 @@ public:
     {
         return "";
     }
+
+    ~CaseNode() override
+    {
+        delete cond;
+        cond = nullptr;
+        delete body;
+        body = nullptr;
+    }
 };
 #endif

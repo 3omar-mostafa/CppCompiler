@@ -23,8 +23,7 @@ public:
             return false;
         }
 
-        // TODO::CHECK (bitwise AND instead of logical AND)
-        if (!(rhs->analyzeSemantic(analysisHelper, true) && lhs->analyzeSemantic(analysisHelper, false)))
+        if (!(rhs->analyzeSemantic(analysisHelper, true) & lhs->analyzeSemantic(analysisHelper, false)))
             return false;
 
         if (lhs->type == DTYPE_VOID || rhs->type == DTYPE_VOID)
@@ -43,7 +42,7 @@ public:
         info->initialized = true;
 
         type = lhs->type;
-        entryType = lhs->entryType; // check if constant
+        entryType = lhs->entryType;
         return true;
     }
 
@@ -54,6 +53,14 @@ public:
         quad += Utils::convTypeToQuad(rhs->type, type);
         quad += Utils::opToQuad(OPR_POP, type) + " " + lhs->name + "\n";
         return quad;
+    }
+
+    ~AssignOpNode() override
+    {
+        delete lhs;
+        lhs = nullptr;
+        delete rhs;
+        rhs = nullptr;
     }
 };
 #endif

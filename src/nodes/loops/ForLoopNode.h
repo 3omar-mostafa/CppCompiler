@@ -30,12 +30,14 @@ public:
         bool check = true;
         analysisHelper->pushScope(SCOPE_LOOP, this);
 
-        if (!(varDec->analyzeSemantic(analysisHelper) && cond->analyzeSemantic(analysisHelper, true) && step->analyzeSemantic(analysisHelper) && body->analyzeSemantic(analysisHelper)))
+        if (!(varDec->analyzeSemantic(analysisHelper) && cond->analyzeSemantic(analysisHelper, true)
+              && step->analyzeSemantic(analysisHelper) && body->analyzeSemantic(analysisHelper)))
             check &= false;
 
         if (cond->type == DTYPE_VOID)
         {
-            analysisHelper->log("invalid conversion from '" + Utils::typeToQuad(cond->type) + "' to 'bool'", cond->loc, "error");
+            analysisHelper->log("invalid conversion from '" + Utils::typeToQuad(cond->type) + "' to 'bool'", cond->loc,
+                                "error");
             check &= false;
         }
 
@@ -86,6 +88,19 @@ public:
         quad += "L" + l3 + ":\n";
 
         return quad;
+    }
+
+    ~ForLoopNode() override
+    {
+        delete varDec;
+        delete cond;
+        delete step;
+        delete body;
+
+        varDec = nullptr;
+        cond = nullptr;
+        step = nullptr;
+        body = nullptr;
     }
 };
 #endif

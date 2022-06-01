@@ -95,5 +95,15 @@ public:
 
         return quad;
     }
+
+    ~IfElseCondNode() override
+    {
+        delete cond;
+        delete ifBody;
+        delete elseBody;
+        cond = nullptr;
+        ifBody = nullptr;
+        elseBody = nullptr;
+    }
 };
 #endif

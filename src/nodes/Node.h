@@ -28,6 +28,8 @@ public:
     }
     virtual bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) = 0;
     virtual string generateCode(CodeGenerationHelper *genHelper) = 0;
+
+    virtual ~Node() = default;
 };
 
 class ExpressionNode : public Node
@@ -41,6 +43,8 @@ public:
     }
     bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override = 0;
     string generateCode(CodeGenerationHelper *genHelper) override = 0;
+
+    virtual ~ExpressionNode() = default;
 };
 
 typedef vector<Node *> StmtListNode;

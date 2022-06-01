@@ -77,6 +77,18 @@ public:
         quad += "CALL " + identifier->name + " \n";
         return quad;
     }
+
+    ~FunctionCallNode() override
+    {
+        delete identifier;
+        identifier = nullptr;
+        for (auto& arg: args)
+        {
+            delete arg;
+            arg = nullptr;
+        }
+
+    }
 };
 
 #endif // FUNCTION_CALL_NODE

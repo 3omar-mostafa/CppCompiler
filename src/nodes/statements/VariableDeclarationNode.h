@@ -77,6 +77,12 @@ public:
         }
         return quad;
     }
+
+    ~VariableDeclarationNode() override
+    {
+            delete value;
+            value = nullptr;
+    }
 };
 
 #endif // VARIABLE_DECLARATION_NODE

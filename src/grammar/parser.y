@@ -107,7 +107,7 @@ namespace yy{
 %start program;
 
 program:
-    statement_list      { $program = nullptr; programRoot = new StmtBlockNode(@$, *$statement_list);}
+    statement_list      { $program = nullptr; programRoot = new StmtBlockNode(@$, *$statement_list); delete $statement_list; $statement_list = nullptr; }
 |   /* empty */         { $program = nullptr; programRoot = new StmtBlockNode(@$);}
 ;
 
@@ -120,7 +120,7 @@ statement:
 |   function_declaration_statemnt   {$statement = $function_declaration_statemnt;}
 |   return_statement                {$statement = $return_statement;}
 |   '{''}'                          {$statement = new StmtBlockNode(@$);}
-|   '{'statement_list'}'            {$statement = new StmtBlockNode(@$, *$statement_list);}
+|   '{'statement_list'}'            {$statement = new StmtBlockNode(@$, *$statement_list); delete $statement_list; $statement_list = nullptr;}
 |   expr ';'                        {$statement = $expr;}
 ;
 
@@ -162,12 +162,14 @@ loop_statement:
 ;
 
 function_declaration_statemnt:
-    data_type IDENTIFIER '(' func_params ')' statement	{$$ = new FunctionDeclarationNode(@$, $data_type, $IDENTIFIER, *$func_params, $statement);}
+    data_type IDENTIFIER '(' func_params ')' statement	{   $$ = new FunctionDeclarationNode(@$, $data_type, $IDENTIFIER, *$func_params, $statement);
+                                                            delete $func_params;
+                                                            $func_params = nullptr; }
 ;
 
 parameters:
    variable_declaration                         	{$$ = new VarDecList(); $$->push_back($variable_declaration);}
-|    parameters[rhs] ',' variable_declaration        	{$$ = $rhs; $$->push_back($variable_declaration);}
+|    parameters[rhs] ',' variable_declaration       {$$ = $rhs; $$->push_back($variable_declaration);}
 ;
 
 func_params:
@@ -181,7 +183,7 @@ arguments:
 ;
 
 func_args:
-    arguments             	{$$ = $arguments;}
+    arguments             	    {$$ = $arguments;}
 |   /* empty */                 {$$ = new ExpressionList();}
 ;
 
@@ -220,7 +222,7 @@ expr[result]:
 |   '(' expr[left] ')'              	{ $result = $left;}
 |   IDENTIFIER                      	{ $result = $IDENTIFIER;}
 |   IDENTIFIER '=' expr[right]      	{ $result = new AssignOpNode(@$, $IDENTIFIER, $right);}
-|   IDENTIFIER '(' func_args ')'    	{ $result = new FunctionCallNode(@$, $IDENTIFIER, *$func_args);}
+|   IDENTIFIER '(' func_args ')'    	{ $result = new FunctionCallNode(@$, $IDENTIFIER, *$func_args); delete $func_args; $func_args = nullptr;}
 ;
 
 literal:

@@ -50,6 +50,7 @@ int main(int argc, char *argv[])
     if (!analyze)
     {
         std::cerr << "Semantic Error Can not generate quadruples\n";
+        delete analysisHelper;
         exit(1);
     }
     std::cout << "Finished Semantic analysis\n";
@@ -63,6 +64,8 @@ int main(int argc, char *argv[])
     writeToFile(analysisHelper->getSymbolTableString(), symbolOutFile);
     writeToFile(analysisHelper->getSymbolTableRepresentation(), "symbols2.txt");
 
+    delete analysisHelper;
+    delete genHelper;
     return 0;
 }
 
