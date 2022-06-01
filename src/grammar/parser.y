@@ -242,10 +242,10 @@ std::string yy::getLine(const std::string& filename, int line) {
 
 void yy::parser::error(const location_type &loc, const std::string &err_message)
 {
-   fprintf(stdout, "%s:%d:%d: %s: %s\n", loc.begin.filename->c_str(), loc.begin.line, loc.begin.column, "error", err_message.c_str());
-   fprintf(stdout, "%s\n", getLine(*loc.begin.filename, loc.begin.line).c_str());
-   fprintf(stdout, "%*s", loc.begin.column, "^");
-   fprintf(stdout, "%s", string(loc.end.column - loc.begin.column - 1, '~').c_str());
-   fprintf(stdout, "\n");
-   exit(-1);
+   fprintf(stderr, "%s:%d:%d: %s: %s\n", loc.begin.filename->c_str(), loc.begin.line, loc.begin.column, "error", err_message.c_str());
+   fprintf(stderr, "%s\n", getLine(*loc.begin.filename, loc.begin.line).c_str());
+   fprintf(stderr, "%*s", loc.begin.column, "^");
+   fprintf(stderr, "%s", string(loc.end.column - loc.begin.column - 1, '~').c_str());
+   fprintf(stderr, "\n");
+   exit(1);
 }

@@ -248,11 +248,24 @@ class CppCompiler(QWidget):
             f.write(self.input_code_editor.toPlainText())
 
         # Compile
-        result = subprocess.check_output([self.cpp_compiler_path, self.cpp_tmp_path], stderr=subprocess.PIPE)
-        result = result.decode("utf-8")
+        process = subprocess.run([self.cpp_compiler_path, self.cpp_tmp_path], text=True, capture_output=True)
 
         self.logs_view.clear()
-        self.logs_view.insertPlainText(result)
+
+        self.logs_view.setCurrentCharFormat(QTextCharFormat())
+        self.logs_view.insertPlainText(process.stdout)
+
+        errors_format = QTextCharFormat()
+        errors_format.setForeground(Qt.red)
+        errors_format.setFontWeight(QFont.Bold)
+        self.logs_view.setCurrentCharFormat(errors_format)
+        self.logs_view.insertPlainText(process.stderr)
+
+        format = QTextCharFormat()
+        format.setForeground(Qt.green) if process.returncode == 0 else format.setForeground(Qt.red)
+        self.logs_view.setCurrentCharFormat(format)
+
+        self.logs_view.insertPlainText(f"\n\nCompilation finished with exit code {process.returncode}\n")
 
         if not os.path.isfile(self.cpp_quadruples_path):
             return

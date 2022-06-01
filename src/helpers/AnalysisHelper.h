@@ -241,11 +241,11 @@ public:
 
     void log(const string &message, yy::location loc, const string &logType)
     {
-        fprintf(stdout, "%s:%d:%d: %s: %s\n", srcCodeFile.c_str(), loc.begin.line, loc.begin.column, logType.c_str(), message.c_str());
-        fprintf(stdout, "%s\n", srcCode[loc.begin.line - 1].c_str());
-        fprintf(stdout, "%*s", loc.begin.column, "^");
-        fprintf(stdout, "%s", string(loc.end.column - loc.begin.column - 1, '~').c_str());
-        fprintf(stdout, "\n");
+        fprintf(stderr, "%s:%d:%d: %s: %s\n", srcCodeFile.c_str(), loc.begin.line, loc.begin.column, logType.c_str(), message.c_str());
+        fprintf(stderr, "%s\n", srcCode[loc.begin.line - 1].c_str());
+        fprintf(stderr, "%*s", loc.begin.column, "^");
+        fprintf(stderr, "%s", string(loc.end.column - loc.begin.column - 1, '~').c_str());
+        fprintf(stderr, "\n");
     }
 
     string getSymbolTableString()

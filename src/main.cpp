@@ -30,14 +30,14 @@ int main(int argc, char *argv[])
         if (yyin == nullptr)
         {
             fprintf(stderr, "error: could not open the input file %s", argv[1]);
-            exit(-1);
+            exit(1);
         }
         yyfilename = argv[1];
         std::cout << "Compiling " << argv[1] << std::endl;
     }
     else
     {
-        std::cout << "No files were given, reading input from stdin" << std::endl;
+        std::cerr << "No files were given, reading input from stdin" << std::endl;
     }
 
     yy::parser parser;
@@ -49,8 +49,8 @@ int main(int argc, char *argv[])
     bool analyze = programRoot->analyzeSemantic(analysisHelper);
     if (!analyze)
     {
-        std::cout << "Semantic Error Can not generate quadruples\n";
-        return 0;
+        std::cerr << "Semantic Error Can not generate quadruples\n";
+        exit(1);
     }
     std::cout << "Finished Semantic analysis\n";
     CodeGenerationHelper *genHelper = new CodeGenerationHelper();
