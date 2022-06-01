@@ -19,12 +19,11 @@ public:
 
     bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override
     {
-        // TODO::Uncomment this check after function implementation
-        // if (analysisHelper->isGlobalScope())
-        // {
-        //     analysisHelper->log("Block is not allowed in global scope", loc, "error");
-        //     return false;
-        // }
+         if (analysisHelper->isGlobalScope())
+         {
+             analysisHelper->log("Block is not allowed in global scope", loc, "error");
+             return false;
+         }
 
         bool check = true;
 
