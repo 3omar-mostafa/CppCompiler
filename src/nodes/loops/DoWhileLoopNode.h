@@ -59,7 +59,7 @@ public:
         string l2 = genHelper->getNewLabel();
         string l3 = genHelper->getNewLabel();
 
-        quad = "L" + l1 + ":\n";
+        quad += "L" + l1 + ":\n";
 
         genHelper->addContinueLabel(l2);
         genHelper->addBreakLabel(l3);
@@ -69,10 +69,10 @@ public:
         genHelper->removeContinueLabel();
         genHelper->removeBreakLabel();
 
-        quad = "L" + l2 + ":\n";
+        quad += "L" + l2 + ":\n";
         quad += cond->generateCode(genHelper);
         quad += Utils::opToQuad(OPR_JMPNZ, cond->type) + " L" + l1 + "\n";
-        quad = "L" + l3 + ":\n";
+        quad += "L" + l3 + ":\n";
 
         return quad;
     }
