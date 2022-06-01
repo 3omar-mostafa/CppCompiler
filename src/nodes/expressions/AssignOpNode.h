@@ -39,6 +39,10 @@ public:
             return false;
         }
 
+        EntryInfo *info;
+        analysisHelper->lookup(lhs->name, info);
+        info->initialized = true;
+
         type = lhs->type;
         entryType = lhs->entryType; // check if constant
         return true;

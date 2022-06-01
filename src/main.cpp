@@ -55,13 +55,11 @@ int main(int argc, char *argv[])
 
     std::string quad = programRoot->generateCode(genHelper);
 
+    std::cout << "Finished code generation\n";
+
     writeToFile(quad, outFile);
     writeToFile(analysisHelper->getSymbolTableString(), symbolOutFile);
-
-    std::cout << "Finished code generation with result = \n";
-
-    writeToFile(analysisHelper->getSymbolTableRepresentation(), "symbols.txt");
-    //   << quad << std::endl;
+    writeToFile(analysisHelper->getSymbolTableRepresentation(), "symbols2.txt");
 
     return 0;
 }

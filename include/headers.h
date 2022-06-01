@@ -19,5 +19,8 @@
 #include "../src/nodes/loops/ForLoopNode.h"
 #include "../src/nodes/loops/BreakNode.h"
 #include "../src/nodes/loops/ContinueNode.h"
+#include "../src/nodes/functions/FunctionDeclarationNode.h"
+#include "../src/nodes/functions/FunctionCallNode.h"
+#include "../src/nodes/functions/ReturnNode.h"
 
 #include "../src/utils/enums.h"

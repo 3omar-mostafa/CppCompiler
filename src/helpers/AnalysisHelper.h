@@ -102,6 +102,8 @@ class AnalysisHelper
     }
 
 public:
+    bool declareParamas = false;
+
     AnalysisHelper(const string &srcCodeFile)
     {
         this->srcCodeFile = srcCodeFile;
@@ -156,6 +158,19 @@ public:
         for (int i = (int)scopes.size() - 1; i >= 0; --i)
         {
             if (scopes[i]->type == SCOPE_SWITCH)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    bool hasFunctionScope()
+    {
+        for (int i = (int)scopes.size() - 1; i >= 0; --i)
+        {
+            if (scopes[i]->type == SCOPE_FUNCTION)
             {
                 return true;
             }

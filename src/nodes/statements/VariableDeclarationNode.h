@@ -9,10 +9,11 @@ class VariableDeclarationNode : public Node
 {
     ExpressionNode *value;
     EntryType entryType;
+
+public:
     DataType type;
     IdentifierNode *identifier;
 
-public:
     VariableDeclarationNode(yy::location loc, DataType type, IdentifierNode *identifier, ExpressionNode *value = nullptr, bool constant = false)
         : Node(loc)
     {
@@ -49,6 +50,11 @@ public:
         {
             analysisHelper->log("uninitialized const '" + identifier->name + "'", identifier->loc, "error");
             return false;
+        }
+
+        if (analysisHelper->declareParamas)
+        {
+            initialized = true;
         }
 
         if (!analysisHelper->addSymbol(identifier->loc, identifier->name, type, entryType, {}, 0, initialized))

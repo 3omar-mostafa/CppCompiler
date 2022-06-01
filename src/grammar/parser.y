@@ -79,9 +79,10 @@ namespace yy{
 %nterm <IfElseCondNode*> if_statement
 %nterm <ExpressionNode*> expr
 %nterm <LiteralNode*> literal
-%nterm <int> function_declaration_statemnt return_statement
-%nterm <int> arguments func_args
-%nterm <int> parameters func_params
+%nterm <FunctionDeclarationNode*> function_declaration_statemnt
+%nterm <ReturnNode*> return_statement
+%nterm <ExpressionList*> arguments func_args
+%nterm <VarDecList*> parameters func_params
 %nterm <DataType> data_type
 %nterm <Node*> program
 
@@ -113,8 +114,8 @@ statement:
 |   switch_statement                {$statement = $switch_statement;}
 |   case_statement                  {$statement = $case_statement;}
 |   loop_statement                  {$statement = $loop_statement;}
-|   function_declaration_statemnt   {}
-|   return_statement                {}
+|   function_declaration_statemnt   {$statement = $function_declaration_statemnt;}
+|   return_statement                {$statement = $return_statement;}
 |   '{''}'                          {$statement = new StmtBlockNode(@$);}
 |   '{'statement_list'}'            {$statement = new StmtBlockNode(@$, *$statement_list);}
 |   expr ';'                        {$statement = $expr;}
@@ -158,32 +159,32 @@ loop_statement:
 ;
 
 function_declaration_statemnt:
-    data_type IDENTIFIER '(' func_params ')' statement          {}
+    data_type IDENTIFIER '(' func_params ')' statement          {$$ = new FunctionDeclarationNode(@$, $data_type, $IDENTIFIER, *$func_params, $statement);}
 ;
 
 parameters:
-    parameters ',' variable_declaration      {}
-|   variable_declaration                     {}
+   variable_declaration                         {$$ = new VarDecList(); $$->push_back($variable_declaration);}
+|    parameters[rhs] ',' variable_declaration        {$$ = $rhs; $$->push_back($variable_declaration);}
 ;
 
 func_params:
-    parameters               {}
-|   /* empty */                    {}
+    parameters                      {$$ = $parameters;}
+|   /* empty */                     {$$ = new VarDecList();}
 ;
 
 arguments:
-    arguments ',' expr      {}
-|   expr                    {}
+   expr                             {$$ = new ExpressionList(); $$->push_back($expr);}
+|    arguments[rhs] ',' expr        {$$ = $rhs; $$->push_back($expr);}
 ;
 
 func_args:
-    arguments               {}
-|   /* empty */                   {}
+    arguments                     {$$ = $arguments;}
+|   /* empty */                   {$$ = new ExpressionList();}
 ;
 
 return_statement:
-    RETURN ';'              {}
-|   RETURN expr ';'         {}
+    RETURN ';'              {$$ = new ReturnNode(@$, NULL);}
+|   RETURN expr ';'         {$$ = new ReturnNode(@$, $expr);}
 
 data_type:
     TYPE_INT    { $data_type = DTYPE_INT;}
@@ -214,7 +215,7 @@ expr[result]:
 |   '(' expr[left] ')'              { $result = $left;}
 |   IDENTIFIER                      { $result = $IDENTIFIER;}
 |   IDENTIFIER '=' expr[right]       { $result = new AssignOpNode(@$, $IDENTIFIER, $right);}
-|   IDENTIFIER '(' func_args ')'    { $result = 0;                  }
+|   IDENTIFIER '(' func_args ')'    { $result = new FunctionCallNode(@$, $IDENTIFIER, *$func_args);                  }
 ;
 
 literal:
