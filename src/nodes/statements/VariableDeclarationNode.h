@@ -23,11 +23,13 @@ public:
         this->entryType = constant ? EntryType::TYPE_CONST : EntryType::TYPE_VAR;
     }
 
-    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override
+    bool analyzeSemantic(bool used = false) override
     {
+        auto scopeHelper = ScopeHelper::getInstance();
+
         if (type == DTYPE_VOID)
         {
-            analysisHelper->log("Variable '" + identifier->name + "' declared as void", identifier->loc, "error");
+            Utils::log("Variable '" + identifier->name + "' declared as void", identifier->loc, "error");
             return false;
         }
 
@@ -36,30 +38,30 @@ public:
         if (value != nullptr)
         {
             initialized = true;
-            if (!value->analyzeSemantic(analysisHelper, true))
+            if (!value->analyzeSemantic(true))
                 return false;
 
             if (value->type == DTYPE_VOID)
             {
-                analysisHelper->log("invalid conversion from '" + Utils::typeToQuad(value->type) + "' to '" + Utils::typeToQuad(type) + "'", value->loc, "error");
+                Utils::log("invalid conversion from '" + Utils::typeToQuad(value->type) + "' to '" + Utils::typeToQuad(type) + "'", value->loc, "error");
                 return false;
             }
         }
 
         if (entryType == TYPE_CONST && value == nullptr)
         {
-            analysisHelper->log("uninitialized const '" + identifier->name + "'", identifier->loc, "error");
+            Utils::log("uninitialized const '" + identifier->name + "'", identifier->loc, "error");
             return false;
         }
 
-        if (analysisHelper->declareParamas)
+        if (scopeHelper->declareParams)
         {
             initialized = true;
         }
 
-        if (!analysisHelper->addSymbol(identifier->loc, identifier->name, type, entryType, {}, 0, initialized))
+        if (!scopeHelper->addSymbol(identifier->loc, identifier->name, type, entryType, {}, 0, initialized))
         {
-            analysisHelper->log("Variable '" + identifier->name + "' is already declared in this scope", identifier->loc, "error");
+            Utils::log("Variable '" + identifier->name + "' is already declared in this scope", identifier->loc, "error");
             return false;
         }
 

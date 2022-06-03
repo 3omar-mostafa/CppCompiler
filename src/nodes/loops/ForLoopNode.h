@@ -19,29 +19,32 @@ public:
         this->body = body;
     }
 
-    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override
+    bool analyzeSemantic(bool used = false) override
     {
-        if (analysisHelper->isGlobalScope())
+        auto scopeHelper = ScopeHelper::getInstance();
+
+        if (scopeHelper->isInsideGlobalScope())
         {
-            analysisHelper->log("for loop is not allowed in global scope", loc, "error");
+            Utils::log("for loop is not allowed in global scope", loc, "error");
             return false;
         }
 
         bool check = true;
-        analysisHelper->pushScope(SCOPE_LOOP, this);
+        scopeHelper->pushScope(SCOPE_LOOP, this);
 
-        if (!(varDec->analyzeSemantic(analysisHelper) && cond->analyzeSemantic(analysisHelper, true)
-              && step->analyzeSemantic(analysisHelper) && body->analyzeSemantic(analysisHelper)))
-            check &= false;
-
-        if (cond->type == DTYPE_VOID)
+        if (!(varDec->analyzeSemantic() & cond->analyzeSemantic(true)
+              & step->analyzeSemantic() & body->analyzeSemantic()))
         {
-            analysisHelper->log("invalid conversion from '" + Utils::typeToQuad(cond->type) + "' to 'bool'", cond->loc,
-                                "error");
             check &= false;
         }
 
-        analysisHelper->popScope();
+        if (cond->type == DTYPE_VOID)
+        {
+            Utils::log("invalid conversion from '" + Utils::typeToQuad(cond->type) + "' to 'bool'", cond->loc, "error");
+            check &= false;
+        }
+
+        scopeHelper->popScope();
 
         return check;
     }

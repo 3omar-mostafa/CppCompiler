@@ -2,6 +2,8 @@
 #define __UTILS__H
 #include "enums.h"
 #include <string>
+#include <fstream>
+#include <location.hpp>
 
 namespace Utils
 {
@@ -125,6 +127,26 @@ namespace Utils
     {
         return (type == DTYPE_BOOL || type == DTYPE_CHAR || type == DTYPE_INT);
     }
+
+    inline std::string getLine(const std::string& filename, int line) {
+        std::ifstream file(filename);
+        std::string s;
+
+        for (int i = 1; i <= line; i++)
+            std::getline(file, s);
+
+        return replaceTabsWithSpaces(s);
+    }
+
+    inline void log(const std::string &message, const yy::location &loc, const std::string &logType)
+    {
+        fprintf(stderr, "%s:%d:%d: %s: %s\n", loc.begin.filename->c_str(), loc.begin.line, loc.begin.column, logType.c_str(), message.c_str());
+        fprintf(stderr, "%s\n", getLine(*loc.begin.filename, loc.begin.line).c_str());
+        fprintf(stderr, "%*s", loc.begin.column, "^");
+        fprintf(stderr, "%s", std::string(std::max(0, loc.end.column - loc.begin.column - 1), '~').c_str());
+        fprintf(stderr, "\n");
+    }
+
 }
 
 #endif // __UTILS__H

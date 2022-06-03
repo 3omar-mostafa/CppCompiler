@@ -14,11 +14,13 @@ public:
         this->body = body;
     }
 
-    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override
+    bool analyzeSemantic(bool used = false) override
     {
-        if (!analysisHelper->hasSwitchScope())
+        auto scopeHelper = ScopeHelper::getInstance();
+
+        if (!scopeHelper->isInsideSwitchScope())
         {
-            analysisHelper->log("case label not within switch statement", loc, "error");
+            Utils::log("case label not within switch statement", loc, "error");
             return false;
         }
 
@@ -26,21 +28,21 @@ public:
 
         if (cond)
         { // case label
-            check = cond->analyzeSemantic(analysisHelper, true);
+            check = cond->analyzeSemantic(true);
 
             if (check && cond->entryType != TYPE_CONST)
             {
-                analysisHelper->log("constant expression required in case label", cond->loc, "error");
+                Utils::log("constant expression required in case label", cond->loc, "error");
                 check &= false;
             }
             if (check && !Utils::isIntegerType(cond->type))
             {
-                analysisHelper->log("case quantity not an integer", cond->loc, "error");
+                Utils::log("case quantity not an integer", cond->loc, "error");
                 check &= false;
             }
         }
 
-        check &= body->analyzeSemantic(analysisHelper);
+        check &= body->analyzeSemantic();
 
         return check;
     }

@@ -8,11 +8,13 @@ class ContinueNode : public Node
 public:
     explicit ContinueNode(yy::location loc) : Node(loc) {}
 
-    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override
+    bool analyzeSemantic(bool used = false) override
     {
-        if (!analysisHelper->hasLoopScope())
+        auto scopeHelper = ScopeHelper::getInstance();
+
+        if (!scopeHelper->isInsideLoopScope())
         {
-            analysisHelper->log("continue statement not within loop", loc, "error");
+            Utils::log("continue statement not within loop", loc, "error");
             return false;
         }
         return true;

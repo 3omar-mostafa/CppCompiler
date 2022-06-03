@@ -52,10 +52,8 @@ class SymbolTable
 {
 private:
     std::unordered_map<std::string, EntryInfo> table;
-    // static SymbolTable *symbolTable;
 
 public:
-    // static SymbolTable *getInstance();
     SymbolTable() = default;
 
     EntryInfo* insert(yy::location loc, const std::string& name, DataType type, EntryType entryType = TYPE_VAR,

@@ -16,33 +16,35 @@ public:
         this->elseBody = elseBody;
     }
 
-    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override
+    bool analyzeSemantic(bool used = false) override
     {
-        if (analysisHelper->isGlobalScope())
+        auto scopeHelper = ScopeHelper::getInstance();
+
+        if (scopeHelper->isInsideGlobalScope())
         {
-            analysisHelper->log("if statement is not allowed in global scope", loc, "error");
+            Utils::log("if statement is not allowed in global scope", loc, "error");
             return false;
         }
 
         bool check = true;
-        analysisHelper->pushScope(SCOPE_IF, this);
+        scopeHelper->pushScope(SCOPE_IF, this);
 
-        if (!(cond->analyzeSemantic(analysisHelper, true) && ifBody->analyzeSemantic(analysisHelper)))
+        if (!(cond->analyzeSemantic(true) && ifBody->analyzeSemantic()))
             check &= false;
 
         if (cond->type == DTYPE_VOID)
         {
-            analysisHelper->log("invalid conversion from '" + Utils::typeToQuad(cond->type) + "' to 'bool'", cond->loc, "error");
+            Utils::log("invalid conversion from '" + Utils::typeToQuad(cond->type) + "' to 'bool'", cond->loc, "error");
             check &= false;
         }
 
         if (elseBody != nullptr)
         {
-            if (!elseBody->analyzeSemantic(analysisHelper))
+            if (!elseBody->analyzeSemantic())
                 check &= false;
         }
 
-        analysisHelper->popScope();
+        scopeHelper->popScope();
 
         return check;
     }

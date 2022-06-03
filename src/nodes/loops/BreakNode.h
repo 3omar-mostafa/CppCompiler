@@ -8,11 +8,13 @@ class BreakNode : public Node
 public:
     explicit BreakNode(yy::location loc) : Node(loc) {}
 
-    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override
+    bool analyzeSemantic(bool used = false) override
     {
-        if (!analysisHelper->hasBreakScope())
+        auto scopeHelper = ScopeHelper::getInstance();
+
+        if (!(scopeHelper->isInsideLoopScope() || scopeHelper->isInsideSwitchScope()))
         {
-            analysisHelper->log("break statement not within loop or switch", loc, "error");
+            Utils::log("break statement not within loop or switch", loc, "error");
             return false;
         }
         return true;

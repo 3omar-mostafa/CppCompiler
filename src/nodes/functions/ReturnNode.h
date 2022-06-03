@@ -19,35 +19,37 @@ public:
         this->exp = exp;
     }
 
-    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override
+    bool analyzeSemantic(bool used = false) override
     {
-        if (analysisHelper->isGlobalScope())
+        auto scopeHelper = ScopeHelper::getInstance();
+
+        if (scopeHelper->isInsideGlobalScope())
         {
-            analysisHelper->log("return is not allowed in global scope", loc, "error");
+            Utils::log("return is not allowed in global scope", loc, "error");
             return false;
         }
 
         bool check = true;
 
-        function = analysisHelper->hasFunctionScope();
+        function = scopeHelper->isInsideFunctionScope();
         if (!function)
         {
-            analysisHelper->log("return statement not within function", loc, "error");
+            Utils::log("return statement not within function", loc, "error");
             check &= false;
         }
 
         if (exp and function->type == DTYPE_VOID) {
-            analysisHelper->log("return statement can not have value in void functions", loc, "error");
+            Utils::log("return statement can not have value in void functions", loc, "error");
             check &= false;
         }
 
         if (not exp and function->type != DTYPE_VOID) {
-            analysisHelper->log("return statement must have value in non-void functions", loc, "error");
+            Utils::log("return statement must have value in non-void functions", loc, "error");
             check &= false;
         }
 
         if (exp) {
-            check &= exp->analyzeSemantic(analysisHelper, true);
+            check &= exp->analyzeSemantic(true);
         }
 
         return check;

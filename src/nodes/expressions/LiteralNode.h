@@ -15,7 +15,7 @@ public:
         this->entryType = EntryType::TYPE_CONST;
     }
 
-    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override
+    bool analyzeSemantic(bool used = false) override
     {
         return true;
     }

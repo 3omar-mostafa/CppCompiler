@@ -55,40 +55,42 @@ public:
         }
     }
 
-    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override
+    bool analyzeSemantic(bool used = false) override
     {
-        if (analysisHelper->isGlobalScope())
+        auto scopeHelper = ScopeHelper::getInstance();
+
+        if (scopeHelper->isInsideGlobalScope())
         {
-            analysisHelper->log("switch statement is not allowed in global scope", loc, "error");
+            Utils::log("switch statement is not allowed in global scope", loc, "error");
             return false;
         }
 
         populate();
 
         bool check = true;
-        analysisHelper->pushScope(SCOPE_SWITCH, this);
+        scopeHelper->pushScope(SCOPE_SWITCH, this);
 
         for (auto& caseLabel: caseLabels)
         {
             if (caseLabel == nullptr && hasDefaultLabel)
             {
-                analysisHelper->log("multiple default labels in one switch", loc, "error");
+                Utils::log("multiple default labels in one switch", loc, "error");
                 check &= false;
                 break;
             } else if (caseLabel == nullptr)
                 hasDefaultLabel = true;
         }
 
-        if (!(cond->analyzeSemantic(analysisHelper, true) && body->analyzeSemantic(analysisHelper)))
+        if (!(cond->analyzeSemantic(true) && body->analyzeSemantic()))
             check &= false;
 
         if (cond->type == DTYPE_VOID)
         {
-            analysisHelper->log("invalid conversion from '" + Utils::typeToQuad(cond->type) + "' to 'bool'", cond->loc, "error");
+            Utils::log("invalid conversion from '" + Utils::typeToQuad(cond->type) + "' to 'bool'", cond->loc, "error");
             check &= false;
         }
 
-        analysisHelper->popScope();
+        scopeHelper->popScope();
         return check;
     }
 

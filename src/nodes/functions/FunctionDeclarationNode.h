@@ -30,11 +30,13 @@ public:
         this->entryType = TYPE_FUNC;
     }
 
-    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override
+    bool analyzeSemantic(bool used = false) override
     {
-        if (!analysisHelper->isGlobalScope())
+        auto scopeHelper = ScopeHelper::getInstance();
+
+        if (!scopeHelper->isInsideGlobalScope())
         {
-            analysisHelper->log("function declaration is allowed only in global scope", identifier->loc, "error");
+            Utils::log("function declaration is allowed only in global scope", identifier->loc, "error");
             return false;
         }
 
@@ -46,26 +48,26 @@ public:
             paramsTypes.push_back(param->type);
         }
 
-        if (!analysisHelper->addSymbol(identifier->loc, identifier->name, type, entryType, paramsTypes, 0, true))
+        if (!scopeHelper->addSymbol(identifier->loc, identifier->name, type, entryType, paramsTypes, 0, true))
         {
-            analysisHelper->log("'" + identifier->name + "' is already declared", identifier->loc, "error");
+            Utils::log("'" + identifier->name + "' is already declared", identifier->loc, "error");
             check = false;
         }
 
-        analysisHelper->pushScope(SCOPE_FUNCTION, this);
+        scopeHelper->pushScope(SCOPE_FUNCTION, this);
 
-        analysisHelper->declareParamas = true;
+        scopeHelper->declareParams = true;
 
         for (auto& param: params)
         {
-            check &= param->analyzeSemantic(analysisHelper);
+            check &= param->analyzeSemantic();
         }
 
-        analysisHelper->declareParamas = false;
+        scopeHelper->declareParams = false;
 
-        check &= body->analyzeSemantic(analysisHelper);
+        check &= body->analyzeSemantic();
 
-        analysisHelper->popScope();
+        scopeHelper->popScope();
 
         return check;
     }

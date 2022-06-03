@@ -13,7 +13,7 @@
 #include "../helpers/CodeGenerationHelper.h"
 
 class Node;
-#include "../helpers/AnalysisHelper.h"
+#include "../helpers/ScopeHelper.h"
 
 using namespace std;
 
@@ -26,7 +26,7 @@ public:
     {
         this->loc = loc;
     }
-    virtual bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) = 0;
+    virtual bool analyzeSemantic(bool used = false) = 0;
     virtual string generateCode(CodeGenerationHelper *genHelper) = 0;
 
     virtual ~Node() = default;
@@ -41,7 +41,7 @@ public:
     explicit ExpressionNode(yy::location loc) : Node(loc)
     {
     }
-    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override = 0;
+    bool analyzeSemantic(bool used = false) override = 0;
     string generateCode(CodeGenerationHelper *genHelper) override = 0;
 
     virtual ~ExpressionNode() = default;

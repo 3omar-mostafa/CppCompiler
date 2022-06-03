@@ -11,12 +11,14 @@ public:
         this->name = name;
     }
 
-    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used)
+    bool analyzeSemantic(bool used)
     {
-        EntryInfo* info = analysisHelper->lookup(name);
+        auto scopeHelper = ScopeHelper::getInstance();
+
+        EntryInfo* info = scopeHelper->lookup(name);
         if (!info)
         {
-            analysisHelper->log("'" + name + "' was not declared in this scope", loc, "error");
+            Utils::log("'" + name + "' was not declared in this scope", loc, "error");
             return false;
         }
         type = info->type;
@@ -29,7 +31,7 @@ public:
 
         if (used && !info->initialized)
         {
-            analysisHelper->log("variable '" + name + "' used without being initialized", loc, "error");
+            Utils::log("variable '" + name + "' used without being initialized", loc, "error");
             return false;
         }
         return true;

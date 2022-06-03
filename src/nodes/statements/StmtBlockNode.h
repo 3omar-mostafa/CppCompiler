@@ -17,24 +17,26 @@ public:
         this->stmtList = stmtList;
     }
 
-    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override
+    bool analyzeSemantic(bool used = false) override
     {
-         if (analysisHelper->isGlobalScope())
+        auto scopeHelper = ScopeHelper::getInstance();
+
+         if (scopeHelper->isInsideGlobalScope())
          {
-             analysisHelper->log("Block is not allowed in global scope", loc, "error");
+             Utils::log("Block is not allowed in global scope", loc, "error");
              return false;
          }
 
         bool check = true;
 
-        analysisHelper->pushScope(SCOPE_BLOCK, this);
+        scopeHelper->pushScope(SCOPE_BLOCK, this);
 
         for (auto& statement: stmtList)
         {
-            check &= statement->analyzeSemantic(analysisHelper);
+            check &= statement->analyzeSemantic();
         }
 
-        analysisHelper->popScope();
+        scopeHelper->popScope();
         return check;
     }
 

@@ -27,20 +27,22 @@ public:
         this->args = std::move(args);
     }
 
-    bool analyzeSemantic(AnalysisHelper *analysisHelper, bool used = false) override
+    bool analyzeSemantic(bool used = false) override
     {
-        if (analysisHelper->isGlobalScope())
+        auto scopeHelper = ScopeHelper::getInstance();
+
+        if (scopeHelper->isInsideGlobalScope())
         {
-            analysisHelper->log("function call is not allowed in global scope", loc, "error");
+            Utils::log("function call is not allowed in global scope", loc, "error");
             return false;
         }
 
         bool check = true;
 
-        EntryInfo* info = analysisHelper->lookup(identifier->name);
+        EntryInfo* info = scopeHelper->lookup(identifier->name);
         if (!info)
         {
-            analysisHelper->log("'" + identifier->name + "' was not declared in this scope", loc, "error");
+            Utils::log("'" + identifier->name + "' was not declared in this scope", loc, "error");
             check &= false;
         } else
         {
@@ -52,12 +54,12 @@ public:
 
         for (auto& arg: args)
         {
-            check &= arg->analyzeSemantic(analysisHelper);
+            check &= arg->analyzeSemantic();
         }
 
         if (args.size() != functionParamsTypes.size())
         {
-            analysisHelper->log("wrong number of arguments", loc, "error");
+            Utils::log("wrong number of arguments", loc, "error");
             check &= false;
         }
 

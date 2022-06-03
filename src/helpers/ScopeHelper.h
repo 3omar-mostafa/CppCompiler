@@ -9,7 +9,9 @@
 #include <algorithm>
 
 #include "../nodes/Node.h"
+#include "../symbolTable/SymbolTable.h"
 #include "../utils/enums.h"
+#include "../utils/utils.h"
 
 class FunctionDeclarationNode;
 
@@ -22,39 +24,18 @@ public:
     Node *ptr;         // A pointer to the node of the scope
     SymbolTable table; // The symbol table of this scope
 
-    Scope(ScopeType type, Node *ptr = NULL)
+    explicit Scope(ScopeType type, Node* ptr = nullptr)
     {
         this->type = type;
         this->ptr = ptr;
     }
 };
 
-class AnalysisHelper
+class ScopeHelper
 {
-    string srcCodeFile;
-    vector<string> srcCode;
     vector<Scope *> scopes;
-    string symbTableStr;
-    string symbolTableRepresentation;
-    static inline int indent = 0;
-
-    void readSourceCode()
-    {
-        ifstream fin(srcCodeFile);
-
-        if (!fin.is_open())
-        {
-            return;
-        }
-
-        string line;
-        while (getline(fin, line))
-        {
-            srcCode.push_back(Utils::replaceTabsWithSpaces(line));
-        }
-
-        fin.close();
-    }
+    string symbolTableStr;
+    static inline ScopeHelper* instance = nullptr;
 
     void initSymbolTableString()
     {
@@ -62,7 +43,7 @@ class AnalysisHelper
         tmp += "+---------+---------------------+----------------+-------+\n";
         tmp += "| scope   | identifier          | type           | used  |\n";
         tmp += "+---------+---------------------+----------------+-------+\n";
-        symbTableStr = tmp + symbTableStr;
+        symbolTableStr = tmp + symbolTableStr;
     }
 
     void updateSymbolTableString(SymbolTable t, int scope)
@@ -70,61 +51,55 @@ class AnalysisHelper
         string scopeStr;
         switch (scope)
         {
-        case SCOPE_LOOP:
-            scopeStr = "loop";
-            break;
-        case SCOPE_IF:
-            scopeStr = "if";
-            break;
-        case SCOPE_SWITCH:
-            scopeStr = "switch";
-            break;
-        case SCOPE_FUNCTION:
-            scopeStr = "func";
-            break;
-        case SCOPE_BLOCK:
-            scopeStr = "block";
-            break;
-        default:
-            scopeStr = "global";
-            break;
+            case SCOPE_LOOP:
+                scopeStr = "loop";
+                break;
+            case SCOPE_IF:
+                scopeStr = "if";
+                break;
+            case SCOPE_SWITCH:
+                scopeStr = "switch";
+                break;
+            case SCOPE_FUNCTION:
+                scopeStr = "func";
+                break;
+            case SCOPE_BLOCK:
+                scopeStr = "block";
+                break;
+            default:
+                scopeStr = "global";
+                break;
         }
 
         stringstream ss;
-        for (auto &it : t.getTable())
+        for (auto& [name, info] : t.getTable())
         {
-            EntryInfo symbol = it.second;
-
             ss << "| " << left << setw(8) << scopeStr;
-            ss << "| " << left << setw(20) << it.first;
-            ss << "| " << left << setw(15) << Utils::typeToQuad(symbol.type);
-            ss << "| " << left << setw(6) << symbol.used << "|\n";
+            ss << "| " << left << setw(20) << name;
+            ss << "| " << left << setw(15) << Utils::typeToQuad(info.type);
+            ss << "| " << left << setw(6) << info.used << "|\n";
             ss << "+---------+---------------------+----------------+-------+\n";
         }
-        symbTableStr = ss.str() + symbTableStr;
+        symbolTableStr = ss.str() + symbolTableStr;
     }
+
+    ScopeHelper() = default;
 
 public:
-    bool declareParamas = false;
+    bool declareParams = false;
 
-    AnalysisHelper(const string &srcCodeFile)
+    static ScopeHelper* getInstance()
     {
-        this->srcCodeFile = srcCodeFile;
-        readSourceCode();
+        if (instance == nullptr)
+        {
+            instance = new ScopeHelper;
+        }
+        return instance;
     }
 
-    const string &getSymbolTableRepresentation() const
-    {
-        return symbolTableRepresentation;
-    }
-
-    void pushScope(ScopeType type, Node *scopePtr = nullptr)
+    void pushScope(ScopeType type, Node* scopePtr = nullptr)
     {
         scopes.push_back(new Scope(type, scopePtr));
-
-        string scope_str = (type == SCOPE_BLOCK) ? "{" : "====== Begin " + Utils::scopeToString(type) + " ======";
-        symbolTableRepresentation += string(indent, ' ') + scope_str + "\n";
-        indent += 4;
     }
 
     void popScope()
@@ -138,29 +113,25 @@ public:
             {
                 if (info.entryType == TYPE_VAR)
                 {
-                    log("the value of variable '" + name + "' is never used", info.loc, "warning");
+                    Utils::log("the value of variable '" + name + "' is never used", info.loc, "warning");
                 } else if (info.entryType == TYPE_FUNC and name != "main")
                 {
-                    log("the function '" + name + "' is never called", info.loc, "warning");
+                    Utils::log("the function '" + name + "' is never called", info.loc, "warning");
                 }
             }
         }
-
-        indent -= 4;
-        string scope_str = (scope->type == SCOPE_BLOCK) ? "}" : "====== End " + Utils::scopeToString(scope->type) + " ======";
-        symbolTableRepresentation += string(indent, ' ') + scope_str + "\n";
 
         updateSymbolTableString(scope->table, scopes.empty() ? 0 : scope->type);
 
         delete scope;
     }
 
-    bool isGlobalScope()
+    bool isInsideGlobalScope()
     {
         return scopes.size() == 1;
     }
 
-    bool hasSwitchScope()
+    bool isInsideSwitchScope()
     {
         for (int i = (int)scopes.size() - 1; i >= 0; --i)
         {
@@ -173,7 +144,7 @@ public:
         return false;
     }
 
-    FunctionDeclarationNode* hasFunctionScope()
+    FunctionDeclarationNode* isInsideFunctionScope()
     {
         for (int i = (int)scopes.size() - 1; i >= 0; --i)
         {
@@ -186,20 +157,7 @@ public:
         return nullptr;
     }
 
-    bool hasBreakScope()
-    {
-        for (int i = (int)scopes.size() - 1; i >= 0; --i)
-        {
-            if (scopes[i]->type == SCOPE_LOOP || scopes[i]->type == SCOPE_SWITCH)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    bool hasLoopScope()
+    bool isInsideLoopScope()
     {
         for (int i = (int)scopes.size() - 1; i >= 0; --i)
         {
@@ -223,7 +181,6 @@ public:
             return nullptr;
         }
 
-        symbolTableRepresentation += string(indent, ' ') + name + ": " + info->to_string() + "\n";
         return info;
     }
 
@@ -240,19 +197,10 @@ public:
         return nullptr;
     }
 
-    void log(const string &message, yy::location loc, const string &logType)
-    {
-        fprintf(stderr, "%s:%d:%d: %s: %s\n", srcCodeFile.c_str(), loc.begin.line, loc.begin.column, logType.c_str(), message.c_str());
-        fprintf(stderr, "%s\n", srcCode[loc.begin.line - 1].c_str());
-        fprintf(stderr, "%*s", loc.begin.column, "^");
-        fprintf(stderr, "%s", string(std::max(0, loc.end.column - loc.begin.column - 1), '~').c_str());
-        fprintf(stderr, "\n");
-    }
-
     string getSymbolTableString()
     {
         initSymbolTableString();
-        return symbTableStr;
+        return symbolTableStr;
     }
 };
 
