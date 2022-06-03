@@ -41,7 +41,7 @@ public:
         return true;
     }
 
-    string generateCode(CodeGenerationHelper *genHelper) override
+    string generateCode() override
     {
         /*
         L1: (FOR CONTINUE)
@@ -54,24 +54,26 @@ public:
 
         */
 
+        auto genHelper = CodeGenerationHelper::getInstance();
+
         string quad;
         string l1 = genHelper->getNewLabel();
         string l2 = genHelper->getNewLabel();
 
-        quad = "L" + l1 + ":\n";
-        quad += cond->generateCode(genHelper);
-        quad += Utils::opToQuad(OPR_JMPZ, cond->type) + " L" + l2 + "\n";
+        quad = l1 + ":\n";
+        quad += cond->generateCode();
+        quad += Utils::opToQuad(OPR_JMPZ, cond->type) + " " + l2 + "\n";
 
         genHelper->addContinueLabel(l1);
         genHelper->addBreakLabel(l2);
 
-        quad += body->generateCode(genHelper);
+        quad += body->generateCode();
 
         genHelper->removeContinueLabel();
         genHelper->removeBreakLabel();
 
-        quad += Utils::opToQuad(OPR_JMP, cond->type) + " L" + l1 + "\n";
-        quad += "L" + l2 + ":\n";
+        quad += Utils::opToQuad(OPR_JMP, cond->type) + " " + l1 + "\n";
+        quad += l2 + ":\n";
 
         return quad;
     }

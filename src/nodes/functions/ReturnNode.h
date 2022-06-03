@@ -55,12 +55,12 @@ public:
         return check;
     }
 
-    string generateCode(CodeGenerationHelper *genHelper) override
+    string generateCode() override
     {
         string quad;
 
         if (exp) {
-            quad += exp->generateCode(genHelper);
+            quad += exp->generateCode();
             quad += Utils::convTypeToQuad(exp->type, function->type);
         }
         quad += "RET\n";

@@ -54,9 +54,8 @@ int main(int argc, char *argv[])
         exit(1);
     }
     std::cout << "Finished Semantic analysis\n";
-    CodeGenerationHelper *genHelper = new CodeGenerationHelper();
 
-    std::string quad = programRoot->generateCode(genHelper);
+    std::string quad = programRoot->generateCode();
 
     std::cout << "Finished code generation\n";
 
@@ -64,7 +63,7 @@ int main(int argc, char *argv[])
     writeToFile(scopeHelper->getSymbolTableString(), symbolOutFile);
 
     delete scopeHelper;
-    delete genHelper;
+    delete CodeGenerationHelper::getInstance();
     return 0;
 }
 

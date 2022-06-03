@@ -3,45 +3,58 @@
 
 #include <stack>
 #include <string>
-using namespace std;
 
 class CodeGenerationHelper
 {
-    int labelNum;
-    stack<string> continueLabelStack;
-    stack<string> breakLabelStack;
+    int labelNum = 1;
+    std::stack<std::string> continueLabelStack;
+    std::stack<std::string> breakLabelStack;
+    static inline CodeGenerationHelper* instance = nullptr;
+
+    CodeGenerationHelper() = default;
 
 public:
-    CodeGenerationHelper()
+
+    static CodeGenerationHelper* getInstance()
     {
-        labelNum = 1;
-    }
-    string getNewLabel()
-    {
-        return std::to_string(labelNum++);
+        if (instance == nullptr)
+        {
+            instance = new CodeGenerationHelper();
+        }
+        return instance;
     }
 
-    void addContinueLabel(string label)
+    std::string getNewLabel()
+    {
+        return "L" + std::to_string(labelNum++);
+    }
+
+    void addContinueLabel(const std::string& label)
     {
         continueLabelStack.push(label);
     }
-    void addBreakLabel(string label)
+
+    void addBreakLabel(const std::string& label)
     {
         breakLabelStack.push(label);
     }
+
     void removeContinueLabel()
     {
         continueLabelStack.pop();
     }
+
     void removeBreakLabel()
     {
         breakLabelStack.pop();
     }
-    string getContinueLabel()
+
+    std::string getContinueLabel()
     {
         return continueLabelStack.top();
     }
-    string getBreakLabel()
+
+    std::string getBreakLabel()
     {
         return breakLabelStack.top();
     }

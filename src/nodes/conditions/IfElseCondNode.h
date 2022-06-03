@@ -49,7 +49,7 @@ public:
         return check;
     }
 
-    string generateCode(CodeGenerationHelper *genHelper) override
+    string generateCode() override
     {
         /*
         -------------COND------------
@@ -76,23 +76,25 @@ public:
 
         */
 
+        auto genHelper = CodeGenerationHelper::getInstance();
+
         string quad;
         string l1 = genHelper->getNewLabel();
-        quad = cond->generateCode(genHelper);
-        quad += Utils::opToQuad(OPR_JMPZ, cond->type) + " L" + l1 + "\n";
-        quad += ifBody->generateCode(genHelper);
+        quad = cond->generateCode();
+        quad += Utils::opToQuad(OPR_JMPZ, cond->type) + " " + l1 + "\n";
+        quad += ifBody->generateCode();
 
         if (elseBody != nullptr)
         {
             string l2 = genHelper->getNewLabel();
-            quad += Utils::opToQuad(OPR_JMP, cond->type) + " L" + l2 + "\n";
-            quad += "L" + l1 + ":\n";
-            quad += elseBody->generateCode(genHelper);
-            quad += "L" + l2 + ":\n";
+            quad += Utils::opToQuad(OPR_JMP, cond->type) + " " + l2 + "\n";
+            quad += l1 + ":\n";
+            quad += elseBody->generateCode();
+            quad += l2 + ":\n";
         }
         else
         {
-            quad += "L" + l1 + ":\n";
+            quad += l1 + ":\n";
         }
 
         return quad;

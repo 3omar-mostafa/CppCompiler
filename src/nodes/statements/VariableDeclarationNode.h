@@ -68,12 +68,12 @@ public:
         return true;
     }
 
-    string generateCode(CodeGenerationHelper *genHelper) override
+    string generateCode() override
     {
         string quad;
         if (value != nullptr)
         {
-            quad += value->generateCode(genHelper);
+            quad += value->generateCode();
             quad += Utils::convTypeToQuad(value->type, type);
             quad += Utils::opToQuad(OPR_POP, type) + " " + identifier->name + "\n";
         }

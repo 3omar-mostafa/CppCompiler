@@ -27,7 +27,7 @@ public:
         this->loc = loc;
     }
     virtual bool analyzeSemantic(bool used = false) = 0;
-    virtual string generateCode(CodeGenerationHelper *genHelper) = 0;
+    virtual string generateCode() = 0;
 
     virtual ~Node() = default;
 };
@@ -42,7 +42,7 @@ public:
     {
     }
     bool analyzeSemantic(bool used = false) override = 0;
-    string generateCode(CodeGenerationHelper *genHelper) override = 0;
+    string generateCode() override = 0;
 
     virtual ~ExpressionNode() = default;
 };

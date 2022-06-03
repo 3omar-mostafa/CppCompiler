@@ -47,7 +47,7 @@ public:
         return check;
     }
 
-    string generateCode(CodeGenerationHelper *genHelper) override
+    string generateCode() override
     {
         return "";
     }

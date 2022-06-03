@@ -37,11 +37,11 @@ public:
         return true;
     }
 
-    string generateCode(CodeGenerationHelper *genHelper) override
+    string generateCode() override
     {
         string quad;
 
-        quad = operand->generateCode(genHelper);
+        quad = operand->generateCode();
         quad += Utils::convTypeToQuad(operand->type, type);
 
         quad += Utils::opToQuad(op, type) + "\n";

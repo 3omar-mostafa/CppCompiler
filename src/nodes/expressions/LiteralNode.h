@@ -20,7 +20,7 @@ public:
         return true;
     }
 
-    string generateCode(CodeGenerationHelper *genHelper) override
+    string generateCode() override
     {
         return Utils::opToQuad(OPR_PUSH, type) + " " + value + "\n";
     }

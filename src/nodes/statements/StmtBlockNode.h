@@ -40,13 +40,13 @@ public:
         return check;
     }
 
-    string generateCode(CodeGenerationHelper *genHelper) override
+    string generateCode() override
     {
         string quad;
 
         for (auto& statement: stmtList)
         {
-            quad += statement->generateCode(genHelper);
+            quad += statement->generateCode();
         }
         return quad;
     }

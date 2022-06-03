@@ -66,13 +66,13 @@ public:
         return check;
     }
 
-    string generateCode(CodeGenerationHelper *genHelper) override
+    string generateCode() override
     {
         string quad;
 
         for (int i = (int) args.size() - 1; i >= 0; --i)
         {
-            quad += args[i]->generateCode(genHelper);
+            quad += args[i]->generateCode();
             quad += Utils::convTypeToQuad(args[i]->type, functionParamsTypes[i]);
         }
 

@@ -72,7 +72,7 @@ public:
         return check;
     }
 
-    string generateCode(CodeGenerationHelper *genHelper) override
+    string generateCode() override
     {
         string quad;
 
@@ -82,7 +82,7 @@ public:
             quad += Utils::opToQuad(OPR_POP, param->type) + " " + param->identifier->name + "\n";
         }
 
-        quad += body->generateCode(genHelper);
+        quad += body->generateCode();
         quad += "END " + identifier->name + " \n";
         return quad;
     }

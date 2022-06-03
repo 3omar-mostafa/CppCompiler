@@ -20,11 +20,13 @@ public:
         return true;
     }
 
-    string generateCode(CodeGenerationHelper *genHelper) override
+    string generateCode() override
     {
+        auto genHelper = CodeGenerationHelper::getInstance();
+
         string quad;
         string l1 = genHelper->getContinueLabel();
-        quad += Utils::opToQuad(OPR_JMP, DTYPE_INT) + " L" + l1 + "\n";
+        quad += Utils::opToQuad(OPR_JMP, DTYPE_INT) + " " + l1 + "\n";
 
         return quad;
     }

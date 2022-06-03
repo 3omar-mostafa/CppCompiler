@@ -94,7 +94,7 @@ public:
         return check;
     }
 
-    string generateCode(CodeGenerationHelper *genHelper) override
+    string generateCode() override
     {
         /*
         -------------COND------------
@@ -121,12 +121,14 @@ public:
 
         */
 
+        auto genHelper = CodeGenerationHelper::getInstance();
+
         string quad;
         vector<pair<string, string>> labelPairs;
         string defaultLabel;
         string breakLabel = genHelper->getNewLabel();
 
-        quad += cond->generateCode(genHelper);
+        quad += cond->generateCode();
         quad += Utils::opToQuad(OPR_POP, cond->type) + " SWITCH_COND_" + breakLabel + "\n";
         genHelper->addBreakLabel(breakLabel);
 
@@ -150,13 +152,13 @@ public:
             {
                 DataType resultType = max(cond->type, caseLabels[i]->type);
 
-                quad += "L" + labelPairs[i].first + ":\n";
+                quad += labelPairs[i].first + ":\n";
                 quad += Utils::opToQuad(OPR_PUSH, cond->type) + " SWITCH_COND_" + genHelper->getBreakLabel() + "\n";
                 quad += Utils::convTypeToQuad(cond->type, resultType);
-                quad += caseLabels[i]->generateCode(genHelper);
+                quad += caseLabels[i]->generateCode();
                 quad += Utils::convTypeToQuad(caseLabels[i]->type, resultType);
                 quad += Utils::opToQuad(OPR_EQUAL, resultType) + "\n";
-                quad += Utils::opToQuad(OPR_JMPZ, DTYPE_BOOL) + " L";
+                quad += Utils::opToQuad(OPR_JMPZ, DTYPE_BOOL) + " ";
 
                 if (i == caseLabels.size() - 1)
                 {
@@ -170,16 +172,16 @@ public:
                 }
             }
 
-            quad += "L" + labelPairs[i].second + ":\n";
+            quad += labelPairs[i].second + ":\n";
 
             for (auto& statement: caseStmts[i])
             {
-                quad += statement->generateCode(genHelper);
+                quad += statement->generateCode();
             }
         }
 
         genHelper->removeBreakLabel();
-        quad += "L" + breakLabel + ":\n";
+        quad += breakLabel + ":\n";
 
         return quad;
     }
