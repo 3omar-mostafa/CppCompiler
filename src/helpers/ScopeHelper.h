@@ -35,7 +35,6 @@ class ScopeHelper
 {
     vector<Scope *> scopes;
     string symbolTableStr;
-    static inline ScopeHelper* instance = nullptr;
 
     void initSymbolTableString()
     {
@@ -90,11 +89,8 @@ public:
 
     static ScopeHelper* getInstance()
     {
-        if (instance == nullptr)
-        {
-            instance = new ScopeHelper;
-        }
-        return instance;
+        static ScopeHelper instance;
+        return &instance;
     }
 
     void pushScope(ScopeType type, Node* scopePtr = nullptr)

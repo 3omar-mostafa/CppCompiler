@@ -9,7 +9,6 @@ class CodeGenerationHelper
     int labelNum = 1;
     std::stack<std::string> continueLabelStack;
     std::stack<std::string> breakLabelStack;
-    static inline CodeGenerationHelper* instance = nullptr;
 
     CodeGenerationHelper() = default;
 
@@ -17,11 +16,8 @@ public:
 
     static CodeGenerationHelper* getInstance()
     {
-        if (instance == nullptr)
-        {
-            instance = new CodeGenerationHelper();
-        }
-        return instance;
+        static CodeGenerationHelper instance;
+        return &instance;
     }
 
     std::string getNewLabel()

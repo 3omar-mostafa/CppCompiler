@@ -43,14 +43,12 @@ int main(int argc, char *argv[])
     yy::parser parser;
     parser.parse();
 
-    ScopeHelper *scopeHelper = ScopeHelper::getInstance();
 
     std::cout << "Start Analyzing \n";
     bool analyze = programRoot->analyzeSemantic();
     if (!analyze)
     {
         std::cerr << "Semantic Error Can not generate quadruples\n";
-        delete scopeHelper;
         exit(1);
     }
     std::cout << "Finished Semantic analysis\n";
@@ -60,10 +58,10 @@ int main(int argc, char *argv[])
     std::cout << "Finished code generation\n";
 
     writeToFile(quad, outFile);
+
+    ScopeHelper *scopeHelper = ScopeHelper::getInstance();
     writeToFile(scopeHelper->getSymbolTableString(), symbolOutFile);
 
-    delete scopeHelper;
-    delete CodeGenerationHelper::getInstance();
     return 0;
 }
 
