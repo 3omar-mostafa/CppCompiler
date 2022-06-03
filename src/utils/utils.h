@@ -140,10 +140,13 @@ namespace Utils
 
     inline void log(const std::string &message, const yy::location &loc, const std::string &logType)
     {
+        const std::string& sourceCodeLine = getLine(*loc.begin.filename, loc.begin.line);
+        int endColumn = loc.end.line != loc.begin.line ? sourceCodeLine.length() : loc.end.column;
+
         fprintf(stderr, "%s:%d:%d: %s: %s\n", loc.begin.filename->c_str(), loc.begin.line, loc.begin.column, logType.c_str(), message.c_str());
-        fprintf(stderr, "%s\n", getLine(*loc.begin.filename, loc.begin.line).c_str());
+        fprintf(stderr, "%s\n", sourceCodeLine.c_str());
         fprintf(stderr, "%*s", loc.begin.column, "^");
-        fprintf(stderr, "%s", std::string(std::max(0, loc.end.column - loc.begin.column - 1), '~').c_str());
+        fprintf(stderr, "%s", std::string(std::max(0, endColumn - loc.begin.column - 1), '~').c_str());
         fprintf(stderr, "\n");
     }
 
