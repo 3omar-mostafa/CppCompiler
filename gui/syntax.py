@@ -68,6 +68,7 @@ class CPPHighlighter (QSyntaxHighlighter):
         'unsigned',
         'void',
         'string',
+        'char'
     ]
 
     # C++ keywords
