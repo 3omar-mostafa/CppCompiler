@@ -110,7 +110,7 @@ public:
                 if (info.entryType == TYPE_VAR)
                 {
                     Utils::log("the value of variable '" + name + "' is never used", info.loc, "warning");
-                } else if (info.entryType == TYPE_FUNC and name != "main")
+                } else if (info.entryType == TYPE_FUNC && name != "main")
                 {
                     Utils::log("the function '" + name + "' is never called", info.loc, "warning");
                 }

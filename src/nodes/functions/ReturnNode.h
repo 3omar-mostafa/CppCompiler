@@ -38,12 +38,12 @@ public:
             check &= false;
         }
 
-        if (exp and function->type == DTYPE_VOID) {
+        if (exp && function->type == DTYPE_VOID) {
             Utils::log("return statement can not have value in void functions", loc, "error");
             check &= false;
         }
 
-        if (not exp and function->type != DTYPE_VOID) {
+        if (!exp && function->type != DTYPE_VOID) {
             Utils::log("return statement must have value in non-void functions", loc, "error");
             check &= false;
         }

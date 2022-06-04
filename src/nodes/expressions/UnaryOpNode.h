@@ -31,7 +31,7 @@ public:
             return false;
         }
 
-        if (op == OPR_PRE_INC or op == OPR_PRE_DEC or op == OPR_POST_INC or op == OPR_POST_DEC)
+        if (op == OPR_PRE_INC || op == OPR_PRE_DEC || op == OPR_POST_INC || op == OPR_POST_DEC)
         {
             auto* identifier = dynamic_cast<IdentifierNode*>(operand);
             if (identifier == nullptr)
@@ -42,13 +42,13 @@ public:
 
             EntryInfo* info = scopeHelper->lookup(identifier->name);
 
-            if (info and info->entryType == TYPE_FUNC)
+            if (info && info->entryType == TYPE_FUNC)
             {
                 Utils::log("++/-- cannot be applied to functions", loc, "error");
                 return false;
             }
 
-            if (info and info->entryType == TYPE_CONST)
+            if (info && info->entryType == TYPE_CONST)
             {
                 Utils::log("can not use ++/-- on read-only (const) variable '" + identifier->name + "'", loc, "error");
                 return false;
@@ -73,13 +73,13 @@ public:
 
         auto* identifier = dynamic_cast<IdentifierNode*>(operand);
 
-        if (op == OPR_PRE_INC or op == OPR_PRE_DEC)
+        if (op == OPR_PRE_INC || op == OPR_PRE_DEC)
         {
             quad += Utils::opToQuad(op, type) + "\n";
             quad += Utils::opToQuad(OPR_POP, type) + " " + identifier->name + "\n";
             if (isUsed)
                 quad += Utils::opToQuad(OPR_PUSH, type) + " " + identifier->name + "\n";
-        } else if (op == OPR_POST_INC or op == OPR_POST_DEC)
+        } else if (op == OPR_POST_INC || op == OPR_POST_DEC)
         {
             if (isUsed)
                 quad += Utils::opToQuad(OPR_PUSH, type) + " " + identifier->name + "\n";
