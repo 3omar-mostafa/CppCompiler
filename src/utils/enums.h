@@ -38,6 +38,11 @@ enum Operator
     OPR_NOT_EQUAL,     // a != b
     OPR_UNARY_MINUS,   // -a
 
+    OPR_PRE_INC,       // ++a
+    OPR_PRE_DEC,       // --a
+    OPR_POST_INC,      // a++
+    OPR_POST_DEC,      // a--
+
     OPR_PUSH,
     OPR_POP,
     OPR_RET,

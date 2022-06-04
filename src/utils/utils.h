@@ -86,6 +86,12 @@ namespace Utils
             return "LE " + typeToQuad(type);
         case OPR_EQUAL:
             return "EQ " + typeToQuad(type);
+        case OPR_PRE_INC:
+        case OPR_POST_INC:
+            return "INC " + typeToQuad(type);
+        case OPR_PRE_DEC:
+        case OPR_POST_DEC:
+            return "DEC " + typeToQuad(type);
         case OPR_NOT_EQUAL:
             return "NEQ " + typeToQuad(type);
         case OPR_PUSH:

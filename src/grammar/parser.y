@@ -67,6 +67,8 @@ namespace yy{
 %token <std::string> STRING
 %token <IdentifierNode*> IDENTIFIER
 
+%token INC DEC
+
 %token TYPE_INT TYPE_FLOAT TYPE_CHAR TYPE_BOOL TYPE_VOID TYPE_STRING
 %token CONST
 
@@ -90,13 +92,14 @@ namespace yy{
 
 %right '='
 %left AND OR NOT
-%left INC DEC
 %left GE LE EQ NE '>' '<'
 %left SHL SHR
 %left '+' '-'
 %left '*' '/'
 %right POWER
 %right UNARY_MINUS
+%right PRE_INC PRE_DEC
+%left POST_INC POST_DEC
 
 %token EOF 0;
 
@@ -223,6 +226,10 @@ expr[result]:
 |   IDENTIFIER                      	{ $result = $IDENTIFIER;}
 |   IDENTIFIER '=' expr[right]      	{ $result = new AssignOpNode(@$, $IDENTIFIER, $right);}
 |   IDENTIFIER '(' func_args ')'    	{ $result = new FunctionCallNode(@$, $IDENTIFIER, *$func_args); delete $func_args; $func_args = nullptr;}
+|   INC IDENTIFIER %prec PRE_INC        { $result = new UnaryOpNode(@$, OPR_PRE_INC, $IDENTIFIER);}
+|   DEC IDENTIFIER %prec PRE_DEC        { $result = new UnaryOpNode(@$, OPR_PRE_DEC, $IDENTIFIER);}
+|   IDENTIFIER INC %prec POST_INC       { $result = new UnaryOpNode(@$, OPR_POST_INC, $IDENTIFIER);}
+|   IDENTIFIER DEC %prec POST_DEC       { $result = new UnaryOpNode(@$, OPR_POST_DEC, $IDENTIFIER);}
 ;
 
 literal:
