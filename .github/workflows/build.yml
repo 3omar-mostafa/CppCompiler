@@ -6,17 +6,19 @@ on:
     tags:
       - '*'
 
+  workflow_dispatch:
 
 env:
     FORCE_COLOR : 'true' # Force colors in console output
 
 jobs:
   Ubuntu:
-    name: Build - Ubuntu - GCC ${{ matrix.gcc_version }}
+    name: Ubuntu - GCC ${{ matrix.gcc_version }}
     runs-on: ubuntu-22.04
     env:
       CC : gcc-${{ matrix.gcc_version }}
       CXX: g++-${{ matrix.gcc_version }}
+      TERM: 'xterm-256color'
 
     strategy:
       fail-fast: false
@@ -45,15 +47,28 @@ jobs:
         name: C++ Compiler Ubuntu - GCC v${{ matrix.gcc_version }}
         path: ./cmake-build/CppCompiler
 
-    - name: Upload Generated C++ Grammar Files
-      if: always()
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+        
+    - name: Install Python dependencies
+      run: sudo pip install pyinstaller PyQt5
+
+    - name: Build GUI
+      run: pyinstaller --name CppCompiler_GUI --onefile --add-binary ./cmake-build/CppCompiler:. ./gui/main.py
+
+    - name: Upload GUI Binary
       uses: actions/upload-artifact@v3
       with:
-        name: C++ Compiler Ubuntu - GCC v${{ matrix.gcc_version }} - Generated Grammar
-        path: ./cmake-build/src/grammar/*
+        name: C++ Compiler GUI Ubuntu - GCC v${{ matrix.gcc_version }}
+        path: ./dist/CppCompiler_GUI
 
     - name: Rename Files
-      run: mv ./cmake-build/CppCompiler CppCompiler_linux_gcc_${{ matrix.gcc_version }}
+      run: |
+          mv ./cmake-build/CppCompiler CppCompiler_linux_gcc_${{ matrix.gcc_version }}
+          mv ./dist/CppCompiler_GUI CppCompiler_GUI_linux_gcc_${{ matrix.gcc_version }}
+
 
     - name: List Files
       if: always()
@@ -71,7 +86,7 @@ jobs:
 ########################################################################################
 
   Windows:
-    name: Build - Windows - ${{ matrix.name }}
+    name: Windows - ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -118,18 +133,32 @@ jobs:
           ./cmake-build/CppCompiler.exe
           ./cmake-build/*/CppCompiler.exe
 
-    - name: Upload Generated C++ Grammar Files
-      if: always()
+    - name: Rename Files
+      shell: bash
+      run: mv ./cmake-build/CppCompiler.exe ./CppCompiler.exe || mv ./cmake-build/*/CppCompiler.exe ./CppCompiler.exe
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+        
+    - name: Install Python dependencies
+      run: pip install pyinstaller PyQt5
+
+    - name: Build GUI
+      run: pyinstaller --name CppCompiler_GUI --onefile --add-binary ./CppCompiler.exe;. ./gui/main.py
+
+    - name: Upload GUI Binary
       uses: actions/upload-artifact@v3
       with:
-        name: C++ Compiler Windows x64 - ${{ matrix.name }} - Generated Grammar
-        path: ./cmake-build/src/grammar/*
+        name: C++ Compiler GUI Ubuntu - GCC v${{ matrix.gcc_version }}
+        path: ./dist/CppCompiler_GUI.exe
 
     - name: Rename Files
       shell: bash
       run: |
-        mv ./cmake-build/CppCompiler.exe ./CppCompiler.exe || mv ./cmake-build/*/CppCompiler.exe ./CppCompiler.exe
         mv CppCompiler.exe CppCompiler_win64_${{ matrix.output_name }}.exe
+        mv ./dist/CppCompiler_GUI.exe CppCompiler_GUI_win64_${{ matrix.output_name }}.exe
 
     - name: List Files
       shell: bash

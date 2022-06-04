@@ -28,7 +28,11 @@ class CppCompiler(QWidget):
         super(QWidget, self).__init__()
 
         # Compiler path
-        self.cpp_compiler_path = "CppCompiler.exe" if sys.platform == "win32" else "./CppCompiler"
+        self.cpp_compiler_path = "CppCompiler.exe" if sys.platform == "win32" else "CppCompiler"
+        self.cpp_compiler_path = os.path.join(os.path.dirname(__file__), self.cpp_compiler_path)
+        if sys.platform != "win32":
+            os.chmod(self.cpp_compiler_path, 0o777)
+
         self.cpp_quadruples_path = "out.txt"
         self.cpp_symbols_table_path = "symbols.txt"
         self.cpp_tmp_path = "CppCompilerTmp.txt"
