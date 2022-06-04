@@ -53,10 +53,12 @@ jobs:
         python-version: "3.10"
         
     - name: Install Python dependencies
-      run: sudo pip install pyinstaller PyQt5
+      run: |
+        sudo apt install libgl1-mesa-dev libicu-dev qtbase5-dev -y
+        sudo pip install pyinstaller PyQt5 sip
 
     - name: Build GUI
-      run: pyinstaller --name CppCompiler_GUI --onefile --add-binary ./cmake-build/CppCompiler:. ./gui/main.py
+      run: pyinstaller --clean --noupx --name CppCompiler_GUI --onefile --add-binary ./cmake-build/CppCompiler:. ./gui/main.py
 
     - name: Upload GUI Binary
       uses: actions/upload-artifact@v3
@@ -143,15 +145,15 @@ jobs:
         python-version: "3.10"
         
     - name: Install Python dependencies
-      run: pip install pyinstaller PyQt5
+      run: pip install pyinstaller PyQt5 sip
 
     - name: Build GUI
-      run: pyinstaller --name CppCompiler_GUI --onefile --add-binary ./CppCompiler.exe;. ./gui/main.py
+      run: pyinstaller --clean --noupx --name CppCompiler_GUI --onefile --add-binary="CppCompiler.exe;." ./gui/main.py
 
     - name: Upload GUI Binary
       uses: actions/upload-artifact@v3
       with:
-        name: C++ Compiler GUI Ubuntu - GCC v${{ matrix.gcc_version }}
+        name: C++ Compiler GUI Windows x64 - ${{ matrix.name }}
         path: ./dist/CppCompiler_GUI.exe
 
     - name: Rename Files
@@ -161,6 +163,7 @@ jobs:
         mv ./dist/CppCompiler_GUI.exe CppCompiler_GUI_win64_${{ matrix.output_name }}.exe
 
     - name: List Files
+      if: always()
       shell: bash
       run: ls -lRh
 
