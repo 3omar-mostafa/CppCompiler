@@ -3,7 +3,22 @@ Simple C++ like compiler using Bison/Flex
 
 We use C++ 17, Bison >= 3.0 because we use it to generate C++ files and use C++ variants instead of `%union`
 
-# How To Build:
+# Features
+* C++ like syntax
+* Used modern C++ features
+* Support functions, if conditions, loops, etc.
+* Support multiple operators as `+`, `-`, `*`, `/`, `++`, `--`, `** (exp)`, `and`, `or`, `not`, `&&`, `||`, `!`, `==`, `!=`, `<`, `>`, `<=`, `>=`, `<<`, `>>`
+* Expressive Warnings, and Errors
+* Warning on not used variables, functions, etc.
+* Warning on not initialized variables.
+* Simple GUI Text Editor
+
+![IDE GUI](images/ide.png)
+
+# Download
+You can find precompiled binaries (CLI, GUI) for Linux and Windows in the [releases](https://github.com/3omar-mostafa/CppCompiler/releases/latest)
+
+# How To Build
 ## Dependencies
   * Cmake >= 3.0
   * C++ compiler
